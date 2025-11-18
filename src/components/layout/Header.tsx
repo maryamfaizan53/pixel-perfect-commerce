@@ -1,8 +1,10 @@
-import { ShoppingCart, Search, Menu, User, Heart } from "lucide-react";
+import { Search, Menu, User, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { ShoppingCart } from "lucide-react";
 
 const categories = [
   { name: "Household", path: "/category/household" },
@@ -66,14 +68,7 @@ export const Header = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Heart className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-secondary text-secondary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
-                  {cartCount}
-                </span>
-              )}
-            </Button>
+            <CartDrawer />
             <Button
               variant="ghost"
               size="icon"

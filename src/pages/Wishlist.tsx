@@ -1,32 +1,29 @@
+import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProductCard } from "@/components/product/ProductCard";
-import { Heart } from "lucide-react";
+import { Heart, Loader2 } from "lucide-react";
+import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
+import { Button } from "@/components/ui/button";
 
 const Wishlist = () => {
-  const wishlistItems = [
-    {
-      id: "1",
-      name: "Premium Stainless Steel Cookware Set",
-      price: 129.99,
-      originalPrice: 199.99,
-      rating: 4.5,
-      reviewCount: 342,
-      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop",
-      badge: "sale" as const,
-      category: "Kitchen",
-    },
-    {
-      id: "3",
-      name: "Organic Skincare Set",
-      price: 49.99,
-      rating: 4.6,
-      reviewCount: 287,
-      image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=400&fit=crop",
-      badge: "new" as const,
-      category: "Beauty",
-    },
-  ];
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await fetchProducts(4);
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -39,14 +36,18 @@ const Wishlist = () => {
             <h1 className="text-3xl font-bold">My Wishlist</h1>
           </div>
 
-          {wishlistItems.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : products.length > 0 ? (
             <>
               <p className="text-muted-foreground mb-6">
-                {wishlistItems.length} item{wishlistItems.length !== 1 ? 's' : ''} saved
+                {products.length} item{products.length !== 1 ? 's' : ''} saved
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {wishlistItems.map((product) => (
-                  <ProductCard key={product.id} {...product} />
+                {products.map((product) => (
+                  <ProductCard key={product.node.id} product={product} />
                 ))}
               </div>
             </>
@@ -57,6 +58,9 @@ const Wishlist = () => {
               <p className="text-muted-foreground mb-8">
                 Save items you love by clicking the heart icon on any product
               </p>
+              <Button asChild>
+                <a href="/">Browse Products</a>
+              </Button>
             </div>
           )}
         </div>

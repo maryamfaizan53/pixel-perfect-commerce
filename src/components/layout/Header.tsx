@@ -1,10 +1,19 @@
-import { Search, Menu, User, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search, Menu, User, Heart, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ShoppingCart } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 const categories = [
   { name: "Household", path: "/category/household" },
@@ -17,6 +26,14 @@ const categories = [
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
   const [cartCount] = useState(0);
 
   return (
@@ -65,9 +82,47 @@ export const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
-              <Heart className="w-5 h-5" />
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hidden md:flex">
+                    <User className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link to="/account" className="cursor-pointer">
+                      <User className="w-4 h-4 mr-2" />
+                      Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/wishlist" className="cursor-pointer">
+                      <Heart className="w-4 h-4 mr-2" />
+                      Wishlist
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
+                <Link to="/auth">
+                  <User className="w-5 h-5" />
+                </Link>
+              </Button>
+            )}
+            
+            <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
+              <Link to="/wishlist">
+                <Heart className="w-5 h-5" />
+              </Link>
             </Button>
+            
             <CartDrawer />
             <Button
               variant="ghost"

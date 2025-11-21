@@ -1,7 +1,6 @@
 import { Search, Menu, User, Heart, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ShoppingCart } from "lucide-react";
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { SearchBar } from "@/components/search/SearchBar";
 
 const categories = [
   { name: "Household", path: "/category/household" },
@@ -65,19 +65,7 @@ export const Header = () => {
 
           {/* Search bar - Desktop */}
           <div className="hidden md:flex flex-1 max-w-2xl">
-            <div className="relative w-full">
-              <Input
-                type="search"
-                placeholder="Search for products..."
-                className="w-full pr-12 h-12 border-2 border-input focus:border-primary"
-              />
-              <Button
-                size="icon"
-                className="absolute right-0 top-0 h-12 w-12 rounded-l-none bg-secondary hover:bg-secondary-hover"
-              >
-                <Search className="w-5 h-5" />
-              </Button>
-            </div>
+            <SearchBar />
           </div>
 
           {/* Actions */}
@@ -137,16 +125,7 @@ export const Header = () => {
 
         {/* Search bar - Mobile */}
         <div className="md:hidden pb-3">
-          <div className="relative w-full">
-            <Input
-              type="search"
-              placeholder="Search products..."
-              className="w-full pr-12 h-10 border-2 border-input focus:border-primary"
-            />
-            <Button size="icon" className="absolute right-0 top-0 h-10 w-10 rounded-l-none bg-secondary hover:bg-secondary-hover">
-              <Search className="w-4 h-4" />
-            </Button>
-          </div>
+          <SearchBar />
         </div>
 
         {/* Categories navigation */}

@@ -1,0 +1,123 @@
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { Search, Loader2 } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
+import { debounce } from "@/lib/utils";
+
+export const SearchBar = () => {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await fetchProducts(50);
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const filterProducts = useCallback(
+    debounce((query: string) => {
+      if (!query.trim()) {
+        setFilteredProducts([]);
+        return;
+      }
+
+      const lowerQuery = query.toLowerCase();
+      const filtered = products.filter(product => {
+        const title = product.node.title.toLowerCase();
+        const description = product.node.description?.toLowerCase() || "";
+        return title.includes(lowerQuery) || description.includes(lowerQuery);
+      }).slice(0, 8);
+
+      setFilteredProducts(filtered);
+      setLoading(false);
+    }, 300),
+    [products]
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setLoading(true);
+    filterProducts(value);
+  };
+
+  const handleSelectProduct = (productHandle: string) => {
+    setOpen(false);
+    setSearch("");
+    setFilteredProducts([]);
+    navigate(`/product/${productHandle}`);
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={() => setOpen(true)}
+            className="w-full pl-10 pr-4 py-2 bg-muted/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          />
+        </div>
+      </PopoverTrigger>
+      <PopoverContent className="w-[400px] p-0" align="start" side="bottom">
+        <Command shouldFilter={false}>
+          <CommandList>
+            {loading && (
+              <div className="flex items-center justify-center py-6">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              </div>
+            )}
+            {!loading && search && filteredProducts.length === 0 && (
+              <CommandEmpty>No products found.</CommandEmpty>
+            )}
+            {!loading && filteredProducts.length > 0 && (
+              <CommandGroup heading="Products">
+                {filteredProducts.map((product) => (
+                  <CommandItem
+                    key={product.node.id}
+                    value={product.node.handle}
+                    onSelect={() => handleSelectProduct(product.node.handle)}
+                    className="flex items-center gap-3 p-3 cursor-pointer"
+                  >
+                    <div className="w-12 h-12 flex-shrink-0 bg-muted rounded overflow-hidden">
+                      {product.node.images?.edges?.[0]?.node && (
+                        <img
+                          src={product.node.images.edges[0].node.url}
+                          alt={product.node.title}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{product.node.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {product.node.priceRange.minVariantPrice.currencyCode}{" "}
+                        {parseFloat(product.node.priceRange.minVariantPrice.amount).toFixed(2)}
+                      </p>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+};

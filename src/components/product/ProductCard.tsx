@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
+import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "sonner";
 
 interface ProductCardProps {
@@ -13,12 +14,14 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, badge }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
+  const { isInWishlist, toggleWishlist, loading: wishlistLoading } = useWishlist();
   const { node } = product;
   
   const price = parseFloat(node.priceRange.minVariantPrice.amount);
   const currencyCode = node.priceRange.minVariantPrice.currencyCode;
   const image = node.images.edges[0]?.node.url || "/placeholder.svg";
   const defaultVariant = node.variants.edges[0]?.node;
+  const inWishlist = isInWishlist(node.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -42,6 +45,12 @@ export const ProductCard = ({ product, badge }: ProductCardProps) => {
     toast.success("Added to cart", {
       description: node.title,
     });
+  };
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(node.id, node.handle);
   };
 
   return (
@@ -75,9 +84,13 @@ export const ProductCard = ({ product, badge }: ProductCardProps) => {
         <Button
           size="icon"
           variant="outline"
-          className="absolute top-2 right-2 bg-background hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={handleToggleWishlist}
+          disabled={wishlistLoading}
+          className={`absolute top-2 right-2 bg-background hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity ${
+            inWishlist ? "opacity-100" : ""
+          }`}
         >
-          <Heart className="w-4 h-4" />
+          <Heart className={`w-4 h-4 ${inWishlist ? "fill-destructive text-destructive" : ""}`} />
         </Button>
 
         <Button

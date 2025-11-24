@@ -7,7 +7,8 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SlidersHorizontal, Loader2 } from "lucide-react";
+import { SlidersHorizontal, Loader2, Search, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
 
 const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
@@ -36,6 +37,7 @@ const CategoryPage = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [sortBy, setSortBy] = useState("featured");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -75,7 +77,13 @@ const CategoryPage = () => {
     const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
     const matchesStock = !inStockOnly || product.node.variants.edges.some(v => v.node.availableForSale);
     
-    return matchesPrice && matchesStock;
+    // Search filter
+    const searchLower = searchQuery.toLowerCase().trim();
+    const matchesSearch = !searchLower || 
+      product.node.title.toLowerCase().includes(searchLower) ||
+      product.node.description.toLowerCase().includes(searchLower);
+    
+    return matchesPrice && matchesStock && matchesSearch;
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -114,35 +122,58 @@ const CategoryPage = () => {
           </nav>
 
           {/* Page Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Kitchen Essentials</h1>
-              <p className="text-muted-foreground">Showing {sortedProducts.length} of {products.length} products</p>
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">Kitchen Essentials</h1>
+                <p className="text-muted-foreground">Showing {sortedProducts.length} of {products.length} products</p>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  className="lg:hidden"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Filters
+                </Button>
+
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="featured">Featured</SelectItem>
+                    <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                    <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                    <SelectItem value="newest">Newest Arrivals</SelectItem>
+                    <SelectItem value="title-asc">Name: A to Z</SelectItem>
+                    <SelectItem value="title-desc">Name: Z to A</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                className="lg:hidden"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <SlidersHorizontal className="w-4 h-4 mr-2" />
-                Filters
-              </Button>
-
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="featured">Featured</SelectItem>
-                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="newest">Newest Arrivals</SelectItem>
-                  <SelectItem value="title-asc">Name: A to Z</SelectItem>
-                  <SelectItem value="title-desc">Name: Z to A</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Search Bar */}
+            <div className="relative max-w-2xl">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search products by name or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 h-12 text-base"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
             </div>
           </div>
 

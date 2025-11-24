@@ -35,6 +35,7 @@ const CategoryPage = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [onSaleOnly, setOnSaleOnly] = useState(false);
+  const [sortBy, setSortBy] = useState("featured");
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -77,6 +78,28 @@ const CategoryPage = () => {
     return matchesPrice && matchesStock;
   });
 
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = parseFloat(a.node.priceRange.minVariantPrice.amount);
+    const priceB = parseFloat(b.node.priceRange.minVariantPrice.amount);
+
+    switch (sortBy) {
+      case "price-asc":
+        return priceA - priceB;
+      case "price-desc":
+        return priceB - priceA;
+      case "newest":
+        // Sort by ID (newer products typically have higher IDs)
+        return b.node.id.localeCompare(a.node.id);
+      case "title-asc":
+        return a.node.title.localeCompare(b.node.title);
+      case "title-desc":
+        return b.node.title.localeCompare(a.node.title);
+      case "featured":
+      default:
+        return 0; // Keep original order
+    }
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -94,7 +117,7 @@ const CategoryPage = () => {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold mb-2">Kitchen Essentials</h1>
-              <p className="text-muted-foreground">Showing {filteredProducts.length} of {products.length} products</p>
+              <p className="text-muted-foreground">Showing {sortedProducts.length} of {products.length} products</p>
             </div>
 
             <div className="flex items-center gap-4">
@@ -107,7 +130,7 @@ const CategoryPage = () => {
                 Filters
               </Button>
 
-              <Select defaultValue="featured">
+              <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
@@ -115,8 +138,9 @@ const CategoryPage = () => {
                   <SelectItem value="featured">Featured</SelectItem>
                   <SelectItem value="price-asc">Price: Low to High</SelectItem>
                   <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="rating">Customer Rating</SelectItem>
                   <SelectItem value="newest">Newest Arrivals</SelectItem>
+                  <SelectItem value="title-asc">Name: A to Z</SelectItem>
+                  <SelectItem value="title-desc">Name: Z to A</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -247,7 +271,7 @@ const CategoryPage = () => {
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />
                 </div>
-              ) : filteredProducts.length === 0 ? (
+              ) : sortedProducts.length === 0 ? (
                 <div className="text-center py-12">
                   <h2 className="text-2xl font-bold mb-4">No Products Found</h2>
                   <p className="text-muted-foreground">
@@ -260,7 +284,7 @@ const CategoryPage = () => {
               ) : (
                 <>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredProducts.map((product) => (
+                    {sortedProducts.map((product) => (
                       <ProductCard key={product.node.id} product={product} />
                     ))}
                   </div>

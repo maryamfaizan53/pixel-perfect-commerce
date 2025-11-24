@@ -6,13 +6,15 @@ import { ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "sonner";
+import { HighlightText } from "@/components/ui/highlight-text";
 
 interface ProductCardProps {
   product: ShopifyProduct;
   badge?: "sale" | "new" | "bestseller";
+  searchQuery?: string;
 }
 
-export const ProductCard = ({ product, badge }: ProductCardProps) => {
+export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const { isInWishlist, toggleWishlist, loading: wishlistLoading } = useWishlist();
   const { node } = product;
@@ -106,9 +108,15 @@ export const ProductCard = ({ product, badge }: ProductCardProps) => {
       <div className="p-4">
         <Link to={`/product/${node.handle}`}>
           <h3 className="font-semibold text-foreground mb-2 line-clamp-2 hover:text-primary transition-colors">
-            {node.title}
+            <HighlightText text={node.title} highlight={searchQuery} />
           </h3>
         </Link>
+
+        {searchQuery && node.description && (
+          <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+            <HighlightText text={node.description} highlight={searchQuery} />
+          </p>
+        )}
 
         <div className="flex items-baseline gap-2">
           <span className="price-current">{currencyCode} ${price.toFixed(2)}</span>

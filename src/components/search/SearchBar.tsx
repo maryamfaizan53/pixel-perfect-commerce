@@ -1,10 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Loader2 } from "lucide-react";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Search, Loader2, Clock, X } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
 import { debounce } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+const SEARCH_HISTORY_KEY = "product-search-history";
+const MAX_HISTORY_ITEMS = 5;
 
 export const SearchBar = () => {
   const [open, setOpen] = useState(false);
@@ -12,7 +16,16 @@ export const SearchBar = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  // Load search history from localStorage
+  useEffect(() => {
+    const history = localStorage.getItem(SEARCH_HISTORY_KEY);
+    if (history) {
+      setSearchHistory(JSON.parse(history));
+    }
+  }, []);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -53,11 +66,42 @@ export const SearchBar = () => {
     filterProducts(value);
   };
 
+  const saveSearchToHistory = (query: string) => {
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery || trimmedQuery.length < 2) return;
+
+    const updatedHistory = [
+      trimmedQuery,
+      ...searchHistory.filter(item => item.toLowerCase() !== trimmedQuery.toLowerCase())
+    ].slice(0, MAX_HISTORY_ITEMS);
+
+    setSearchHistory(updatedHistory);
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(updatedHistory));
+  };
+
   const handleSelectProduct = (productHandle: string) => {
+    saveSearchToHistory(search);
     setOpen(false);
     setSearch("");
     setFilteredProducts([]);
     navigate(`/product/${productHandle}`);
+  };
+
+  const handleSelectHistoryItem = (query: string) => {
+    setSearch(query);
+    handleSearchChange(query);
+  };
+
+  const clearHistory = () => {
+    setSearchHistory([]);
+    localStorage.removeItem(SEARCH_HISTORY_KEY);
+  };
+
+  const removeHistoryItem = (query: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updatedHistory = searchHistory.filter(item => item !== query);
+    setSearchHistory(updatedHistory);
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(updatedHistory));
   };
 
   return (
@@ -83,9 +127,48 @@ export const SearchBar = () => {
                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
               </div>
             )}
+            
+            {!loading && !search && searchHistory.length > 0 && (
+              <>
+                <CommandGroup heading="Recent Searches">
+                  {searchHistory.map((query, index) => (
+                    <CommandItem
+                      key={index}
+                      value={query}
+                      onSelect={() => handleSelectHistoryItem(query)}
+                      className="flex items-center gap-3 p-3 cursor-pointer"
+                    >
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="flex-1">{query}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={(e) => removeHistoryItem(query, e)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                <CommandSeparator />
+                <div className="p-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearHistory}
+                    className="w-full text-muted-foreground hover:text-foreground"
+                  >
+                    Clear History
+                  </Button>
+                </div>
+              </>
+            )}
+            
             {!loading && search && filteredProducts.length === 0 && (
               <CommandEmpty>No products found.</CommandEmpty>
             )}
+            
             {!loading && filteredProducts.length > 0 && (
               <CommandGroup heading="Products">
                 {filteredProducts.map((product) => (

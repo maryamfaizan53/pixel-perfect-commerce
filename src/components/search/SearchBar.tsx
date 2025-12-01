@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Loader2, Clock, X } from "lucide-react";
+import { Search, Loader2, Clock, X, Mic, MicOff } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
 import { debounce } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const SEARCH_HISTORY_KEY = "product-search-history";
 const MAX_HISTORY_ITEMS = 5;
@@ -17,6 +18,8 @@ export const SearchBar = () => {
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const navigate = useNavigate();
 
   // Load search history from localStorage
@@ -25,6 +28,40 @@ export const SearchBar = () => {
     if (history) {
       setSearchHistory(JSON.parse(history));
     }
+  }, []);
+
+  // Initialize Speech Recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setSearch(transcript);
+        handleSearchChange(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        toast.error('Voice search failed. Please try again.');
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -104,6 +141,22 @@ export const SearchBar = () => {
     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(updatedHistory));
   };
 
+  const toggleVoiceSearch = () => {
+    if (!recognitionRef.current) {
+      toast.error('Voice search is not supported in your browser.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setIsListening(true);
+      recognitionRef.current.start();
+      toast.info('Listening... Speak now');
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -115,8 +168,17 @@ export const SearchBar = () => {
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={() => setOpen(true)}
-            className="w-full pl-10 pr-4 py-2 bg-muted/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            className="w-full pl-10 pr-16 py-2 bg-muted/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleVoiceSearch}
+            className={`absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 ${isListening ? 'text-primary animate-pulse' : 'text-muted-foreground hover:text-foreground'}`}
+            type="button"
+          >
+            {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+          </Button>
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-[400px] p-0" align="start" side="bottom">

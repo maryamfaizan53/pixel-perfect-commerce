@@ -10,6 +10,22 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { z } from "zod";
+
+const signInSchema = z.object({
+  email: z.string().trim().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters")
+});
+
+const signUpSchema = z.object({
+  email: z.string().trim().email("Please enter a valid email address"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number"),
+  fullName: z.string().trim().max(100, "Name must be less than 100 characters").optional()
+});
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -39,20 +55,21 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      const validatedData = signUpSchema.parse({
         email,
         password,
+        fullName
+      });
+
+      setLoading(true);
+      const { error } = await supabase.auth.signUp({
+        email: validatedData.email,
+        password: validatedData.password,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
-            full_name: fullName || email.split('@')[0]
+            full_name: validatedData.fullName || validatedData.email.split('@')[0]
           }
         }
       });
@@ -63,9 +80,15 @@ const Auth = () => {
         description: "You can now log in with your credentials"
       });
     } catch (error: any) {
-      toast.error("Sign up failed", {
-        description: error.message
-      });
+      if (error instanceof z.ZodError) {
+        toast.error("Validation error", {
+          description: error.errors[0].message
+        });
+      } else {
+        toast.error("Sign up failed", {
+          description: error.message
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -74,25 +97,31 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const validatedData = signInSchema.parse({
         email,
-        password,
+        password
+      });
+
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: validatedData.email,
+        password: validatedData.password,
       });
 
       if (error) throw error;
 
       toast.success("Welcome back!");
     } catch (error: any) {
-      toast.error("Login failed", {
-        description: error.message
-      });
+      if (error instanceof z.ZodError) {
+        toast.error("Validation error", {
+          description: error.errors[0].message
+        });
+      } else {
+        toast.error("Login failed", {
+          description: error.message
+        });
+      }
     } finally {
       setLoading(false);
     }

@@ -5,6 +5,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Package, MapPin, Truck, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const trackOrderSchema = z.object({
+  orderNumber: z.string()
+    .trim()
+    .min(5, "Order number must be at least 5 characters")
+    .max(50, "Order number must be less than 50 characters")
+    .regex(/^[A-Z0-9-]+$/i, "Order number can only contain letters, numbers, and hyphens"),
+  email: z.string().trim().email("Please enter a valid email address")
+});
 
 const TrackOrder = () => {
   const [orderNumber, setOrderNumber] = useState("");
@@ -13,7 +24,22 @@ const TrackOrder = () => {
 
   const handleTrack = (e: React.FormEvent) => {
     e.preventDefault();
-    setTracking(true);
+    
+    try {
+      const validatedData = trackOrderSchema.parse({
+        orderNumber,
+        email
+      });
+      
+      setTracking(true);
+      console.log("Tracking order:", validatedData);
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error("Validation error", {
+          description: error.errors[0].message
+        });
+      }
+    }
   };
 
   const trackingSteps = [
@@ -71,7 +97,7 @@ const TrackOrder = () => {
             <div className="bg-card border border-border rounded-lg p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-xl font-bold">Order #ORD-2024-1001</h2>
+                  <h2 className="text-xl font-bold">Order #{orderNumber}</h2>
                   <p className="text-muted-foreground">Estimated delivery: Jan 20, 2024</p>
                 </div>
                 <Truck className="w-8 h-8 text-primary" />

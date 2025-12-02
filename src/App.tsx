@@ -11,6 +11,7 @@ import ProductPage from "./pages/ProductPage";
 import CategoryPage from "./pages/CategoryPage";
 import CartPage from "./pages/CartPage";
 import Account from "./pages/Account";
+import OrderDetails from "./pages/OrderDetails";
 import Wishlist from "./pages/Wishlist";
 import Auth from "./pages/Auth";
 import Help from "./pages/Help";
@@ -39,9 +40,10 @@ const App = () => (
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/product/:handle" element={<ProductPage />} />
             <Route path="/category/:category" element={<CategoryPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="/orders/:orderId" element={<OrderDetails />} />
+              <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/help" element={<Help />} />
             <Route path="/track-order" element={<TrackOrder />} />
             <Route path="/returns" element={<Returns />} />

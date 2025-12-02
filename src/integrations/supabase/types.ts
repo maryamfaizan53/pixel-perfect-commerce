@@ -14,6 +14,151 @@ export type Database = {
   }
   public: {
     Tables: {
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          order_id: string
+          price: number
+          product_title: string
+          quantity: number
+          shopify_product_id: string
+          shopify_variant_id: string
+          total: number
+          variant_title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          order_id: string
+          price: number
+          product_title: string
+          quantity: number
+          shopify_product_id: string
+          shopify_variant_id: string
+          total: number
+          variant_title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          order_id?: string
+          price?: number
+          product_title?: string
+          quantity?: number
+          shopify_product_id?: string
+          shopify_variant_id?: string
+          total?: number
+          variant_title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_status_history: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          billing_address: Json | null
+          created_at: string
+          currency_code: string
+          customer_name: string | null
+          email: string
+          financial_status: string | null
+          fulfillment_status: string | null
+          id: string
+          shipping_address: Json | null
+          shopify_order_id: string
+          shopify_order_number: string
+          status: Database["public"]["Enums"]["order_status"]
+          subtotal_price: number
+          total_price: number
+          total_shipping: number | null
+          total_tax: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          billing_address?: Json | null
+          created_at?: string
+          currency_code?: string
+          customer_name?: string | null
+          email: string
+          financial_status?: string | null
+          fulfillment_status?: string | null
+          id?: string
+          shipping_address?: Json | null
+          shopify_order_id: string
+          shopify_order_number: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal_price: number
+          total_price: number
+          total_shipping?: number | null
+          total_tax?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          billing_address?: Json | null
+          created_at?: string
+          currency_code?: string
+          customer_name?: string | null
+          email?: string
+          financial_status?: string | null
+          fulfillment_status?: string | null
+          id?: string
+          shipping_address?: Json | null
+          shopify_order_id?: string
+          shopify_order_number?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal_price?: number
+          total_price?: number
+          total_shipping?: number | null
+          total_tax?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -81,7 +226,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      order_status:
+        | "pending"
+        | "confirmed"
+        | "processing"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
+        | "refunded"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -208,6 +360,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      order_status: [
+        "pending",
+        "confirmed",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded",
+      ],
+    },
   },
 } as const

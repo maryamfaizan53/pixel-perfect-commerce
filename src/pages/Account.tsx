@@ -5,9 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Package, MapPin, CreditCard, Settings, Heart } from "lucide-react";
+import { Package, MapPin, CreditCard, Settings, Heart, Loader2 } from "lucide-react";
+import { useOrders } from "@/hooks/useOrders";
+import { OrderCard } from "@/components/orders/OrderCard";
 
 const Account = () => {
+  const { orders, loading: ordersLoading } = useOrders();
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -41,28 +44,26 @@ const Account = () => {
             </TabsList>
 
             <TabsContent value="orders" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Orders</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[1, 2, 3].map((order) => (
-                      <div key={order} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                        <div className="flex-1">
-                          <p className="font-semibold">Order #ORD-2024-{1000 + order}</p>
-                          <p className="text-sm text-muted-foreground">Placed on Jan {15 + order}, 2024</p>
-                          <p className="text-sm text-accent font-medium mt-1">Delivered</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold">${129.99 + order * 10}</p>
-                          <Button variant="outline" size="sm" className="mt-2">View Details</Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              {ordersLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : orders.length === 0 ? (
+                <Card>
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <Package className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">No orders yet</h3>
+                    <p className="text-muted-foreground text-center mb-4">
+                      When you make a purchase, your orders will appear here.
+                    </p>
+                    <Button onClick={() => window.location.href = "/"}>
+                      Start Shopping
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                orders.map((order) => <OrderCard key={order.id} order={order} />)
+              )}
             </TabsContent>
 
             <TabsContent value="addresses" className="space-y-4">

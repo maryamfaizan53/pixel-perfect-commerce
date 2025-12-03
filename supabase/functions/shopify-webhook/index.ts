@@ -155,6 +155,41 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Send order confirmation email
+    try {
+      const emailPayload = {
+        type: "confirmation",
+        email: orderData.email,
+        customerName: orderRecord.customer_name || "Customer",
+        orderNumber: orderRecord.shopify_order_number,
+        items: orderData.line_items?.map((item: any) => ({
+          title: item.title,
+          quantity: item.quantity,
+          price: parseFloat(item.price || "0"),
+        })) || [],
+        totalPrice: orderRecord.total_price,
+        currencyCode: orderRecord.currency_code,
+        shippingAddress: orderData.shipping_address,
+      };
+
+      const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-order-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseServiceKey}`,
+        },
+        body: JSON.stringify(emailPayload),
+      });
+
+      if (!emailResponse.ok) {
+        console.error("Failed to send confirmation email:", await emailResponse.text());
+      } else {
+        console.log("Confirmation email sent successfully");
+      }
+    } catch (emailError) {
+      console.error("Error sending confirmation email:", emailError);
+    }
+
     return new Response(JSON.stringify({ success: true, orderId: newOrder.id }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

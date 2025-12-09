@@ -1,16 +1,71 @@
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Package, MapPin, CreditCard, Settings, Heart, Loader2 } from "lucide-react";
+import { Package, MapPin, Heart, Settings, User, Loader2 } from "lucide-react";
 import { useOrders } from "@/hooks/useOrders";
+import { useAuth } from "@/hooks/useAuth";
+import { useWishlist } from "@/hooks/useWishlist";
 import { OrderCard } from "@/components/orders/OrderCard";
+import { ProfileSettings } from "@/components/account/ProfileSettings";
+import { AddressManager } from "@/components/account/AddressManager";
+import { AccountSettings } from "@/components/account/AccountSettings";
+import { ProductCard } from "@/components/product/ProductCard";
+import { fetchProductByHandle, ShopifyProduct } from "@/lib/shopify";
 
 const Account = () => {
+  const { user, loading: authLoading } = useAuth();
   const { orders, loading: ordersLoading } = useOrders();
+  const { wishlistItems, loading: wishlistLoading } = useWishlist();
+  const [wishlistProducts, setWishlistProducts] = useState<ShopifyProduct[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const navigate = useNavigate();
+
+  // Fetch products for wishlist items
+  useEffect(() => {
+    const fetchWishlistProducts = async () => {
+      if (wishlistItems.length === 0) {
+        setWishlistProducts([]);
+        return;
+      }
+
+      setLoadingProducts(true);
+      try {
+        const products = await Promise.all(
+          wishlistItems.map(item => fetchProductByHandle(item.product_handle))
+        );
+        setWishlistProducts(products.filter((p): p is ShopifyProduct => p !== null));
+      } catch (error) {
+        console.error("Error fetching wishlist products:", error);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    fetchWishlistProducts();
+  }, [wishlistItems]);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -19,8 +74,12 @@ const Account = () => {
         <div className="container-custom">
           <h1 className="text-3xl font-bold mb-8">My Account</h1>
 
-          <Tabs defaultValue="orders" className="space-y-6">
+          <Tabs defaultValue="profile" className="space-y-6">
             <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+              <TabsTrigger value="profile">
+                <User className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Profile</span>
+              </TabsTrigger>
               <TabsTrigger value="orders">
                 <Package className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Orders</span>
@@ -28,10 +87,6 @@ const Account = () => {
               <TabsTrigger value="addresses">
                 <MapPin className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Addresses</span>
-              </TabsTrigger>
-              <TabsTrigger value="payment">
-                <CreditCard className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Payment</span>
               </TabsTrigger>
               <TabsTrigger value="wishlist">
                 <Heart className="w-4 h-4 mr-2" />
@@ -42,6 +97,10 @@ const Account = () => {
                 <span className="hidden sm:inline">Settings</span>
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="profile">
+              <ProfileSettings />
+            </TabsContent>
 
             <TabsContent value="orders" className="space-y-4">
               {ordersLoading ? (
@@ -56,8 +115,8 @@ const Account = () => {
                     <p className="text-muted-foreground text-center mb-4">
                       When you make a purchase, your orders will appear here.
                     </p>
-                    <Button onClick={() => window.location.href = "/"}>
-                      Start Shopping
+                    <Button asChild>
+                      <Link to="/">Start Shopping</Link>
                     </Button>
                   </CardContent>
                 </Card>
@@ -66,89 +125,39 @@ const Account = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="addresses" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Saved Addresses</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="p-4 border border-border rounded-lg">
-                      <p className="font-semibold mb-2">Home Address</p>
-                      <p className="text-sm text-muted-foreground">123 Main Street</p>
-                      <p className="text-sm text-muted-foreground">New York, NY 10001</p>
-                      <p className="text-sm text-muted-foreground">United States</p>
-                      <div className="flex gap-2 mt-4">
-                        <Button variant="outline" size="sm">Edit</Button>
-                        <Button variant="outline" size="sm">Remove</Button>
-                      </div>
-                    </div>
-                    <div className="p-4 border border-dashed border-border rounded-lg flex items-center justify-center">
-                      <Button variant="outline">+ Add New Address</Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="payment" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Payment Methods</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="p-4 border border-border rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="font-semibold">Visa ending in 4242</p>
-                        <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">Default</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">Expires 12/2025</p>
-                      <div className="flex gap-2 mt-4">
-                        <Button variant="outline" size="sm">Edit</Button>
-                        <Button variant="outline" size="sm">Remove</Button>
-                      </div>
-                    </div>
-                    <div className="p-4 border border-dashed border-border rounded-lg flex items-center justify-center">
-                      <Button variant="outline">+ Add Payment Method</Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <TabsContent value="addresses">
+              <AddressManager />
             </TabsContent>
 
             <TabsContent value="wishlist" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>My Wishlist</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground text-center py-8">Your wishlist is empty. Start adding products you love!</p>
-                </CardContent>
-              </Card>
+              {wishlistLoading || loadingProducts ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : wishlistProducts.length === 0 ? (
+                <Card>
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <Heart className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Your wishlist is empty</h3>
+                    <p className="text-muted-foreground text-center mb-4">
+                      Start adding products you love!
+                    </p>
+                    <Button asChild>
+                      <Link to="/category/all">Browse Products</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {wishlistProducts.map((product) => (
+                    <ProductCard key={product.node.id} product={product} />
+                  ))}
+                </div>
+              )}
             </TabsContent>
 
-            <TabsContent value="settings" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Account Settings</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" defaultValue="John Doe" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" defaultValue="john@example.com" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" type="tel" defaultValue="+1 (555) 123-4567" />
-                  </div>
-                  <Button className="bg-secondary hover:bg-secondary-hover">Save Changes</Button>
-                </CardContent>
-              </Card>
+            <TabsContent value="settings">
+              <AccountSettings />
             </TabsContent>
           </Tabs>
         </div>

@@ -105,6 +105,55 @@ export const STOREFRONT_PRODUCTS_QUERY = `
   }
 `;
 
+export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
+  query GetProductByHandle($handle: String!) {
+    productByHandle(handle: $handle) {
+      id
+      title
+      description
+      handle
+      availableForSale
+      totalInventory
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      images(first: 5) {
+        edges {
+          node {
+            url
+            altText
+          }
+        }
+      }
+      variants(first: 10) {
+        edges {
+          node {
+            id
+            title
+            price {
+              amount
+              currencyCode
+            }
+            availableForSale
+            quantityAvailable
+            selectedOptions {
+              name
+              value
+            }
+          }
+        }
+      }
+      options {
+        name
+        values
+      }
+    }
+  }
+`;
+
 export const CART_CREATE_MUTATION = `
   mutation cartCreate($input: CartInput!) {
     cartCreate(input: $input) {
@@ -185,6 +234,17 @@ export async function storefrontApiRequest(query: string, variables: any = {}) {
 export async function fetchProducts(first: number = 20, query?: string): Promise<ShopifyProduct[]> {
   const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first, query });
   return data.data.products.edges;
+}
+
+export async function fetchProductByHandle(handle: string): Promise<ShopifyProduct | null> {
+  try {
+    const data = await storefrontApiRequest(STOREFRONT_PRODUCT_BY_HANDLE_QUERY, { handle });
+    if (!data.data.productByHandle) return null;
+    return { node: data.data.productByHandle };
+  } catch (error) {
+    console.error("Error fetching product by handle:", error);
+    return null;
+  }
 }
 
 export interface CartItem {

@@ -11,6 +11,8 @@ export interface ShopifyProduct {
     title: string;
     description: string;
     handle: string;
+    availableForSale: boolean;
+    totalInventory: number;
     priceRange: {
       minVariantPrice: {
         amount: string;
@@ -35,6 +37,7 @@ export interface ShopifyProduct {
             currencyCode: string;
           };
           availableForSale: boolean;
+          quantityAvailable: number;
           selectedOptions: Array<{
             name: string;
             value: string;
@@ -58,6 +61,8 @@ export const STOREFRONT_PRODUCTS_QUERY = `
           title
           description
           handle
+          availableForSale
+          totalInventory
           priceRange {
             minVariantPrice {
               amount
@@ -82,6 +87,7 @@ export const STOREFRONT_PRODUCTS_QUERY = `
                   currencyCode
                 }
                 availableForSale
+                quantityAvailable
                 selectedOptions {
                   name
                   value

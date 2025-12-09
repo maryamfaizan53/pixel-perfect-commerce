@@ -1,4 +1,4 @@
-import { ShoppingCart, Heart } from "lucide-react";
+import { ShoppingCart, Heart, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,8 @@ import { useCartStore } from "@/stores/cartStore";
 import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "sonner";
 import { HighlightText } from "@/components/ui/highlight-text";
+
+const LOW_STOCK_THRESHOLD = 5;
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -24,10 +26,18 @@ export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardPro
   const image = node.images.edges[0]?.node.url || "/placeholder.svg";
   const defaultVariant = node.variants.edges[0]?.node;
   const inWishlist = isInWishlist(node.id);
+  
+  const isOutOfStock = !node.availableForSale;
+  const isLowStock = node.availableForSale && node.totalInventory > 0 && node.totalInventory <= LOW_STOCK_THRESHOLD;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (isOutOfStock) {
+      toast.error("This product is out of stock");
+      return;
+    }
     
     if (!defaultVariant) {
       toast.error("Product variant not available");
@@ -56,18 +66,25 @@ export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardPro
   };
 
   return (
-    <div className="group bg-card border border-border rounded-lg overflow-hidden product-card">
+    <div className={`group bg-card border border-border rounded-lg overflow-hidden product-card ${isOutOfStock ? 'opacity-75' : ''}`}>
       <div className="relative aspect-square overflow-hidden bg-muted">
         <Link to={`/product/${node.handle}`}>
           <img
             src={image}
             alt={node.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className={`w-full h-full object-cover transition-transform duration-300 ${isOutOfStock ? 'grayscale' : 'group-hover:scale-105'}`}
             loading="lazy"
           />
+          {isOutOfStock && (
+            <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+              <Badge variant="destructive" className="text-sm font-semibold">
+                Out of Stock
+              </Badge>
+            </div>
+          )}
         </Link>
 
-        {badge && (
+        {!isOutOfStock && badge && (
           <Badge
             className={`absolute top-2 left-2 ${
               badge === "sale"
@@ -80,6 +97,13 @@ export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardPro
             {badge === "sale" && "Sale"}
             {badge === "new" && "New"}
             {badge === "bestseller" && "Best Seller"}
+          </Badge>
+        )}
+        
+        {!isOutOfStock && isLowStock && (
+          <Badge className="absolute top-2 left-2 bg-amber-500 hover:bg-amber-600 text-white">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            Only {node.totalInventory} left
           </Badge>
         )}
 
@@ -95,14 +119,16 @@ export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardPro
           <Heart className={`w-4 h-4 ${inWishlist ? "fill-destructive text-destructive" : ""}`} />
         </Button>
 
-        <Button
-          size="sm"
-          onClick={handleAddToCart}
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-secondary hover:bg-secondary-hover"
-        >
-          <ShoppingCart className="w-4 h-4 mr-2" />
-          Add to Cart
-        </Button>
+        {!isOutOfStock && (
+          <Button
+            size="sm"
+            onClick={handleAddToCart}
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-secondary hover:bg-secondary-hover"
+          >
+            <ShoppingCart className="w-4 h-4 mr-2" />
+            Add to Cart
+          </Button>
+        )}
       </div>
 
       <div className="p-4">

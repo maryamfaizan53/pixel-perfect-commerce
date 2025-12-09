@@ -3,10 +3,13 @@ import { useParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, RotateCcw, Loader2 } from "lucide-react";
+import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, RotateCcw, Loader2, AlertTriangle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { storefrontApiRequest, ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
+
+const LOW_STOCK_THRESHOLD = 5;
 
 const PRODUCT_QUERY = `
   query GetProduct($handle: String!) {
@@ -15,6 +18,8 @@ const PRODUCT_QUERY = `
       title
       description
       handle
+      availableForSale
+      totalInventory
       priceRange {
         minVariantPrice {
           amount
@@ -39,6 +44,7 @@ const PRODUCT_QUERY = `
               currencyCode
             }
             availableForSale
+            quantityAvailable
             selectedOptions {
               name
               value
@@ -130,6 +136,8 @@ const ProductPage = () => {
 
   const price = parseFloat(selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount);
   const currencyCode = selectedVariant?.price.currencyCode || product.priceRange.minVariantPrice.currencyCode;
+  const isOutOfStock = !product.availableForSale;
+  const isLowStock = product.availableForSale && product.totalInventory > 0 && product.totalInventory <= LOW_STOCK_THRESHOLD;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -168,7 +176,18 @@ const ProductPage = () => {
             </div>
 
             <div>
-              <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+              <div className="flex items-center gap-3 mb-4">
+                <h1 className="text-3xl font-bold">{product.title}</h1>
+                {isOutOfStock && (
+                  <Badge variant="destructive">Out of Stock</Badge>
+                )}
+                {isLowStock && (
+                  <Badge className="bg-amber-500 hover:bg-amber-600 text-white">
+                    <AlertTriangle className="w-3 h-3 mr-1" />
+                    Only {product.totalInventory} left
+                  </Badge>
+                )}
+              </div>
 
               <div className="flex items-baseline gap-3 mb-6">
                 <span className="text-4xl font-bold text-foreground">
@@ -245,9 +264,13 @@ const ProductPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-accent font-medium">
-                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                {selectedVariant?.availableForSale ? 'In Stock - Ships within 24 hours' : 'Currently Unavailable'}
+              <div className={`flex items-center gap-2 font-medium ${isOutOfStock ? 'text-destructive' : isLowStock ? 'text-amber-500' : 'text-accent'}`}>
+                <div className={`w-2 h-2 rounded-full animate-pulse ${isOutOfStock ? 'bg-destructive' : isLowStock ? 'bg-amber-500' : 'bg-accent'}`} />
+                {isOutOfStock 
+                  ? 'Currently Unavailable' 
+                  : isLowStock 
+                    ? `Low Stock - Only ${product.totalInventory} left!` 
+                    : 'In Stock - Ships within 24 hours'}
               </div>
             </div>
           </div>

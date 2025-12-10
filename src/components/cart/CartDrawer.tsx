@@ -92,7 +92,7 @@ export const CartDrawer = () => {
                           <p className="text-sm text-muted-foreground">{item.variantTitle}</p>
                         )}
                         <p className="font-semibold">
-                          {currencyCode} ${parseFloat(item.price.amount).toFixed(2)}
+                          {currencyCode} {parseFloat(item.price.amount).toFixed(2)}
                         </p>
                       </div>
                       
@@ -135,7 +135,7 @@ export const CartDrawer = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold">Total</span>
                   <span className="text-xl font-bold">
-                    {currencyCode} ${totalPrice.toFixed(2)}
+                    {currencyCode} {totalPrice.toFixed(2)}
                   </span>
                 </div>
                 

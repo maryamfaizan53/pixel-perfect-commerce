@@ -30,6 +30,26 @@ interface OrderEmailRequest {
   trackingUrl?: string;
 }
 
+// Verify that the request is coming from an authorized internal source
+function verifyInternalAuth(req: Request): boolean {
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader) {
+    return false;
+  }
+
+  // Extract the token from "Bearer <token>"
+  const token = authHeader.replace("Bearer ", "");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+  // Only allow requests authenticated with the service role key
+  // This ensures only internal edge functions can call this endpoint
+  if (!serviceRoleKey || token !== serviceRoleKey) {
+    return false;
+  }
+
+  return true;
+}
+
 function generateOrderConfirmationEmail(data: OrderEmailRequest): string {
   const itemsHtml = data.items
     .map(
@@ -202,6 +222,15 @@ function generateDeliveredEmail(data: OrderEmailRequest): string {
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // SECURITY: Verify internal authentication
+  if (!verifyInternalAuth(req)) {
+    console.error("Unauthorized request to send-order-email");
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 
   try {

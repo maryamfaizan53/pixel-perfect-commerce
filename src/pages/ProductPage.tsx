@@ -191,7 +191,7 @@ const ProductPage = () => {
 
               <div className="flex items-baseline gap-3 mb-6">
                 <span className="text-4xl font-bold text-foreground">
-                  {currencyCode} ${price.toFixed(2)}
+                  {currencyCode} {price.toFixed(2)}
                 </span>
               </div>
 

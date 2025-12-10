@@ -145,7 +145,7 @@ export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardPro
         )}
 
         <div className="flex items-baseline gap-2">
-          <span className="price-current">{currencyCode} ${price.toFixed(2)}</span>
+          <span className="price-current">{currencyCode} {price.toFixed(2)}</span>
         </div>
       </div>
     </div>

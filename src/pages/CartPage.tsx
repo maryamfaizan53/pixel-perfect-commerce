@@ -124,7 +124,7 @@ const CartPage = () => {
                       </div>
 
                       <p className="text-lg font-bold">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -140,25 +140,25 @@ const CartPage = () => {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">{subtotal.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Shipping</span>
                     <span className="font-medium">
-                      {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+                      {shipping === 0 ? "Free" : shipping.toFixed(2)}
                     </span>
                   </div>
 
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Tax</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
+                    <span className="font-medium">{tax.toFixed(2)}</span>
                   </div>
 
                   <div className="border-t border-border pt-4">
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <span>{total.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -194,7 +194,7 @@ const CartPage = () => {
                 {/* Trust Badge */}
                 {subtotal < 50 && (
                   <p className="text-sm text-center mt-4 text-muted-foreground">
-                    Add ${(50 - subtotal).toFixed(2)} more for free shipping!
+                    Add {(50 - subtotal).toFixed(2)} more for free shipping!
                   </p>
                 )}
               </div>

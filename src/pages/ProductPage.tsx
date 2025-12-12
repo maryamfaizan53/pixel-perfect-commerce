@@ -5,9 +5,13 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, RotateCcw, Loader2, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { storefrontApiRequest, ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
+import { ProductReviews } from "@/components/reviews/ProductReviews";
+import { StarRating } from "@/components/reviews/StarRating";
+import { useReviews } from "@/hooks/useReviews";
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -68,6 +72,10 @@ const ProductPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const addItem = useCartStore(state => state.addItem);
+  
+  // Extract product ID for reviews (remove gid://shopify/Product/ prefix)
+  const productId = product?.id?.replace("gid://shopify/Product/", "") || "";
+  const { stats: reviewStats } = useReviews(productId, handle || "");
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -176,7 +184,7 @@ const ProductPage = () => {
             </div>
 
             <div>
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold">{product.title}</h1>
                 {isOutOfStock && (
                   <Badge variant="destructive">Out of Stock</Badge>
@@ -187,6 +195,16 @@ const ProductPage = () => {
                     Only {product.totalInventory} left
                   </Badge>
                 )}
+              </div>
+
+              {/* Rating Display */}
+              <div className="flex items-center gap-3 mb-4">
+                <StarRating rating={reviewStats.averageRating} size="sm" />
+                <a href="#reviews" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {reviewStats.totalReviews > 0 
+                    ? `${reviewStats.averageRating.toFixed(1)} (${reviewStats.totalReviews} reviews)`
+                    : "No reviews yet"}
+                </a>
               </div>
 
               <div className="flex items-baseline gap-3 mb-6">
@@ -274,6 +292,36 @@ const ProductPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Tabs Section */}
+          <Tabs defaultValue="description" className="mb-12" id="reviews">
+            <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent">
+              <TabsTrigger 
+                value="description" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+              >
+                Description
+              </TabsTrigger>
+              <TabsTrigger 
+                value="reviews" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+              >
+                Reviews ({reviewStats.totalReviews})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="description" className="mt-6">
+              <div className="prose prose-sm max-w-none">
+                <p className="text-muted-foreground whitespace-pre-wrap">
+                  {product.description || "No description available."}
+                </p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="reviews" className="mt-6">
+              <ProductReviews productId={productId} productHandle={handle || ""} />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 

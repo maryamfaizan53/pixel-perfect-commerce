@@ -76,20 +76,23 @@ export const Header = () => {
 
       {/* Main header with glassmorphism */}
       <div
-        className={`container-custom relative z-10 transition-all duration-300 ${scrolled
-          ? "glass mt-2 rounded-2xl mx-4 sm:mx-8 lg:mx-auto"
-          : "bg-background border-b border-border"
+        className={`container-custom relative z-10 transition-all duration-700 ${scrolled
+          ? "glass glass-noise mt-4 rounded-[2rem] mx-4 sm:mx-8 lg:mx-auto shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border-white/20"
+          : "bg-white/80 backdrop-blur-md border-b border-slate-100"
           }`}
       >
-        <div className="flex items-center justify-between h-20 gap-8">
+        <div className="flex items-center justify-between h-20 md:h-24 gap-8 px-6 md:px-10">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
-              <ShoppingCart className="w-5 h-5 text-white" />
+          <Link to="/" className="flex items-center gap-3.5 group">
+            <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+              <ShoppingCart className="w-6 h-6 text-primary" />
             </div>
-            <span className="font-black text-2xl tracking-tighter text-foreground group-hover:text-primary transition-colors">
-              SHOPHUB<span className="text-primary text-4xl leading-[0]">.</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="font-black text-xl md:text-2xl tracking-tighter text-slate-900 leading-none group-hover:text-primary transition-colors">
+                PIXEL<span className="text-primary italic">PERFECT</span>
+              </span>
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-400 mt-1">EMPORIUM</span>
+            </div>
           </Link>
 
           {/* Categories navigation - Desktop */}
@@ -215,7 +218,10 @@ export const Header = () => {
             >
               <div className="p-8 space-y-8">
                 <div className="flex items-center justify-between">
-                  <span className="text-white font-black text-2xl">MENU</span>
+                  <div className="flex flex-col">
+                    <span className="text-white font-black text-2xl tracking-tighter">PIXEL<span className="text-primary italic">PERFECT</span></span>
+                    <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/30">MOBILE PORTAL</span>
+                  </div>
                   <Button variant="ghost" size="icon" className="text-white/60 hover:text-white" onClick={() => setMobileMenuOpen(false)}>
                     <X className="w-6 h-6" />
                   </Button>

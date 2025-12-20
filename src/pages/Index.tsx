@@ -44,107 +44,134 @@ const brands = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-white selection:bg-primary/20">
       <Header />
 
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="container-custom py-12">
+      <main className="flex-1 overflow-x-hidden">
+        {/* Hero Section - High Impact Entrance */}
+        <motion.section
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="container-custom py-12"
+        >
           <HeroCarousel />
-        </section>
+        </motion.section>
 
-        {/* Features Section */}
-        <section className="py-24 relative overflow-hidden">
+        {/* Features Section - Expert Grid */}
+        <section className="py-40 relative">
           <div className="container-custom relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
               {features.map((item, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="premium-card p-10 flex flex-col items-center text-center group"
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ delay: i * 0.1, duration: 0.8 }}
+                  className="group relative"
                 >
-                  <div className={`p-5 rounded-3xl ${item.color} mb-6 group-hover:scale-110 transition-transform duration-500`}>
-                    <item.icon className="w-8 h-8" />
+                  <div className="premium-card p-12 flex flex-col items-center text-center h-full glass-noise border-slate-100 hover:border-primary/20 transition-all duration-700">
+                    <div className={`p-6 rounded-[2rem] ${item.color} mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl`}>
+                      <item.icon className="w-10 h-10" />
+                    </div>
+                    <h3 className="text-2xl font-black mb-4 tracking-tight">{item.title}</h3>
+                    <p className="text-slate-500 font-medium leading-relaxed">{item.desc}</p>
+
+                    {/* Hover Indicator */}
+                    <div className="absolute bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="w-12 h-1 bg-primary rounded-full" />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-black mb-3">{item.title}</h3>
-                  <p className="text-sm font-medium text-muted-foreground">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
           </div>
-        </section>
 
-        {/* Categories Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          <CategoryGrid />
-        </motion.div>
-
-        {/* Featured Products */}
-        <section className="py-24">
-          <FeaturedProducts />
-        </section>
-
-        {/* Brands Section */}
-        <section className="py-24 bg-muted/30">
-          <div className="container-custom">
-            <p className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-12">
-              Trusted by world-class partners
-            </p>
-            <div className="flex flex-wrap justify-center items-center gap-16 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-              {brands.map((brand, i) => (
-                <img key={i} src={brand} alt="Partner Logo" className="h-8 md:h-12 object-contain" />
-              ))}
-            </div>
+          {/* Subtle Background Text */}
+          <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[15vw] font-black text-slate-50/50 select-none pointer-events-none tracking-tighter -z-10 whitespace-nowrap">
+            EXCELLENCE • PRECISION • LUXURY
           </div>
         </section>
 
-        {/* Newsletter / CTA Section */}
-        <section className="py-32 relative overflow-hidden">
-          {/* Animated Background Blob */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
+        {/* Categories Grid - High Fidelity */}
+        <CategoryGrid />
 
+        {/* Featured Products - Curation */}
+        <FeaturedProducts />
+
+        {/* Brands Section - Cinematic Reveal */}
+        <section className="py-32 bg-slate-900 overflow-hidden relative">
           <div className="container-custom relative z-10">
-            <div className="max-w-5xl mx-auto glass rounded-[3rem] p-12 md:p-24 text-center">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-              >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-8">
-                  <Mail className="w-3.5 h-3.5" />
-                  Join the Inner Circle
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="text-center text-[10px] font-black uppercase tracking-[0.5em] text-white/30 mb-20"
+            >
+              Curated by Global Standards
+            </motion.p>
+            <div className="flex flex-wrap justify-center items-center gap-20 md:gap-32">
+              {brands.map((brand, i) => (
+                <motion.img
+                  key={i}
+                  initial={{ opacity: 0, filter: "grayscale(1) brightness(0.5)" }}
+                  whileInView={{ opacity: 0.4, filter: "grayscale(1) brightness(1)" }}
+                  whileHover={{ opacity: 1, filter: "grayscale(0) brightness(1)", scale: 1.1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.8 }}
+                  src={brand}
+                  alt="Partner Logo"
+                  className="h-8 md:h-12 object-contain cursor-pointer transition-all duration-500"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Background Highlight */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-primary/20 blur-[150px] rounded-full pointer-events-none" />
+        </section>
+
+        {/* Newsletter / CTA Section - Masterpiece */}
+        <section className="py-40 relative overflow-hidden bg-white">
+          <div className="container-custom relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="max-w-6xl mx-auto glass-noise glass rounded-[4rem] p-16 md:p-32 text-center relative overflow-hidden group border-slate-100"
+            >
+              {/* Animated Inner Glow */}
+              <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 blur-[100px] rounded-full group-hover:bg-primary/20 transition-colors duration-1000" />
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.4em] mb-10">
+                  <Mail className="w-4 h-4 text-primary" />
+                  Privilege Club
                 </div>
-                <h2 className="text-4xl md:text-6xl font-black mb-8 leading-[1.1] tracking-tighter">
-                  Unlock early access and <br />
-                  <span className="text-primary text-glow">exclusive rewards.</span>
+                <h2 className="text-5xl md:text-8xl font-black mb-10 leading-[0.95] tracking-tighter">
+                  Define Your <br />
+                  <span className="text-primary text-glow underline decoration-slate-900/10 underline-offset-12">Signature Style.</span>
                 </h2>
-                <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-medium">
-                  Be the first to discover our latest collections and member-only events. Simple, elegant, and always personal.
+                <p className="text-xl md:text-2xl text-slate-500 mb-16 max-w-3xl mx-auto font-medium leading-relaxed">
+                  Join the elite circle for early prototype access, bespoke rewards, and private collections.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <div className="flex flex-col md:flex-row gap-6 max-w-2xl mx-auto">
                   <input
                     type="email"
-                    placeholder="Enter your email"
-                    className="flex-1 h-16 px-8 rounded-2xl bg-white border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium"
+                    placeholder="Enter your email identity"
+                    className="flex-1 h-20 px-10 rounded-[2rem] bg-slate-50 border-none focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-lg"
                   />
-                  <Button className="h-16 px-10 rounded-2xl btn-premium text-white font-bold group">
-                    Subscribe
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <Button className="h-20 px-12 rounded-[2rem] btn-premium text-white font-black uppercase tracking-widest text-sm group">
+                    Initialize
+                    <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform" />
                   </Button>
                 </div>
-                <p className="mt-8 text-[11px] text-muted-foreground font-medium italic">
-                  * By subscribing, you agree to our Privacy Policy. Zero spam, just inspiration.
+                <p className="mt-10 text-[11px] text-slate-400 font-black uppercase tracking-[0.3em] opacity-50">
+                  High-Security Encryption • One-Click Unsubscribe
                 </p>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>

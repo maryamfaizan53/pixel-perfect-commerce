@@ -5,6 +5,18 @@ export const SHOPIFY_STORE_PERMANENT_DOMAIN = 'next-shop-apex-c8kgm.myshopify.co
 export const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
 export const SHOPIFY_STOREFRONT_TOKEN = 'afc3b50fa1a47d2ca42338230468d047';
 
+export interface ShopifyCollection {
+  node: {
+    id: string;
+    title: string;
+    handle: string;
+    description: string;
+    image?: {
+      url: string;
+    };
+  };
+}
+
 export interface ShopifyProduct {
   node: {
     id: string;
@@ -98,6 +110,80 @@ export const STOREFRONT_PRODUCTS_QUERY = `
           options {
             name
             values
+          }
+        }
+      }
+    }
+  }
+`;
+export const STOREFRONT_COLLECTIONS_QUERY = `
+  query GetCollections($first: Int!) {
+    collections(first: $first) {
+      edges {
+        node {
+          id
+          title
+          handle
+          description
+          image {
+            url
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
+  query GetProductsByCollection($handle: String!, $first: Int!) {
+    collection(handle: $handle) {
+      title
+      description
+      products(first: $first) {
+        edges {
+          node {
+            id
+            title
+            description
+            handle
+            availableForSale
+            totalInventory
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 5) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  availableForSale
+                  quantityAvailable
+                  selectedOptions {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+            options {
+              name
+              values
+            }
           }
         }
       }
@@ -223,7 +309,7 @@ export async function storefrontApiRequest(query: string, variables: any = {}) {
   }
 
   const data = await response.json();
-  
+
   if (data.errors) {
     throw new Error(`Error calling Shopify: ${data.errors.map((e: any) => e.message).join(', ')}`);
   }
@@ -234,6 +320,26 @@ export async function storefrontApiRequest(query: string, variables: any = {}) {
 export async function fetchProducts(first: number = 20, query?: string): Promise<ShopifyProduct[]> {
   const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first, query });
   return data.data.products.edges;
+}
+
+export async function fetchCollections(first: number = 20): Promise<ShopifyCollection[]> {
+  const data = await storefrontApiRequest(STOREFRONT_COLLECTIONS_QUERY, { first });
+  return data.data.collections.edges;
+}
+
+export async function fetchProductsByCollection(handle: string, first: number = 20): Promise<{ title: string, description: string, products: ShopifyProduct[] } | null> {
+  try {
+    const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY, { handle, first });
+    if (!data.data.collection) return null;
+    return {
+      title: data.data.collection.title,
+      description: data.data.collection.description,
+      products: data.data.collection.products.edges
+    };
+  } catch (error) {
+    console.error(`Error fetching products for collection ${handle}:`, error);
+    return null;
+  }
 }
 
 export async function fetchProductByHandle(handle: string): Promise<ShopifyProduct | null> {
@@ -280,7 +386,7 @@ export async function createStorefrontCheckout(items: CartItem[]): Promise<strin
     }
 
     const cart = cartData.data.cartCreate.cart;
-    
+
     if (!cart.checkoutUrl) {
       throw new Error('No checkout URL returned from Shopify');
     }

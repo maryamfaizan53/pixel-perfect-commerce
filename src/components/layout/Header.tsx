@@ -5,6 +5,8 @@ import { useState } from "react";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ShoppingCart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { fetchCollections, ShopifyCollection } from "@/lib/shopify";
+import { useQuery } from "@tanstack/react-query";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,14 +17,7 @@ import {
 import { toast } from "sonner";
 import { SearchBar } from "@/components/search/SearchBar";
 
-const categories = [
-  { name: "Household", path: "/category/household" },
-  { name: "Kitchen", path: "/category/kitchen" },
-  { name: "Stationery", path: "/category/stationery" },
-  { name: "Toys", path: "/category/toys" },
-  { name: "Mobile Accessories", path: "/category/mobile" },
-  { name: "Beauty", path: "/category/beauty" },
-];
+// Categories will be fetched dynamically
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,7 +29,18 @@ export const Header = () => {
     toast.success("Logged out successfully");
     navigate("/");
   };
+
   const [cartCount] = useState(0);
+
+  const { data: collections = [] } = useQuery({
+    queryKey: ['collections'],
+    queryFn: () => fetchCollections(10),
+  });
+
+  const categories = collections.map(col => ({
+    name: col.node.title,
+    path: `/category/${col.node.handle}`
+  }));
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border shadow-sm">
@@ -104,13 +110,13 @@ export const Header = () => {
                 </Link>
               </Button>
             )}
-            
+
             <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
               <Link to="/wishlist">
                 <Heart className="w-5 h-5" />
               </Link>
             </Button>
-            
+
             <CartDrawer />
             <Button
               variant="ghost"

@@ -274,8 +274,8 @@ const ProductPage = () => {
                           <button
                             key={value}
                             className={`px-6 py-2.5 text-sm font-bold rounded-xl border-2 transition-all duration-300 hover:border-primary ${selectedVariant?.selectedOptions?.some((opt: any) => opt.name === option.name && opt.value === value)
-                                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                                : "bg-white border-slate-200 text-slate-600"
+                              ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                              : "bg-white border-slate-200 text-slate-600"
                               }`}
                           >
                             {value}
@@ -379,7 +379,5 @@ const ProductPage = () => {
     </div>
   );
 };
-
-export default ProductPage;
 
 export default ProductPage;

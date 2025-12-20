@@ -1,4 +1,4 @@
-import { ShoppingCart, Heart, AlertTriangle, Eye, ArrowRight } from "lucide-react";
+import { ShoppingCart, Heart, AlertTriangle, Eye, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "sonner";
 import { HighlightText } from "@/components/ui/highlight-text";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -15,9 +16,10 @@ interface ProductCardProps {
   product: ShopifyProduct;
   badge?: "sale" | "new" | "bestseller";
   searchQuery?: string;
+  index?: number;
 }
 
-export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardProps) => {
+export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const { isInWishlist, toggleWishlist, loading: wishlistLoading } = useWishlist();
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -68,133 +70,127 @@ export const ProductCard = ({ product, badge, searchQuery = "" }: ProductCardPro
   };
 
   return (
-    <div className={`group relative bg-white border border-slate-100 rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2 ${isOutOfStock ? 'opacity-80' : ''}`}>
-      {/* Image Container with Optimized Display */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`group relative premium-card overflow-hidden bg-card ${isOutOfStock ? 'opacity-80' : ''}`}
+    >
       <div className="relative aspect-[4/5] overflow-hidden bg-slate-50">
         <Link to={`/product/${node.handle}`} className="block h-full">
           {!imageLoaded && (
             <div className="absolute inset-0 animate-pulse bg-slate-200/50" />
           )}
-          <img
+          <motion.img
             src={image}
             alt={node.title}
             onLoad={() => setImageLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-700 ease-out sm:group-hover:scale-110 ${isOutOfStock ? 'grayscale opacity-60' : ''} ${imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className={`w-full h-full object-cover ${isOutOfStock ? 'grayscale opacity-60' : ''} ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading="lazy"
           />
 
-          {/* Subtle Gradient Overlay on Hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500" />
         </Link>
 
-        {/* Badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-2">
+        {/* Status Badges */}
+        <div className="absolute top-5 left-5 flex flex-col gap-2 z-10">
           {isOutOfStock ? (
-            <Badge variant="destructive" className="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-destructive/20 border-none">
+            <Badge variant="destructive" className="rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-xl border-none">
               Out of Stock
             </Badge>
           ) : (
             <>
               {badge && (
                 <Badge
-                  className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest border-none shadow-lg ${badge === "sale"
-                      ? "bg-rose-500 text-white shadow-rose-500/20"
-                      : badge === "new"
-                        ? "bg-emerald-500 text-white shadow-emerald-500/20"
-                        : "bg-indigo-500 text-white shadow-indigo-500/20"
+                  className={`rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-none shadow-xl ${badge === "sale"
+                    ? "bg-rose-500 text-white"
+                    : badge === "new"
+                      ? "bg-primary text-white"
+                      : "bg-amber-500 text-white"
                     }`}
                 >
+                  <Sparkles className="w-3 h-3 mr-2 inline" />
                   {badge}
                 </Badge>
               )}
               {isLowStock && (
-                <Badge className="bg-amber-500 text-white border-none rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-amber-500/20 flex items-center gap-1">
-                  <AlertTriangle className="w-2.5 h-2.5" />
-                  Limited
+                <Badge className="bg-orange-500 text-white border-none rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-1.5">
+                  <AlertTriangle className="w-3 h-3" />
+                  Rare Find
                 </Badge>
               )}
             </>
           )}
         </div>
 
-        {/* Quick Actions (Hover Only on Desktop) */}
-        <div className="absolute top-4 right-4 flex flex-col gap-2 transform translate-x-4 opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 transition-all duration-300">
+        {/* Quick Actions */}
+        <div className="absolute top-5 right-5 flex flex-col gap-3 transform translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 z-10">
           <Button
             size="icon"
-            variant="outline"
             onClick={handleToggleWishlist}
             disabled={wishlistLoading}
-            className={`w-10 h-10 rounded-full bg-white/90 backdrop-blur-md border-none shadow-xl transition-all hover:scale-110 ${inWishlist ? "text-rose-500 fill-rose-500" : "text-slate-600 hover:text-rose-500"
+            className={`w-12 h-12 rounded-2xl glass border-white/20 shadow-2xl transition-all hover:scale-110 ${inWishlist ? "text-rose-500 fill-rose-500" : "text-white hover:text-rose-500"
               }`}
           >
-            <Heart className="w-4.5 h-4.5" />
+            <Heart className="w-5 h-5" />
           </Button>
           <Link to={`/product/${node.handle}`}>
             <Button
               size="icon"
-              variant="outline"
-              className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md border-none shadow-xl text-slate-600 hover:text-primary transition-all hover:scale-110"
+              className="w-12 h-12 rounded-2xl glass border-white/20 shadow-2xl text-white hover:text-primary transition-all hover:scale-110"
             >
-              <Eye className="w-4.5 h-4.5" />
+              <Eye className="w-5 h-5" />
             </Button>
           </Link>
         </div>
 
-        {/* Mobile Quick Add (Visible on mobile, bottom of image) */}
+        {/* Quick Add (Hover Only) */}
         {!isOutOfStock && (
-          <div className="absolute bottom-4 left-4 right-4 sm:hidden">
+          <div className="absolute bottom-6 left-6 right-6 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-10 hidden sm:block">
             <Button
               onClick={handleAddToCart}
-              className="w-full h-10 rounded-full bg-primary text-white text-xs font-bold shadow-lg active:scale-95 transition-transform"
+              className="w-full h-14 rounded-2xl bg-white text-slate-900 hover:bg-primary hover:text-white font-black text-xs uppercase tracking-widest shadow-2xl transition-all active:scale-95"
             >
-              Add to Cart
-            </Button>
-          </div>
-        )}
-
-        {/* Desktop Quick Add (Hover) */}
-        {!isOutOfStock && (
-          <div className="absolute bottom-6 left-6 right-6 translate-y-8 opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 transition-all duration-500 hidden sm:block">
-            <Button
-              onClick={handleAddToCart}
-              className="w-full h-12 rounded-2xl bg-white text-slate-900 hover:bg-primary hover:text-white font-bold shadow-2xl transition-all active:scale-[0.98]"
-            >
-              <ShoppingCart className="w-4.5 h-4.5 mr-2" />
-              Quick Add
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Add to Collection
             </Button>
           </div>
         )}
       </div>
 
-      {/* Product Info */}
-      <div className="p-6">
-        <Link to={`/product/${node.handle}`} className="block group/title">
-          <h3 className="font-bold text-slate-900 mb-2 line-clamp-1 text-lg group-hover/title:text-primary transition-colors flex items-center justify-between">
+      <div className="p-8">
+        <Link to={`/product/${node.handle}`} className="block group/title mb-3">
+          <h3 className="font-bold text-foreground line-clamp-1 text-xl group-hover/title:text-primary transition-colors flex items-center justify-between">
             <HighlightText text={node.title} highlight={searchQuery} />
-            <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover/title:opacity-100 group-hover/title:translate-x-0 transition-all text-primary" />
+            <ArrowRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover/title:opacity-100 group-hover/title:translate-x-0 transition-all text-primary" />
           </h3>
         </Link>
 
         {node.description && (
-          <p className="text-sm text-slate-500 mb-4 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-muted-foreground mb-6 line-clamp-2 leading-relaxed font-medium">
             <HighlightText text={node.description} highlight={searchQuery} />
           </p>
         )}
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-end justify-between">
           <div className="flex flex-col">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{currencyCode}</span>
-            <span className="text-2xl font-black text-slate-900 leading-none">
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{currencyCode}</span>
+            <span className="text-3xl font-black text-foreground leading-none tracking-tighter">
               {price.toFixed(2)}
             </span>
           </div>
-          <div className="h-8 w-[1px] bg-slate-100 mx-4 hidden sm:block" />
-          <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-4 py-2 rounded-xl">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
             Ready to ship
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

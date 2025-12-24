@@ -263,10 +263,10 @@ const CategoryPage = () => {
                 />
                 <div className="flex items-center justify-between">
                   <div className="px-5 py-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-black text-slate-900">
-                    ${priceRange[0]}
+                    PKR {priceRange[0].toLocaleString('en-PK')}
                   </div>
                   <div className="px-5 py-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-black text-slate-900">
-                    ${priceRange[1]}
+                    PKR {priceRange[1].toLocaleString('en-PK')}
                   </div>
                 </div>
               </div>

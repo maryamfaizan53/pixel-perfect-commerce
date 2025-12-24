@@ -26,7 +26,7 @@ export const CartDrawer = () => {
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
-  const currencyCode = items[0]?.price.currencyCode || 'USD';
+  const currencyCode = items[0]?.price.currencyCode || 'PKR';
 
   const handleCheckout = async () => {
     try {
@@ -117,7 +117,7 @@ export const CartDrawer = () => {
                         <div className="flex items-center justify-between mt-auto">
                           <p className="font-black text-white/90">
                             <span className="text-[10px] text-white/30 mr-1">{currencyCode}</span>
-                            {parseFloat(item.price.amount).toFixed(2)}
+                            {parseFloat(item.price.amount).toLocaleString('en-PK')}
                           </p>
 
                           <div className="flex items-center gap-2 bg-black/20 rounded-xl p-1 border border-white/5">
@@ -159,12 +159,12 @@ export const CartDrawer = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">
                     <span>Subtotal</span>
-                    <span>{currencyCode} {totalPrice.toFixed(2)}</span>
+                    <span>{currencyCode} {totalPrice.toLocaleString('en-PK')}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xl font-black text-white tracking-tight">Total Investment</span>
                     <span className="text-2xl font-black text-primary text-glow font-mono">
-                      {totalPrice.toFixed(2)}
+                      {totalPrice.toLocaleString('en-PK')}
                     </span>
                   </div>
                 </div>

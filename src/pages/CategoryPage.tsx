@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProductCard } from "@/components/product/ProductCard";
@@ -9,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SlidersHorizontal, Loader2, Search, X, Grid, List, Sparkles, Filter, LayoutGrid } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
+import { fetchProducts, fetchProductsByCollection, ShopifyProduct } from "@/lib/shopify";
 import { motion, AnimatePresence } from "framer-motion";
 
 const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
@@ -28,7 +29,10 @@ const colors = [
 const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const CategoryPage = () => {
-  const [priceRange, setPriceRange] = useState([0, 200]);
+  const { category = "all" } = useParams();
+
+  const [priceRange, setPriceRange] = useState([0, 0]);
+  const [maxPrice, setMaxPrice] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,18 +47,32 @@ const CategoryPage = () => {
 
   useEffect(() => {
     const loadProducts = async () => {
+      setLoading(true);
       try {
-        const data = await fetchProducts(24);
-        setProducts(data);
+        const list =
+          category && category !== "all"
+            ? (await fetchProductsByCollection(category, 50))?.products ?? []
+            : await fetchProducts(50);
+
+        setProducts(list);
+
+        const prices = list
+          .map((p) => Number.parseFloat(p.node.priceRange.minVariantPrice.amount))
+          .filter((n) => Number.isFinite(n));
+        const computedMax = prices.length ? Math.max(...prices) : 0;
+        const roundedMax = computedMax ? Math.ceil(computedMax / 100) * 100 : 0;
+
+        setMaxPrice(roundedMax);
+        setPriceRange([0, roundedMax]);
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error("Failed to fetch products:", error);
       } finally {
         setLoading(false);
       }
     };
 
     loadProducts();
-  }, []);
+  }, [category]);
 
   const toggleColor = (color: string) => {
     setSelectedColors(prev =>
@@ -239,7 +257,7 @@ const CategoryPage = () => {
                 <Slider
                   value={priceRange}
                   onValueChange={setPriceRange}
-                  max={500}
+                  max={maxPrice || 0}
                   step={10}
                   className="mb-6"
                 />

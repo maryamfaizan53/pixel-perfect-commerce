@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SlidersHorizontal, Loader2, Search, X, Grid, List, Sparkles, Filter, LayoutGrid } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { fetchProducts, fetchProductsByCollection, ShopifyProduct } from "@/lib/shopify";
+import { fetchProducts, fetchProductsByCollection, ShopifyProduct, CollectionData } from "@/lib/shopify";
 import { motion, AnimatePresence } from "framer-motion";
 
 const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
@@ -35,6 +35,7 @@ const CategoryPage = () => {
   const [maxPrice, setMaxPrice] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [collectionData, setCollectionData] = useState<CollectionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -48,11 +49,19 @@ const CategoryPage = () => {
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
+      setCollectionData(null);
       try {
-        const list =
-          category && category !== "all"
-            ? (await fetchProductsByCollection(category, 50))?.products ?? []
-            : await fetchProducts(50);
+        let list: ShopifyProduct[] = [];
+        
+        if (category && category !== "all") {
+          const collection = await fetchProductsByCollection(category, 50);
+          if (collection) {
+            setCollectionData(collection);
+            list = collection.products;
+          }
+        } else {
+          list = await fetchProducts(50);
+        }
 
         setProducts(list);
 
@@ -132,8 +141,20 @@ const CategoryPage = () => {
       <Header />
 
       <main className="flex-1">
-        {/* Elite Category Header */}
+        {/* Dynamic Category Header */}
         <section className="relative pt-24 pb-32 overflow-hidden bg-slate-900 border-b border-white/5">
+          {/* Collection Background Image */}
+          {collectionData?.image?.url && (
+            <div className="absolute inset-0 z-0">
+              <img 
+                src={collectionData.image.url} 
+                alt={collectionData.image.altText || collectionData.title}
+                className="w-full h-full object-cover opacity-20"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/70" />
+            </div>
+          )}
+          
           <div className="container-custom relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -142,14 +163,21 @@ const CategoryPage = () => {
             >
               <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass border-white/10 text-white text-[10px] font-black uppercase tracking-[0.3em] mb-10">
                 <LayoutGrid className="w-3.5 h-3.5 text-primary" />
-                Collection Directory
+                {collectionData ? 'Collection' : 'All Products'}
               </div>
               <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none mb-8">
-                Kitchen <span className="text-glow italic">Essentials</span>
+                {collectionData?.title || (
+                  <>All <span className="text-glow italic">Products</span></>
+                )}
               </h1>
+              {collectionData?.description && (
+                <p className="text-lg text-white/60 font-medium max-w-2xl mb-8 leading-relaxed">
+                  {collectionData.description}
+                </p>
+              )}
               <div className="flex flex-wrap items-center gap-10">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Index count</span>
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Products</span>
                   <span className="text-3xl font-black text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/30">items</span></span>
                 </div>
                 <div className="flex flex-col">

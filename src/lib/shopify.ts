@@ -134,8 +134,14 @@ export const STOREFRONT_COLLECTIONS_QUERY = `
 export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
   query GetProductsByCollection($handle: String!, $first: Int!) {
     collection(handle: $handle) {
+      id
       title
+      handle
       description
+      image {
+        url
+        altText
+      }
       products(first: $first) {
         edges {
           node {
@@ -320,13 +326,26 @@ export async function fetchCollections(first: number = 20): Promise<ShopifyColle
   return data.data.collections.edges;
 }
 
-export async function fetchProductsByCollection(handle: string, first: number = 20): Promise<{ title: string, description: string, products: ShopifyProduct[] } | null> {
+export interface CollectionData {
+  title: string;
+  description: string;
+  handle: string;
+  image?: {
+    url: string;
+    altText: string | null;
+  };
+  products: ShopifyProduct[];
+}
+
+export async function fetchProductsByCollection(handle: string, first: number = 20): Promise<CollectionData | null> {
   try {
     const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY, { handle, first });
     if (!data.data.collection) return null;
     return {
       title: data.data.collection.title,
       description: data.data.collection.description,
+      handle: data.data.collection.handle,
+      image: data.data.collection.image,
       products: data.data.collection.products.edges
     };
   } catch (error) {

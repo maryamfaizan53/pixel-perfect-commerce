@@ -179,7 +179,7 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
           <div className="flex flex-col">
             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">PKR</span>
             <span className="text-3xl font-black text-foreground leading-none tracking-tighter">
-              {(price * 280).toLocaleString('en-PK')}
+              {price.toLocaleString('en-PK')}
             </span>
           </div>
           <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-4 py-2 rounded-xl">

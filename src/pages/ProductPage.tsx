@@ -278,7 +278,7 @@ const ProductPage = () => {
                   <div className="flex flex-col">
                     <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-1">PKR</span>
                     <span className="text-5xl font-black text-glow text-primary leading-none tracking-tighter">
-                      {(price * 280).toLocaleString('en-PK')}
+                      {price.toLocaleString('en-PK')}
                     </span>
                   </div>
                   <div className="flex flex-col gap-2">

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { fetchCollections } from "@/lib/shopify";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, LayoutGrid, Sparkles, ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 
@@ -13,11 +13,11 @@ export const CategoryGrid = () => {
 
   if (isLoading) {
     return (
-      <section className="py-32 bg-slate-50/50">
+      <section className="py-24 md:py-32 bg-background">
         <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="aspect-[4/5] rounded-[2.5rem]" />
+              <Skeleton key={i} className="aspect-[3/4] rounded-2xl md:rounded-3xl" />
             ))}
           </div>
         </div>
@@ -26,79 +26,141 @@ export const CategoryGrid = () => {
   }
 
   return (
-    <section className="py-32 relative overflow-hidden bg-white">
+    <section className="py-24 md:py-32 bg-background relative overflow-hidden">
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-muted/30 via-transparent to-muted/20 pointer-events-none" />
+      
       <div className="container-custom relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="space-y-6"
+            transition={{ duration: 0.6 }}
+            className="space-y-4"
           >
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-              <Sparkles className="w-4 h-4" />
-              Elite Selections
-            </div>
-            <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none">
-              Shop by <span className="text-primary italic">Department</span>
+            <span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em]">
+              Collections
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
+              Shop by Category
             </h2>
-            <p className="text-slate-500 font-medium text-xl max-w-xl leading-relaxed">
-              Curated boutique collections refined for your sophisticated lifestyle.
+            <p className="text-muted-foreground text-base md:text-lg max-w-md">
+              Explore our curated collections designed for every aspect of your lifestyle.
             </p>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
             <Link
               to="/category/all"
-              className="group flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-slate-400 hover:text-primary transition-all pb-3 border-b-2 border-slate-100 hover:border-primary"
+              className="group inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-primary transition-colors"
             >
-              Master Catalog
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+              View All Collections
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
-          {collections.map((col, index) => (
+        {/* Category Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {collections.slice(0, 4).map((col, index) => (
             <motion.div
               key={col.node.id}
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: index * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               <Link
                 to={`/category/${col.node.handle}`}
-                className="group relative block aspect-[4/5] rounded-[3rem] overflow-hidden bg-slate-50 border border-slate-100 transition-all duration-700 hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] group"
+                className="group relative block aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden bg-muted"
               >
+                {/* Image */}
                 <img
                   src={col.node.image?.url || "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&h=800&fit=crop"}
                   alt={col.node.title}
-                  className="w-full h-full object-cover transition-transform duration-[2s] cubic-bezier(0.4, 0, 0.2, 1) group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-700" />
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-60 group-hover:opacity-70 transition-opacity duration-500" />
 
-                <div className="absolute inset-0 flex flex-col justify-end p-8 translate-y-6 group-hover:translate-y-0 transition-all duration-700">
-                  <div className="px-8 py-6 rounded-[2.5rem] glass-dark border-white/10 shadow-2xl backdrop-blur-3xl">
-                    <h3 className="text-2xl font-black text-white tracking-tight mb-2">{col.node.title}</h3>
-                    <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-white/50 group-hover:text-primary transition-colors">
-                      Enter Portal
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-2 transition-transform" />
+                {/* Content */}
+                <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+                  <div className="flex items-end justify-between gap-4">
+                    <div className="space-y-1">
+                      <h3 className="text-lg md:text-xl font-bold text-primary-foreground leading-tight">
+                        {col.node.title}
+                      </h3>
+                      <p className="text-xs md:text-sm text-primary-foreground/60 font-medium">
+                        Explore Collection
+                      </p>
+                    </div>
+                    
+                    {/* Arrow Button */}
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+                      <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
+                </div>
+
+                {/* Top Badge - Optional category count */}
+                <div className="absolute top-4 left-4 md:top-5 md:left-5">
+                  <span className="px-3 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 text-primary-foreground text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                    New
+                  </span>
                 </div>
               </Link>
             </motion.div>
           ))}
         </div>
-      </div>
 
-      {/* Background Decorative Gradient */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-primary/5 blur-[180px] rounded-full pointer-events-none -z-10" />
+        {/* Additional Categories Row */}
+        {collections.length > 4 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-4 md:mt-6">
+            {collections.slice(4, 8).map((col, index) => (
+              <motion.div
+                key={col.node.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (index + 4) * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <Link
+                  to={`/category/${col.node.handle}`}
+                  className="group relative block aspect-[4/3] rounded-2xl md:rounded-3xl overflow-hidden bg-muted"
+                >
+                  {/* Image */}
+                  <img
+                    src={col.node.image?.url || "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&h=450&fit=crop"}
+                    alt={col.node.title}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent opacity-50 group-hover:opacity-60 transition-opacity duration-500" />
+
+                  {/* Content */}
+                  <div className="absolute inset-x-0 bottom-0 p-4 md:p-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-sm md:text-base font-bold text-primary-foreground leading-tight truncate">
+                        {col.node.title}
+                      </h3>
+                      <ArrowUpRight className="w-4 h-4 text-primary-foreground/60 group-hover:text-primary-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0" />
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 };

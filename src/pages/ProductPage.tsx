@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, RotateCcw, Loader2, AlertTriangle, ChevronRight, Tag, ArrowLeft, Star, Share2 } from "lucide-react";
+import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { storefrontApiRequest, ShopifyProduct } from "@/lib/shopify";
@@ -276,9 +276,9 @@ const ProductPage = () => {
 
                 <div className="flex flex-wrap items-center gap-6 py-8 border-y border-slate-200/60">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-1">{currencyCode}</span>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-1">PKR</span>
                     <span className="text-5xl font-black text-glow text-primary leading-none tracking-tighter">
-                      {price.toFixed(2)}
+                      {(price * 280).toLocaleString('en-PK')}
                     </span>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -369,12 +369,28 @@ const ProductPage = () => {
 
                   <Button
                     size="lg"
-                    className="flex-1 h-20 text-xl font-black rounded-2xl btn-premium shadow-2xl transition-all active:scale-[0.98] group"
+                    className="flex-1 h-16 text-lg font-black rounded-2xl btn-premium shadow-2xl transition-all active:scale-[0.98] group"
                     onClick={handleAddToCart}
                     disabled={isOutOfStock}
                   >
-                    <ShoppingCart className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
-                    {isOutOfStock ? 'Sold Out' : 'Add to Collection'}
+                    <ShoppingCart className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+                    {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
+                  </Button>
+
+                  <Button
+                    size="lg"
+                    className="flex-1 h-16 text-lg font-black rounded-2xl bg-secondary hover:bg-secondary/90 text-white shadow-2xl transition-all active:scale-[0.98]"
+                    onClick={() => {
+                      handleAddToCart();
+                      const { createCheckout } = useCartStore.getState();
+                      createCheckout().then(() => {
+                        const checkoutUrl = useCartStore.getState().checkoutUrl;
+                        if (checkoutUrl) window.open(checkoutUrl, '_blank');
+                      });
+                    }}
+                    disabled={isOutOfStock}
+                  >
+                    Order Now
                   </Button>
 
                   <Button size="icon" variant="outline" className="h-20 w-20 rounded-2xl border-2 border-slate-100 text-slate-400 hover:text-rose-500 hover:border-rose-100 hover:bg-rose-50 transition-all shadow-xl bg-white">
@@ -383,11 +399,10 @@ const ProductPage = () => {
                 </div>
 
                 {/* Expert-Level Trust Badges */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {[
-                    { icon: Truck, label: "Express Delivery", meta: "Courier service" },
-                    { icon: RotateCcw, label: "30-Day Returns", meta: "Easy process" },
-                    { icon: Shield, label: "Encrypted Lab", meta: "Secure checkout" }
+                    { icon: Truck, label: "Express Delivery", meta: "Fast courier service" },
+                    { icon: Shield, label: "Secure Checkout", meta: "100% protected" }
                   ].map((badge, i) => (
                     <motion.div
                       key={i}

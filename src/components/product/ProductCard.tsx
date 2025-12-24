@@ -155,7 +155,7 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
               className="w-full h-14 rounded-2xl bg-white text-slate-900 hover:bg-primary hover:text-white font-black text-xs uppercase tracking-widest shadow-2xl transition-all active:scale-95"
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
-              Add to Collection
+              Add to Cart
             </Button>
           </div>
         )}
@@ -177,9 +177,9 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
 
         <div className="flex items-end justify-between">
           <div className="flex flex-col">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{currencyCode}</span>
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">PKR</span>
             <span className="text-3xl font-black text-foreground leading-none tracking-tighter">
-              {price.toFixed(2)}
+              {(price * 280).toLocaleString('en-PK')}
             </span>
           </div>
           <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-4 py-2 rounded-xl">

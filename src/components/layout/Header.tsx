@@ -59,7 +59,7 @@ export const Header = () => {
             <div className="container-custom">
               <div className="flex items-center justify-center h-10 text-[11px] font-bold text-primary-foreground tracking-wide">
                 <Sparkles className="w-3.5 h-3.5 mr-2" />
-                <span>FREE SHIPPING ON ORDERS OVER $50 • USE CODE: <span className="underline">WELCOME15</span></span>
+                <span>FREE SHIPPING ON ORDERS OVER PKR 5,000 • USE CODE: <span className="underline">WELCOME15</span></span>
                 <Sparkles className="w-3.5 h-3.5 ml-2" />
               </div>
             </div>
@@ -89,9 +89,9 @@ export const Header = () => {
               </div>
               <div className="hidden sm:flex flex-col">
                 <span className="font-black text-lg md:text-xl tracking-tight text-foreground leading-none">
-                  PIXEL<span className="text-primary">PERFECT</span>
+                  LUXE<span className="text-primary">MART</span>
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">Store</span>
+                <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">Premium Shopping</span>
               </div>
             </Link>
 
@@ -238,7 +238,7 @@ export const Header = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-border">
                   <span className="font-black text-xl tracking-tight">
-                    PIXEL<span className="text-primary">PERFECT</span>
+                    LUXE<span className="text-primary">MART</span>
                   </span>
                   <Button 
                     variant="ghost" 

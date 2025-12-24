@@ -24,7 +24,6 @@ export interface ShopifyProduct {
     description: string;
     handle: string;
     availableForSale: boolean;
-    totalInventory: number;
     priceRange: {
       minVariantPrice: {
         amount: string;
@@ -49,7 +48,6 @@ export interface ShopifyProduct {
             currencyCode: string;
           };
           availableForSale: boolean;
-          quantityAvailable: number;
           selectedOptions: Array<{
             name: string;
             value: string;
@@ -74,7 +72,6 @@ export const STOREFRONT_PRODUCTS_QUERY = `
           description
           handle
           availableForSale
-          totalInventory
           priceRange {
             minVariantPrice {
               amount
@@ -99,7 +96,6 @@ export const STOREFRONT_PRODUCTS_QUERY = `
                   currencyCode
                 }
                 availableForSale
-                quantityAvailable
                 selectedOptions {
                   name
                   value
@@ -116,6 +112,7 @@ export const STOREFRONT_PRODUCTS_QUERY = `
     }
   }
 `;
+
 export const STOREFRONT_COLLECTIONS_QUERY = `
   query GetCollections($first: Int!) {
     collections(first: $first) {
@@ -147,7 +144,6 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
             description
             handle
             availableForSale
-            totalInventory
             priceRange {
               minVariantPrice {
                 amount
@@ -172,7 +168,6 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
                     currencyCode
                   }
                   availableForSale
-                  quantityAvailable
                   selectedOptions {
                     name
                     value
@@ -199,7 +194,6 @@ export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
       description
       handle
       availableForSale
-      totalInventory
       priceRange {
         minVariantPrice {
           amount
@@ -224,7 +218,6 @@ export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
               currencyCode
             }
             availableForSale
-            quantityAvailable
             selectedOptions {
               name
               value

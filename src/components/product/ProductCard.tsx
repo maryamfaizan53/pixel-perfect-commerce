@@ -32,7 +32,7 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
   const inWishlist = isInWishlist(node.id);
 
   const isOutOfStock = !node.availableForSale;
-  const isLowStock = node.availableForSale && node.totalInventory > 0 && node.totalInventory <= LOW_STOCK_THRESHOLD;
+  const isLowStock = false; // Inventory check requires special API access
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();

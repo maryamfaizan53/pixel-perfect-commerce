@@ -330,7 +330,7 @@ export const SearchBar = () => {
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm truncate">{product.node.title}</p>
                       <p className="text-sm font-bold text-primary">
-                        PKR {(parseFloat(product.node.priceRange.minVariantPrice.amount) * 280).toLocaleString('en-PK')}
+                        PKR {parseFloat(product.node.priceRange.minVariantPrice.amount).toLocaleString('en-PK')}
                       </p>
                     </div>
                     <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />

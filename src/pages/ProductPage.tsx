@@ -24,7 +24,6 @@ const PRODUCT_QUERY = `
       description
       handle
       availableForSale
-      totalInventory
       productType
       vendor
       priceRange {
@@ -51,7 +50,6 @@ const PRODUCT_QUERY = `
               currencyCode
             }
             availableForSale
-            quantityAvailable
             selectedOptions {
               name
               value
@@ -163,7 +161,7 @@ const ProductPage = () => {
   const price = parseFloat(selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount);
   const currencyCode = selectedVariant?.price.currencyCode || product.priceRange.minVariantPrice.currencyCode;
   const isOutOfStock = !product.availableForSale;
-  const isLowStock = product.availableForSale && product.totalInventory > 0 && product.totalInventory <= LOW_STOCK_THRESHOLD;
+  const isLowStock = false;
   const collection = product.collections.edges[0]?.node;
 
   return (
@@ -286,11 +284,6 @@ const ProductPage = () => {
                   <div className="flex flex-col gap-2">
                     {isOutOfStock ? (
                       <Badge variant="destructive" className="rounded-full px-6 py-2 uppercase tracking-widest text-[10px] font-black">Out of Stock</Badge>
-                    ) : isLowStock ? (
-                      <Badge className="bg-orange-500 text-white border-none rounded-full px-6 py-2 flex items-center gap-2 uppercase tracking-widest text-[10px] font-black shadow-lg shadow-orange-500/20 animate-pulse">
-                        <AlertTriangle className="w-3 h-3" />
-                        Only {product.totalInventory} Left
-                      </Badge>
                     ) : (
                       <Badge className="bg-emerald-500 text-white border-none rounded-full px-6 py-2 uppercase tracking-widest text-[10px] font-black shadow-lg shadow-emerald-500/20">
                         In Stock

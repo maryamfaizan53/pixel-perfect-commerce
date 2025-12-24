@@ -373,7 +373,6 @@ const CategoryPage = () => {
                         <ProductCard
                           product={product}
                           searchQuery={searchQuery}
-                          className={viewMode === 'list' ? 'flex flex-row gap-8' : ''}
                         />
                       </motion.div>
                     ))}

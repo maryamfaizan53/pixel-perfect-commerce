@@ -653,45 +653,46 @@ const ProductPage = () => {
                     </TabsTrigger>
                   ))}
                 </TabsList>
+              </div>
 
-                <div className="max-w-5xl mx-auto">
-                  <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <div className="prose prose-slate max-w-none">
-                      <h3 className="text-2xl font-bold mb-6 text-slate-900">Product Narrative</h3>
-                      <p className="text-lg text-slate-600 leading-relaxed">
-                        {product.description}
-                      </p>
-                    </div>
-                  </TabsContent>
+              <div className="max-w-5xl mx-auto">
+                <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <div className="prose prose-slate max-w-none">
+                    <h3 className="text-2xl font-bold mb-6 text-slate-900">Product Narrative</h3>
+                    <p className="text-lg text-slate-600 leading-relaxed">
+                      {product.description}
+                    </p>
+                  </div>
+                </TabsContent>
 
-                  <TabsContent value="reviews" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <ProductReviews productId={productId} productHandle={handle || ""} />
-                  </TabsContent>
+                <TabsContent value="reviews" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <ProductReviews productId={productId} productHandle={handle || ""} />
+                </TabsContent>
 
-                  <TabsContent value="specifications" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                      {product.options.map((opt: ProductOption) => (
-                        <div key={opt.name} className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-                          <span className="label-premium">{opt.name}</span>
-                          <span className="font-bold text-slate-900">{opt.values.join(', ')}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-                        <span className="label-premium">Vendor</span>
-                        <span className="font-bold text-slate-900">{product.vendor}</span>
+                <TabsContent value="specifications" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    {product.options.map((opt: ProductOption) => (
+                      <div key={opt.name} className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+                        <span className="label-premium">{opt.name}</span>
+                        <span className="font-bold text-slate-900">{opt.values.join(', ')}</span>
                       </div>
+                    ))}
+                    <div className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+                      <span className="label-premium">Vendor</span>
+                      <span className="font-bold text-slate-900">{product.vendor}</span>
                     </div>
-                  </TabsContent>
+                  </div>
+                </TabsContent>
 
-                  <TabsContent value="care" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <div className="prose prose-slate max-w-none text-center">
-                      <h3 className="text-xl font-bold mb-6 text-slate-900">Product Care Guide</h3>
-                      <p className="text-base text-slate-600 max-w-2xl mx-auto font-medium">
-                        Each piece is built to last with quality materials. To maintain its condition, avoid prolonged exposure to moisture and clean with a dry, soft cloth.
-                      </p>
-                    </div>
-                  </TabsContent>
-                </div>
+                <TabsContent value="care" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <div className="prose prose-slate max-w-none text-center">
+                    <h3 className="text-xl font-bold mb-6 text-slate-900">Product Care Guide</h3>
+                    <p className="text-base text-slate-600 max-w-2xl mx-auto font-medium">
+                      Each piece is built to last with quality materials. To maintain its condition, avoid prolonged exposure to moisture and clean with a dry, soft cloth.
+                    </p>
+                  </div>
+                </TabsContent>
+              </div>
             </Tabs>
           </motion.div>
         </div>

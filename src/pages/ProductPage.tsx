@@ -354,34 +354,24 @@ const ProductPage = () => {
               >
                 {/* 1. Heading */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <span className="px-5 py-2 bg-primary/5 text-primary label-premium border border-primary/10 rounded-full">
-                      {product.vendor || 'Boutique'} Exclusive
-                    </span>
-                    {product.availableForSale ? (
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">In Stock</span>
-                        <span className="w-1 h-1 rounded-full bg-slate-300 mx-1" />
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Only 8 left in boutique</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-slate-300" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reserved</span>
-                      </div>
-                    )}
-                  </div>
                   <h1 className="text-5xl md:text-8xl lg:text-9xl font-black text-foreground text-editorial tracking-[-0.05em] leading-[0.8]">
                     <span className="block opacity-90">{product.title.split(' ')[0]}</span>
                     <span className="block text-gold-leaf">{product.title.split(' ').slice(1).join(' ')}</span>
                   </h1>
+                  <span className="inline-block px-5 py-2 bg-primary/5 text-primary label-premium border border-primary/10 rounded-full">
+                    {product.vendor || 'Boutique'} Exclusive
+                  </span>
                 </div>
 
-                {/* 2. Rates (Price) */}
-                <div ref={priceRef} className="flex flex-col py-6 border-y border-slate-200/60 transition-all duration-700">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="label-premium">Investment Rate</span>
+                {/* 2. Rates (Price) & Stock */}
+                <div ref={priceRef} className="space-y-6 py-8 border-y border-slate-200/60 transition-all duration-700">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-2xl font-bold text-primary">{currencyCode}</span>
+                      <span className="text-7xl font-black text-foreground tracking-tighter font-playfair italic">
+                        {price.toLocaleString()}
+                      </span>
+                    </div>
                     <motion.div
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -391,12 +381,21 @@ const ProductPage = () => {
                       <span className="text-[9px] font-black text-primary uppercase tracking-widest">Highly Coveted</span>
                     </motion.div>
                   </div>
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-2xl font-bold text-primary">{currencyCode}</span>
-                    <span className="text-7xl font-black text-foreground tracking-tighter font-playfair italic">
-                      {price.toLocaleString()}
-                    </span>
-                    <span className="text-sm font-black text-slate-400 uppercase tracking-widest ml-2">Inc. Taxes</span>
+
+                  <div className="flex items-center gap-4">
+                    {product.availableForSale ? (
+                      <div className="flex items-center gap-3 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100/50">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">In Stock</span>
+                        <div className="w-[1px] h-3 bg-emerald-200 mx-1" />
+                        <span className="text-[10px] font-bold text-emerald-600/70 uppercase">Reserved Boutique Selection</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 px-4 py-2 bg-slate-100 rounded-2xl border border-slate-200/50">
+                        <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+                        <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Reserved</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -495,42 +494,41 @@ const ProductPage = () => {
                       Secure Order Now
                     </Button>
                   </div>
+                </div>
 
-                  {/* Description (Now after Action Buttons) */}
-                  <div className="pt-8 border-t border-slate-100">
-                    <p className="text-lg text-slate-600 leading-relaxed font-normal italic font-playfair">
+                {/* Trust Signatures (Trust Badges) */}
+                <div className="pt-10 border-t border-slate-100">
+                  <div className="grid grid-cols-2 gap-4 mb-10">
+                    <div className="flex items-center gap-3 p-5 rounded-3xl bg-white border border-slate-100 shadow-sm group hover:border-primary/20 transition-all duration-500">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Truck className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-900">Express Delivery</p>
+                        <p className="text-[10px] text-slate-400">Fast courier service</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-5 rounded-3xl bg-white border border-slate-100 shadow-sm group hover:border-primary/20 transition-all duration-500">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Shield className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-900">Secure Checkout</p>
+                        <p className="text-[10px] text-slate-400">Encrypted protection</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. Description (Moved after Trust Badges) */}
+                  <div className="space-y-6">
+                    <label className="label-premium ml-1">About this Masterpiece</label>
+                    <p className="text-xl text-slate-600 leading-relaxed font-normal italic font-playfair">
                       {product.description}
                     </p>
                   </div>
-                </div>
 
-
-
-                {/* Trust Signatures */}
-                <div className="pt-8 border-t border-slate-100">
-                  <div className="grid grid-cols-2 gap-4 mb-8">
-                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-white border border-slate-50 shadow-sm group hover:border-primary/20 transition-all duration-500">
-                      <div className="w-10 h-10 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Truck className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Global Escort</p>
-                        <p className="text-[9px] text-slate-400">Insured Delivery</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-white border border-slate-50 shadow-sm group hover:border-primary/20 transition-all duration-500">
-                      <div className="w-10 h-10 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Shield className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Certified</p>
-                        <p className="text-[9px] text-slate-400">100% Authentic</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Artisan Signature Block */}
-                  <div className="relative p-8 rounded-[2.5rem] bg-slate-950 text-white overflow-hidden group">
+                  {/* Artisan Signature Block (Subtle below description) */}
+                  <div className="mt-12 relative p-8 rounded-[2.5rem] bg-slate-950 text-white overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] group-hover:w-48 transition-all duration-1000" />
                     <div className="relative z-10 flex items-center justify-between">
                       <div className="space-y-1">
@@ -541,12 +539,6 @@ const ProductPage = () => {
                         <p className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">Registry No.</p>
                         <p className="text-xs font-mono tracking-tighter text-primary">AQ-{Math.floor(Math.random() * 90000) + 10000}</p>
                       </div>
-                    </div>
-                    <div className="mt-6 flex items-center gap-4">
-                      <div className="w-10 h-[1px] bg-white/20" />
-                      <p className="text-[10px] font-medium text-white/60 italic leading-relaxed">
-                        "Each piece is a unique expression of artisan commitment, selected specifically for our curated collection."
-                      </p>
                     </div>
                   </div>
                 </div>

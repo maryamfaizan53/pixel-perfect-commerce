@@ -14,6 +14,57 @@ import { StarRating } from "@/components/reviews/StarRating";
 import { useReviews } from "@/hooks/useReviews";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { Sparkles } from "lucide-react";
+
+interface ProductImage {
+  node: {
+    url: string;
+    altText: string | null;
+  };
+}
+
+interface Variant {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: {
+    amount: string;
+    currencyCode: string;
+  };
+  selectedOptions: {
+    name: string;
+    value: string;
+  }[];
+}
+
+interface ProductOption {
+  name: string;
+  values: string[];
+}
+
+interface ShopifyProductExtended extends ShopifyProduct {
+  id: string;
+  description: string;
+  productType: string;
+  vendor: string;
+  images: {
+    edges: ProductImage[];
+  };
+  variants: {
+    edges: {
+      node: Variant;
+    }[];
+  };
+  options: ProductOption[];
+  collections: {
+    edges: {
+      node: {
+        title: string;
+        handle: string;
+      };
+    }[];
+  };
+}
 
 
 const PRODUCT_QUERY = `
@@ -75,12 +126,11 @@ const PRODUCT_QUERY = `
 
 const ProductPage = () => {
   const { handle } = useParams();
-  const [product, setProduct] = useState<any | null>(null);
+  const [product, setProduct] = useState<ShopifyProductExtended | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState<any>(null);
-  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [isInspecting, setIsInspecting] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [showStickyCTA, setShowStickyCTA] = useState(false);
@@ -279,7 +329,7 @@ const ProductPage = () => {
               </div>
 
               <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-none justify-center">
-                {product.images.edges.map((image: any, index: number) => (
+                {product.images.edges.map((image: ProductImage, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -350,23 +400,30 @@ const ProductPage = () => {
                   </div>
                 </div>
 
+                {/* 3. Description (Now after Rates) */}
+                <div className="space-y-4 pt-2">
+                  <p className="text-lg text-slate-600 leading-relaxed font-normal italic font-playfair">
+                    {product.description}
+                  </p>
+                </div>
+
                 {/* 3. Variant Options & Buttons */}
                 <div className="space-y-10">
                   {/* Variant Selection */}
                   {product.options.length > 0 && product.options[0].name !== 'Title' && (
                     <div className="space-y-6">
-                      {product.options.map((option: any) => (
+                      {product.options.map((option: ProductOption) => (
                         <div key={option.name} className="space-y-4">
                           <label className="label-premium ml-1">{option.name}</label>
                           <div className="flex flex-wrap gap-4">
                             {option.values.map((value: string) => {
-                              const isSelected = selectedVariant?.selectedOptions?.some((opt: any) => opt.name === option.name && opt.value === value);
+                              const isSelected = selectedVariant?.selectedOptions?.some((opt: { name: string; value: string }) => opt.name === option.name && opt.value === value);
                               return (
                                 <button
                                   key={value}
                                   onClick={() => {
-                                    const newVariant = product.variants.edges.find((v: any) =>
-                                      v.node.selectedOptions.some((opt: any) => opt.name === option.name && opt.value === value)
+                                    const newVariant = product.variants.edges.find((v: { node: Variant }) =>
+                                      v.node.selectedOptions.some((opt: { name: string; value: string }) => opt.name === option.name && opt.value === value)
                                     )?.node;
                                     if (newVariant) setSelectedVariant(newVariant);
                                   }}
@@ -447,21 +504,7 @@ const ProductPage = () => {
                   </div>
                 </div>
 
-                {/* 4. Description (Show in Short) */}
-                <div className="space-y-4 pt-6">
-                  <label className="label-premium">Masterpiece Description</label>
-                  <div className="relative">
-                    <p className={`text-lg text-slate-600 leading-relaxed font-medium ${!showFullDescription ? 'line-clamp-3' : ''}`}>
-                      {product.description}
-                    </p>
-                    <button
-                      onClick={() => setShowFullDescription(!showFullDescription)}
-                      className="text-primary text-[10px] font-black uppercase tracking-widest mt-4 hover:underline transition-all"
-                    >
-                      {showFullDescription ? 'Read Less -' : 'Read Full Journey +'}
-                    </button>
-                  </div>
-                </div>
+
 
                 {/* Trust Signatures */}
                 <div className="pt-8 border-t border-slate-100">
@@ -563,7 +606,7 @@ const ProductPage = () => {
 
                 <TabsContent value="specifications" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    {product.options.map((opt: any) => (
+                    {product.options.map((opt: ProductOption) => (
                       <div key={opt.name} className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
                         <span className="label-premium">{opt.name}</span>
                         <span className="font-bold text-slate-900">{opt.values.join(', ')}</span>

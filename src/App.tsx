@@ -26,6 +26,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 import { WhatsAppSupport } from "@/components/common/WhatsAppSupport";
+import { AIChatbot } from "@/components/common/AIChatbot";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
           <BrowserRouter>
             <AnimatedRoutes />
             <WhatsAppSupport />
+            <AIChatbot />
           </BrowserRouter>
         </TooltipProvider>
       </WishlistProvider>

@@ -87,11 +87,11 @@ export const Header = () => {
                   <ShoppingBag className="w-5 h-5 text-primary group-hover:text-white transition-colors duration-500" />
                 </div>
               </div>
-              <div className="hidden sm:flex flex-col">
-                <span className="font-bold text-xl tracking-tight text-slate-900 leading-none">
+              <div className="hidden xs:flex flex-col">
+                <span className="font-bold text-lg sm:text-xl tracking-tight text-slate-900 leading-none">
                   Pixel<span className="text-primary">Perfect</span>
                 </span>
-                <span className="text-[8px] font-bold uppercase tracking-widest text-slate-400 mt-1.5">International Boutique</span>
+                <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-widest text-slate-400 mt-1 sm:mt-1.5">International Boutique</span>
               </div>
             </Link>
 

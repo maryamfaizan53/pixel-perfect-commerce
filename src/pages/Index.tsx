@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { CategorySection } from "@/components/home/CategorySection";
 import { TrendingUp, Truck, Shield, HeadphonesIcon, Globe, Star, Zap, CreditCard, Mail, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -71,16 +72,16 @@ const Index = () => {
                   transition={{ delay: i * 0.1, duration: 0.8 }}
                   className="group relative"
                 >
-                  <div className="premium-card p-12 flex flex-col items-center text-center h-full glass-noise border-slate-100 hover:border-primary/20 transition-all duration-700">
-                    <div className={`p-6 rounded-[2rem] ${item.color} mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl`}>
+                  <div className="premium-card p-14 flex flex-col items-center text-center h-full glass-noise border-slate-100 hover:border-primary/30 transition-all duration-700 hover:shadow-gold rounded-[2.5rem]">
+                    <div className={`p-8 rounded-[2.5rem] ${item.color} mb-10 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 shadow-2xl`}>
                       <item.icon className="w-10 h-10" />
                     </div>
-                    <h3 className="text-2xl font-black mb-4 tracking-tight">{item.title}</h3>
-                    <p className="text-slate-500 font-medium leading-relaxed">{item.desc}</p>
+                    <h3 className="text-2xl font-black mb-6 tracking-tight font-playfair italic">{item.title}</h3>
+                    <p className="text-slate-500 font-medium leading-relaxed opacity-80">{item.desc}</p>
 
                     {/* Hover Indicator */}
-                    <div className="absolute bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="w-12 h-1 bg-primary rounded-full" />
+                    <div className="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                      <div className="w-16 h-0.5 bg-primary" />
                     </div>
                   </div>
                 </motion.div>
@@ -96,6 +97,20 @@ const Index = () => {
 
         {/* Categories Grid - High Fidelity */}
         <CategoryGrid />
+
+        {/* Dynamic Collection Sections */}
+        <CategorySection
+          handle="kitchen"
+          title="Culinary"
+          subtitle="Transform your workspace with artisan kitchen instruments designed for the modern gastronome."
+        />
+
+        <CategorySection
+          handle="hair"
+          title="Haircare"
+          subtitle="Professional-grade hair solutions that combine scientific precision with pure luxury."
+          reverse
+        />
 
         {/* Featured Products - Curation */}
         <FeaturedProducts />
@@ -144,16 +159,16 @@ const Index = () => {
               <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 blur-[100px] rounded-full group-hover:bg-primary/20 transition-colors duration-1000" />
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.4em] mb-10">
-                  <Mail className="w-4 h-4 text-primary" />
-                  Privilege Club
+                <div className="inline-flex items-center gap-3 px-8 py-3 rounded-full bg-secondary text-primary text-[10px] font-black uppercase tracking-[0.5em] mb-12 shadow-gold border border-primary/20">
+                  <Mail className="w-4 h-4" />
+                  Privilege Access
                 </div>
-                <h2 className="text-5xl md:text-8xl font-black mb-10 leading-[0.95] tracking-tighter">
+                <h2 className="text-6xl md:text-9xl font-black mb-14 leading-[0.8] tracking-tighter font-playfair italic">
                   Define Your <br />
-                  <span className="text-primary text-glow underline decoration-slate-900/10 underline-offset-12">Signature Style.</span>
+                  <span className="text-primary not-italic font-sans uppercase text-[0.4em] tracking-[0.2em] block mt-8">Signature Authority</span>
                 </h2>
-                <p className="text-xl md:text-2xl text-slate-500 mb-16 max-w-3xl mx-auto font-medium leading-relaxed">
-                  Join the elite circle for early prototype access, bespoke rewards, and private collections.
+                <p className="text-xl md:text-2xl text-slate-500 mb-20 max-w-4xl mx-auto font-medium leading-relaxed italic opacity-70">
+                  "Join the inner circle for early access to artisan prototypes, bespoke rewards, and private boutique galleries."
                 </p>
 
                 <div className="flex flex-col md:flex-row gap-6 max-w-2xl mx-auto">

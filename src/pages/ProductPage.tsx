@@ -223,8 +223,8 @@ const ProductPage = () => {
                     key={index}
                     onClick={() => setSelectedImage(index)}
                     className={`flex-shrink-0 w-24 h-24 rounded-[1.25rem] overflow-hidden border-2 transition-all duration-500 hover:scale-105 ${selectedImage === index
-                        ? "border-primary ring-[6px] ring-primary/10 shadow-xl"
-                        : "border-transparent opacity-60 hover:opacity-100"
+                      ? "border-primary ring-[6px] ring-primary/10 shadow-xl"
+                      : "border-transparent opacity-60 hover:opacity-100"
                       }`}
                   >
                     <img src={image.node.url} alt={`${product.title} ${index + 1}`} className="w-full h-full object-cover" />
@@ -255,7 +255,7 @@ const ProductPage = () => {
                       </div>
                     )}
                   </div>
-                  <h1 className="text-5xl font-black tracking-tighter text-slate-900 lg:text-7xl leading-tight">
+                  <h1 className="text-5xl font-black tracking-tighter text-foreground lg:text-8xl leading-[0.85] font-playfair italic">
                     {product.title}
                   </h1>
                 </div>
@@ -276,10 +276,13 @@ const ProductPage = () => {
 
                 <div className="flex flex-wrap items-center gap-6 py-8 border-y border-slate-200/60">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-1">PKR</span>
-                    <span className="text-5xl font-black text-glow text-primary leading-none tracking-tighter">
-                      {price.toLocaleString('en-PK')}
-                    </span>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.5em] mb-2">Artisan Boutique Price</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xl font-bold text-primary">PKR</span>
+                      <span className="text-6xl font-black text-foreground tracking-tighter">
+                        {price.toLocaleString('en-PK')}
+                      </span>
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     {isOutOfStock ? (
@@ -326,8 +329,8 @@ const ProductPage = () => {
                                 if (newVariant) setSelectedVariant(newVariant);
                               }}
                               className={`px-8 py-3.5 text-sm font-black rounded-2xl border-2 transition-all duration-300 hover:scale-105 ${isSelected
-                                  ? "bg-primary text-white border-primary shadow-2xl shadow-primary/30"
-                                  : "bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm"
+                                ? "bg-primary text-white border-primary shadow-2xl shadow-primary/30"
+                                : "bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm"
                                 }`}
                             >
                               {value}
@@ -369,17 +372,17 @@ const ProductPage = () => {
 
                   <Button
                     size="lg"
-                    className="flex-1 h-16 text-lg font-black rounded-2xl btn-premium shadow-2xl transition-all active:scale-[0.98] group"
+                    className="flex-1 h-20 text-lg font-black rounded-2xl btn-premium shadow-gold transition-all duration-500 active:scale-[0.98] group uppercase tracking-widest"
                     onClick={handleAddToCart}
                     disabled={isOutOfStock}
                   >
-                    <ShoppingCart className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-                    {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
+                    <ShoppingCart className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-500" />
+                    {isOutOfStock ? 'Sold Out' : 'Acquire Piece'}
                   </Button>
 
                   <Button
                     size="lg"
-                    className="flex-1 h-16 text-lg font-black rounded-2xl bg-secondary hover:bg-secondary/90 text-white shadow-2xl transition-all active:scale-[0.98]"
+                    className="flex-1 h-20 text-lg font-black rounded-2xl bg-secondary hover:bg-secondary-hover text-white shadow-2xl transition-all duration-500 active:scale-[0.98] uppercase tracking-widest"
                     onClick={() => {
                       handleAddToCart();
                       const { createCheckout } = useCartStore.getState();
@@ -390,7 +393,7 @@ const ProductPage = () => {
                     }}
                     disabled={isOutOfStock}
                   >
-                    Order Now
+                    Secure Order
                   </Button>
 
                   <Button size="icon" variant="outline" className="h-20 w-20 rounded-2xl border-2 border-slate-100 text-slate-400 hover:text-rose-500 hover:border-rose-100 hover:bg-rose-50 transition-all shadow-xl bg-white">

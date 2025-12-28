@@ -18,15 +18,15 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
           {/* Brand Identity */}
           <div className="lg:col-span-4 space-y-8">
-            <Link to="/" className="flex items-center gap-3.5 group">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <ShoppingCart className="w-6 h-6 text-primary" />
+            <Link to="/" className="flex items-center gap-4 group">
+              <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-full flex items-center justify-center shadow-2xl transition-all duration-700 group-hover:bg-primary group-hover:rotate-[360deg]">
+                <ShoppingCart className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
               </div>
               <div className="flex flex-col">
-                <span className="font-black text-2xl tracking-tighter text-white leading-none">
-                  PIXEL<span className="text-primary italic">PERFECT</span>
+                <span className="font-black text-3xl tracking-tighter text-white leading-none font-playfair italic">
+                  Pixel<span className="text-primary not-italic">Perfect</span>
                 </span>
-                <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/30 mt-1">EMPORIUM</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.6em] text-white/20 mt-1">Global Emporium</span>
               </div>
             </Link>
             <p className="text-white/40 font-medium leading-relaxed max-w-sm">
@@ -34,10 +34,14 @@ export const Footer = () => {
             </p>
             <div className="flex gap-4">
               {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-                <Button key={i} size="icon" variant="ghost" className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 hover:bg-white hover:text-slate-950 hover:-translate-y-1 transition-all duration-300">
+                <Button key={i} size="icon" variant="ghost" className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all duration-500">
                   <Icon className="w-5 h-5" />
                 </Button>
               ))}
+            </div>
+            <div className="pt-8 border-t border-white/5">
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary block mb-2 underline decoration-primary/30 underline-offset-8">Quality Certification</span>
+              <p className="text-[10px] text-white/20 font-black uppercase tracking-[0.2em]">Verified Professional Standard • Artisan Audited</p>
             </div>
           </div>
 
@@ -70,19 +74,19 @@ export const Footer = () => {
 
           {/* Newsletter / CTA */}
           <div className="lg:col-span-4 space-y-8">
-            <div className="p-8 rounded-[2rem] bg-white/5 border border-white/10 glass-noise">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-6">Nexus Updates</h3>
-              <p className="text-sm font-medium text-white/60 mb-8 leading-relaxed">
-                Join our private newsletter for early prototype access and bespoke offers.
+            <div className="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 glass-noise">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-8">Bespoke Updates</h3>
+              <p className="text-sm font-medium text-white/50 mb-10 leading-relaxed italic font-playfair">
+                "Join our private circle for early prototype access and artisan-crafted rewards."
               </p>
-              <div className="flex gap-3">
+              <div className="flex gap-4">
                 <Input
                   type="email"
-                  placeholder="Identity@Nexus"
-                  className="h-14 rounded-xl bg-white/5 border-white/5 text-white focus:ring-primary/20 placeholder:text-white/20"
+                  placeholder="Registry Identity"
+                  className="h-16 rounded-2xl bg-white/5 border-white/10 text-white focus:ring-primary/30 placeholder:text-white/10 font-medium"
                 />
-                <Button size="icon" className="h-14 w-14 rounded-xl btn-premium text-white flex-shrink-0">
-                  <Mail className="w-5 h-5" />
+                <Button size="icon" className="h-16 w-16 rounded-2xl btn-premium text-white flex-shrink-0 shadow-gold">
+                  <Mail className="w-6 h-6" />
                 </Button>
               </div>
             </div>
@@ -112,10 +116,10 @@ export const Footer = () => {
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.1, y: -5 }}
+            whileHover={{ scale: 1.15, y: -8 }}
             whileTap={{ scale: 0.9 }}
             onClick={scrollToTop}
-            className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all duration-500"
+            className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all duration-700 shadow-gold"
           >
             <ChevronUp className="w-6 h-6" />
           </motion.button>

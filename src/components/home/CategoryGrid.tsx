@@ -29,7 +29,7 @@ export const CategoryGrid = () => {
     <section className="py-24 md:py-32 bg-background relative overflow-hidden">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-muted/30 via-transparent to-muted/20 pointer-events-none" />
-      
+
       <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
@@ -40,14 +40,14 @@ export const CategoryGrid = () => {
             transition={{ duration: 0.6 }}
             className="space-y-4"
           >
-            <span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em]">
-              Collections
+            <span className="inline-block text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-4">
+              Curated Selection
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
-              Shop by Category
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground tracking-tighter font-playfair italic leading-[0.9]">
+              Signature <span className="text-primary not-italic">Collections</span>
             </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-md">
-              Explore our curated collections designed for every aspect of your lifestyle.
+            <p className="text-muted-foreground text-lg md:text-xl max-w-lg mt-8 leading-relaxed font-medium italic opacity-70">
+              "Explore our meticulously curated vaults, where tradition meets modern luxury."
             </p>
           </motion.div>
 
@@ -87,25 +87,25 @@ export const CategoryGrid = () => {
                   alt={col.node.title}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-60 group-hover:opacity-70 transition-opacity duration-500" />
 
                 {/* Content */}
-                <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+                <div className="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-secondary/95 via-secondary/40 to-transparent translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                   <div className="flex items-end justify-between gap-4">
-                    <div className="space-y-1">
-                      <h3 className="text-lg md:text-xl font-bold text-primary-foreground leading-tight">
+                    <div className="space-y-2">
+                      <h3 className="text-2xl md:text-3xl font-black text-white leading-tight font-playfair italic">
                         {col.node.title}
                       </h3>
-                      <p className="text-xs md:text-sm text-primary-foreground/60 font-medium">
-                        Explore Collection
+                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">
+                        Initialize Exploration
                       </p>
                     </div>
-                    
+
                     {/* Arrow Button */}
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300">
-                      <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-700 shadow-gold">
+                      <ArrowUpRight className="w-6 h-6 text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </div>
                   </div>
                 </div>
@@ -142,7 +142,7 @@ export const CategoryGrid = () => {
                     alt={col.node.title}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-                  
+
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent opacity-50 group-hover:opacity-60 transition-opacity duration-500" />
 

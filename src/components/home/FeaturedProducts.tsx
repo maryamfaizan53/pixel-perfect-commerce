@@ -69,15 +69,15 @@ export const FeaturedProducts = () => {
             viewport={{ once: true }}
             className="space-y-6 max-w-2xl"
           >
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-              <Star className="w-4 h-4 fill-primary/20" />
-              Diamond Tier Curation
+            <div className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-secondary text-primary text-[10px] font-black uppercase tracking-[0.5em] border border-primary/20 shadow-gold">
+              <Star className="w-3.5 h-3.5 fill-primary" />
+              Diamond Tier Selection
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none">
-              Featured <span className="text-primary italic">Collection</span>
+            <h2 className="text-5xl md:text-8xl font-black text-foreground tracking-tighter leading-[0.85] font-playfair italic">
+              Artisan <span className="text-primary not-italic">Excellence</span>
             </h2>
-            <p className="text-slate-500 font-medium text-xl leading-relaxed">
-              Exquisite pieces meticulously selected for their uncompromising quality and design.
+            <p className="text-muted-foreground font-medium text-xl leading-relaxed max-w-xl opacity-70 italic">
+              "Exquisite pieces meticulously selected for those who demand the pinnacle of artisan craftsmanship."
             </p>
           </motion.div>
 

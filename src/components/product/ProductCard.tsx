@@ -127,22 +127,22 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
         </div>
 
         {/* Quick Actions */}
-        <div className="absolute top-5 right-5 flex flex-col gap-3 transform translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 z-10">
+        <div className="absolute top-6 right-6 flex flex-col gap-4 transform translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 z-10">
           <Button
             size="icon"
             onClick={handleToggleWishlist}
             disabled={wishlistLoading}
-            className={`w-12 h-12 rounded-2xl glass border-white/20 shadow-2xl transition-all hover:scale-110 ${inWishlist ? "text-rose-500 fill-rose-500" : "text-white hover:text-rose-500"
+            className={`w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-110 ${inWishlist ? "text-rose-500 fill-rose-500" : "text-white hover:text-rose-500"
               }`}
           >
-            <Heart className="w-5 h-5" />
+            <Heart className="w-6 h-6" />
           </Button>
           <Link to={`/product/${node.handle}`}>
             <Button
               size="icon"
-              className="w-12 h-12 rounded-2xl glass border-white/20 shadow-2xl text-white hover:text-primary transition-all hover:scale-110"
+              className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl text-white hover:text-primary transition-all duration-500 hover:scale-110 shadow-gold"
             >
-              <Eye className="w-5 h-5" />
+              <Eye className="w-6 h-6" />
             </Button>
           </Link>
         </div>
@@ -161,11 +161,11 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
         )}
       </div>
 
-      <div className="p-8">
-        <Link to={`/product/${node.handle}`} className="block group/title mb-3">
-          <h3 className="font-bold text-foreground line-clamp-1 text-xl group-hover/title:text-primary transition-colors flex items-center justify-between">
+      <div className="p-8 space-y-4">
+        <Link to={`/product/${node.handle}`} className="block group/title">
+          <h3 className="font-black text-foreground line-clamp-1 text-2xl group-hover/title:text-primary transition-colors flex items-center justify-between font-playfair italic">
             <HighlightText text={node.title} highlight={searchQuery} />
-            <ArrowRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover/title:opacity-100 group-hover/title:translate-x-0 transition-all text-primary" />
+            <ArrowRight className="w-6 h-6 opacity-0 -translate-x-6 group-hover/title:opacity-100 group-hover/title:translate-x-0 transition-all duration-700 text-primary" />
           </h3>
         </Link>
 
@@ -175,19 +175,22 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
           </p>
         )}
 
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between pt-4 border-t border-slate-100">
           <div className="flex flex-col">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">PKR</span>
-            <span className="text-3xl font-black text-foreground leading-none tracking-tighter">
-              {price.toLocaleString('en-PK')}
-            </span>
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-1">Boutique Price</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-sm font-bold text-primary">PKR</span>
+              <span className="text-3xl font-black text-foreground tracking-tighter">
+                {price.toLocaleString('en-PK')}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-4 py-2 rounded-xl">
+          <div className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-[0.2em] bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            Ready to ship
+            Ready for Shipment
           </div>
         </div>
       </div>

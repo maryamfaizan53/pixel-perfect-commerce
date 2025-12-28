@@ -53,14 +53,14 @@ export const Header = () => {
           <motion.div
             initial={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="bg-gradient-to-r from-primary via-primary to-secondary overflow-hidden"
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="bg-secondary text-secondary-foreground overflow-hidden border-b border-primary/20"
           >
             <div className="container-custom">
-              <div className="flex items-center justify-center h-10 text-[11px] font-bold text-primary-foreground tracking-wide">
-                <Sparkles className="w-3.5 h-3.5 mr-2" />
-                <span>FREE SHIPPING ON ORDERS OVER PKR 5,000 • USE CODE: <span className="underline">WELCOME15</span></span>
-                <Sparkles className="w-3.5 h-3.5 ml-2" />
+              <div className="flex items-center justify-center h-10 text-[10px] font-black uppercase tracking-[0.4em]">
+                <Sparkles className="w-3 h-3 mr-3 text-primary" />
+                <span>Complimentary Boutique Shipping Worldwide</span>
+                <Sparkles className="w-3 h-3 ml-3 text-primary" />
               </div>
             </div>
           </motion.div>
@@ -80,33 +80,39 @@ export const Header = () => {
         <div className="container-custom">
           <div className="flex items-center justify-between h-16 md:h-20 gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group shrink-0">
+            <Link to="/" className="flex items-center gap-4 group shrink-0">
               <div className="relative">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-primary/30 transition-all duration-300 group-hover:scale-105">
-                  <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
+                <div className="w-12 h-12 bg-secondary border border-primary/30 rounded-full flex items-center justify-center transition-all duration-700 group-hover:bg-primary group-hover:scale-105 group-hover:rotate-[360deg] shadow-lg">
+                  <ShoppingBag className="w-5 h-5 text-primary group-hover:text-white transition-colors duration-500" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-secondary rounded-full animate-pulse" />
               </div>
               <div className="hidden sm:flex flex-col">
-                <span className="font-black text-lg md:text-xl tracking-tight text-foreground leading-none">
-                  LUXE<span className="text-primary">MART</span>
+                <span className="font-black text-2xl tracking-tighter text-foreground leading-none font-playfair italic">
+                  Pixel<span className="text-primary not-italic">Perfect</span>
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">Premium Shopping</span>
+                <span className="text-[8px] font-black uppercase tracking-[0.5em] text-muted-foreground mt-1">International Boutique</span>
               </div>
             </Link>
 
             {/* Center Navigation - Desktop */}
             <nav className="hidden lg:flex items-center justify-center flex-1 max-w-2xl mx-8">
               <ul className="flex items-center gap-1">
-                {categories.slice(0, 5).map((category) => (
-                  <li key={category.name}>
+                {categories.slice(0, 6).map((category, idx) => (
+                  <li key={category.name} className="relative group/nav">
                     <Link
                       to={category.path}
-                      className="relative px-4 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group"
+                      className="nav-link-premium text-muted-foreground hover:text-foreground relative z-10 flex items-center gap-2"
                     >
                       {category.name}
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary rounded-full group-hover:w-6 transition-all duration-300" />
+                      {idx < 2 && (
+                        <motion.span
+                          animate={{ opacity: [0.4, 1, 0.4] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          className="w-1.5 h-1.5 bg-primary rounded-full"
+                        />
+                      )}
                     </Link>
+                    <div className="absolute -bottom-1 left-4 right-4 h-0.5 bg-primary scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-500 origin-left" />
                   </li>
                 ))}
               </ul>
@@ -124,7 +130,7 @@ export const Header = () => {
                 variant="ghost"
                 size="icon"
                 className="md:hidden w-10 h-10 rounded-xl hover:bg-muted"
-                onClick={() => {/* TODO: Mobile search modal */}}
+                onClick={() => {/* TODO: Mobile search modal */ }}
               >
                 <Search className="w-5 h-5" />
               </Button>
@@ -240,10 +246,10 @@ export const Header = () => {
                   <span className="font-black text-xl tracking-tight">
                     LUXE<span className="text-primary">MART</span>
                   </span>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="rounded-xl" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-xl"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <X className="w-5 h-5" />

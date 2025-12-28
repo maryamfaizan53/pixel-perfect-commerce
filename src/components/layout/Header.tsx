@@ -241,9 +241,9 @@ export const Header = () => {
               <div className="p-6 space-y-6">
                 {/* Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-border">
-                <span className="font-bold text-xl tracking-tight">
-                  Pixel<span className="text-primary">Perfect</span>
-                </span>
+                  <span className="font-bold text-xl tracking-tight">
+                    Pixel<span className="text-primary">Perfect</span>
+                  </span>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -256,7 +256,19 @@ export const Header = () => {
 
                 {/* Search in Mobile */}
                 <div className="pb-4 border-b border-border">
-                  <SearchBar />
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="w-full h-12 bg-slate-100 rounded-xl pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setSearchOpen(true);
+                      }}
+                      readOnly
+                    />
+                  </div>
                 </div>
 
                 {/* Categories */}

@@ -138,129 +138,121 @@ export const HeroCarousel = () => {
 
               {/* Title - Editorial Style */}
               <div className="overflow-hidden mb-8 perspective-1000">
-                <motion.h1
-                  initial={{ y: "100%", opacity: 0, rotateX: 45 }}
-                  animate={{ y: 0, opacity: 1, rotateX: 0 }}
-                  transition={{ delay: 0.3, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] font-playfair italic"
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white leading-[1.0]"
                 >
-                  {slides[currentSlide].title}
-                  <br />
-                  <motion.span
-                    initial={{ x: -100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
-                    className="text-primary not-italic font-sans uppercase text-[0.6em] tracking-[0.2em] block mt-4"
-                  >
-                    {slides[currentSlide].highlight}
-                  </motion.span>
-                </motion.h1>
-              </div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-lg md:text-xl text-white/70 font-medium max-w-xl leading-relaxed italic opacity-80"
-              >
-                {slides[currentSlide].subtitle}
-              </motion.p>
-
-              {/* CTA */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.8 }}
-                className="flex flex-wrap items-center gap-6"
-              >
-                <Button
-                  size="lg"
-                  asChild
-                  className="h-16 px-10 rounded-2xl bg-primary hover:bg-primary-hover text-white font-black uppercase tracking-[0.2em] group shadow-gold transition-all duration-500"
+                {slides[currentSlide].title}
+                <br />
+                <motion.span
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
+                  className="text-primary uppercase text-[0.5em] tracking-[0.2em] block mt-4"
                 >
-                  <Link to="/category/all" className="flex items-center gap-4">
-                    {slides[currentSlide].cta}
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-500" />
-                  </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-16 px-10 rounded-2xl bg-transparent border-white/20 text-white hover:bg-white hover:text-secondary font-black uppercase tracking-[0.2em] transition-all duration-500"
-                >
-                  View Lookbook
-                </Button>
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Bottom Controls */}
-      <div className="absolute bottom-0 left-0 right-0 z-30">
-        <div className="container-custom">
-          <div className="flex items-center justify-between py-10 border-t border-white/10 backdrop-blur-md bg-white/5 rounded-t-3xl px-12">
-            {/* Navigation Arrows */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handlePrev}
-                className="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
+                  {slides[currentSlide].highlight}
+                </motion.span>
+              </motion.h1>
             </div>
 
-            {/* Progress Indicators */}
-            <div className="flex items-center gap-6">
-              {slides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className="group flex flex-col items-center gap-2"
-                  aria-label={`Go to slide ${index + 1}`}
-                >
-                  <div className="w-16 md:w-24 h-0.5 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-primary"
-                      animate={{
-                        width: index === currentSlide ? `${progress}%` : index < currentSlide ? "100%" : "0%"
-                      }}
-                      transition={{ duration: 0.1, ease: "linear" }}
-                    />
-                  </div>
-                  <span className={`text-[10px] font-black uppercase tracking-widest transition-all duration-500 mt-2 ${index === currentSlide ? "text-primary scale-110" : "text-white/30"
-                    }`}>
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                </button>
-              ))}
-            </div>
+            className="text-lg md:text-xl text-white/70 font-medium max-w-xl leading-relaxed"
+              >
+            {slides[currentSlide].subtitle}
+          </motion.p>
 
-            {/* Play/Pause */}
-            <button
-              onClick={() => setIsPaused(!isPaused)}
-              className="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-white hover:text-secondary transition-all duration-500"
-              aria-label={isPaused ? "Play" : "Pause"}
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="flex flex-wrap items-center gap-6"
+          >
+            <Button
+              size="lg"
+              asChild
+              className="h-16 px-10 rounded-2xl bg-primary hover:bg-primary-hover text-white font-black uppercase tracking-[0.2em] group shadow-gold transition-all duration-500"
             >
-              {isPaused ? <Play className="w-5 h-5 ml-0.5" /> : <Pause className="w-5 h-5" />}
-            </button>
-          </div>
+              <Link to="/category/all" className="flex items-center gap-4">
+                {slides[currentSlide].cta}
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-500" />
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-16 px-10 rounded-2xl bg-transparent border-white/20 text-white hover:bg-white hover:text-secondary font-black uppercase tracking-[0.2em] transition-all duration-500"
+            >
+              View Lookbook
+            </Button>
+          </motion.div>
         </div>
-      </div>
+    </div>
+        </motion.div >
+      </AnimatePresence >
 
-      {/* Interactive Cursor Indicator for Hero */}
-      <div className="absolute top-1/2 right-12 -translate-y-1/2 z-30 flex flex-col items-center gap-4 opacity-0 group-hover/box:opacity-100 transition-opacity duration-1000 hidden xl:flex">
+  {/* Bottom Controls */ }
+  < div className = "absolute bottom-0 left-0 right-0 z-30" >
+    <div className="container-custom">
+      <div className="flex items-center justify-between py-10 border-t border-white/10 backdrop-blur-md bg-white/5 rounded-t-3xl px-12">
+        {/* Navigation Arrows */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handlePrev}
+            className="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Progress Indicators */}
+        <div className="flex items-center gap-6">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className="group flex flex-col items-center gap-2"
+              aria-label={`Go to slide ${index + 1}`}
+            >
+              <div className="w-16 md:w-24 h-0.5 bg-white/10 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-primary"
+                  animate={{
+                    width: index === currentSlide ? `${progress}%` : index < currentSlide ? "100%" : "0%"
+                  }}
+                  transition={{ duration: 0.1, ease: "linear" }}
+                />
+              </div>
+              <span className={`text-[10px] font-black uppercase tracking-widest transition-all duration-500 mt-2 ${index === currentSlide ? "text-primary scale-110" : "text-white/30"
+                }`}>
+                {String(index + 1).padStart(2, '0')}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Play/Pause */}
+        <button
+          onClick={() => setIsPaused(!isPaused)}
+          className="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-white hover:text-secondary transition-all duration-500"
+          aria-label={isPaused ? "Play" : "Pause"}
+        >
+          {isPaused ? <Play className="w-5 h-5 ml-0.5" /> : <Pause className="w-5 h-5" />}
+        </button>
+      </div>
+    </div>
+      </div >
+
+  {/* Interactive Cursor Indicator for Hero */ }
+  < div className = "absolute top-1/2 right-12 -translate-y-1/2 z-30 flex flex-col items-center gap-4 opacity-0 group-hover/box:opacity-100 transition-opacity duration-1000 hidden xl:flex" >
         <div className="w-px h-20 bg-gradient-to-b from-transparent via-primary to-transparent" />
         <MousePointer2 className="w-4 h-4 text-primary animate-bounce" />
         <span className="text-[8px] font-black uppercase tracking-[0.5em] text-primary rotate-90 mt-8 whitespace-nowrap">Parallax Enabled</span>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };

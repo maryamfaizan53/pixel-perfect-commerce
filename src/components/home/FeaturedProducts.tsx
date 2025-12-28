@@ -73,10 +73,10 @@ export const FeaturedProducts = () => {
               <Star className="w-3.5 h-3.5 fill-primary" />
               Diamond Tier Selection
             </div>
-            <h2 className="text-6xl md:text-9xl font-black text-foreground tracking-tighter leading-[0.8] font-playfair italic">
-              Artisan <span className="text-gold-leaf not-italic">Excellence</span>
+            <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tighter leading-[1.1]">
+              Artisan <span className="text-primary">Excellence</span>
             </h2>
-            <p className="text-muted-foreground font-medium text-xl leading-relaxed max-w-xl opacity-70 italic font-playfair">
+            <p className="text-muted-foreground font-medium text-lg leading-relaxed max-w-xl opacity-70">
               "Exquisite pieces meticulously selected for those who demand the pinnacle of artisan craftsmanship."
             </p>
           </motion.div>

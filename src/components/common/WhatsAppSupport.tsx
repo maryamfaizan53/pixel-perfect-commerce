@@ -14,14 +14,14 @@ export const WhatsAppSupport = () => {
     };
 
     return (
-        <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end gap-4 pointer-events-none">
+        <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-[100] flex flex-col items-end gap-4 pointer-events-none">
             <AnimatePresence>
                 {showTooltip && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                        className="bg-white px-6 py-4 rounded-2xl shadow-premium border border-slate-100 mb-2 pointer-events-auto"
+                        className="bg-white px-6 py-4 rounded-2xl shadow-premium border border-slate-100 mb-2 pointer-events-auto max-w-[calc(100vw-2rem)]"
                     >
                         <p className="text-sm font-bold text-slate-900 mb-1">Direct Assistance</p>
                         <p className="text-xs text-slate-500 mb-3 leading-relaxed">Need help? Chat with our curation experts on WhatsApp.</p>

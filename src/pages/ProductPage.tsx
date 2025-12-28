@@ -487,7 +487,7 @@ const ProductPage = () => {
                         disabled={isOutOfStock}
                       >
                         <ShoppingBag className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
-                        Add to Piece
+                        Add to Cart
                       </Button>
                     </div>
 
@@ -499,7 +499,7 @@ const ProductPage = () => {
                       disabled={isOutOfStock}
                     >
                       <CreditCard className="w-5 h-5 mr-3 group-hover:-translate-y-1 transition-transform" />
-                      Secure Order Now
+                      Order Now
                     </Button>
                   </div>
                 </div>
@@ -667,7 +667,7 @@ const ProductPage = () => {
                 onClick={handleOrderNow}
                 className="flex-1 h-14 rounded-xl bg-primary text-white font-black uppercase tracking-widest text-[10px] shadow-gold border-none"
               >
-                Procure Piece
+                Order Now
               </Button>
             </div>
           </motion.div>

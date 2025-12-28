@@ -354,11 +354,10 @@ const ProductPage = () => {
               >
                 {/* 1. Heading */}
                 <div className="space-y-4">
-                  <h1 className="text-5xl md:text-8xl lg:text-9xl font-black text-foreground text-editorial tracking-[-0.05em] leading-[0.8]">
-                    <span className="block opacity-90">{product.title.split(' ')[0]}</span>
-                    <span className="block text-gold-leaf">{product.title.split(' ').slice(1).join(' ')}</span>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tight leading-tight">
+                    <span className="block opacity-90">{product.title}</span>
                   </h1>
-                  <span className="inline-block px-5 py-2 bg-primary/5 text-primary label-premium border border-primary/10 rounded-full">
+                  <span className="inline-block px-5 py-2 bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-widest border border-slate-200 rounded-lg">
                     {product.vendor || 'Boutique'} Exclusive
                   </span>
                 </div>
@@ -367,8 +366,8 @@ const ProductPage = () => {
                 <div ref={priceRef} className="space-y-6 py-8 border-y border-slate-200/60 transition-all duration-700">
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-3">
-                      <span className="text-2xl font-bold text-primary">{currencyCode}</span>
-                      <span className="text-7xl font-black text-foreground tracking-tighter font-playfair italic">
+                      <span className="text-xl font-bold text-slate-900">{currencyCode}</span>
+                      <span className="text-5xl font-black text-foreground tracking-tight">
                         {price.toLocaleString()}
                       </span>
                     </div>
@@ -520,9 +519,9 @@ const ProductPage = () => {
                   </div>
 
                   {/* 4. Description (Moved after Trust Badges) */}
-                  <div className="space-y-6">
-                    <label className="label-premium ml-1">About this Masterpiece</label>
-                    <p className="text-xl text-slate-600 leading-relaxed font-normal italic font-playfair">
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Product Details</label>
+                    <p className="text-base text-slate-600 leading-relaxed font-medium">
                       {product.description}
                     </p>
                   </div>
@@ -532,8 +531,8 @@ const ProductPage = () => {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] group-hover:w-48 transition-all duration-1000" />
                     <div className="relative z-10 flex items-center justify-between">
                       <div className="space-y-1">
-                        <p className="label-premium !text-white/40">Artisan Integrity</p>
-                        <h4 className="text-xl font-black italic font-playfair tracking-tight">Verified Boutique Selection</h4>
+                        <p className="text-[8px] font-black uppercase tracking-widest text-white/40">Artisan Integrity</p>
+                        <h4 className="text-lg font-bold tracking-tight">Verified Boutique Selection</h4>
                       </div>
                       <div className="text-right">
                         <p className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">Registry No.</p>
@@ -584,7 +583,7 @@ const ProductPage = () => {
                   <TabsTrigger
                     key={tab}
                     value={tab}
-                    className="rounded-none border-b-4 border-transparent px-10 py-6 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all font-black"
+                    className="rounded-none border-b-4 border-transparent px-10 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all"
                   >
                     {tab}
                   </TabsTrigger>
@@ -594,8 +593,8 @@ const ProductPage = () => {
               <div className="max-w-5xl mx-auto">
                 <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                   <div className="prose prose-slate max-w-none">
-                    <h3 className="text-4xl font-black mb-8 italic font-playfair text-slate-900">Masterpiece Journey</h3>
-                    <p className="text-xl text-slate-600 leading-relaxed font-medium">
+                    <h3 className="text-2xl font-bold mb-6 text-slate-900">Product Narrative</h3>
+                    <p className="text-lg text-slate-600 leading-relaxed">
                       {product.description}
                     </p>
                   </div>

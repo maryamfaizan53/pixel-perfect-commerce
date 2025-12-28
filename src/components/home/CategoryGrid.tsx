@@ -43,7 +43,7 @@ export const CategoryGrid = () => {
             <span className="inline-block text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-4">
               Curated Selection
             </span>
-            <h2 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-[1.1]">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-[1.1]">
               Signature <span className="text-primary">Collections</span>
             </h2>
             <p className="text-muted-foreground text-lg md:text-xl max-w-lg mt-8 leading-relaxed font-medium opacity-70">
@@ -95,7 +95,7 @@ export const CategoryGrid = () => {
                 <div className="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-secondary/95 via-secondary/40 to-transparent translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                   <div className="flex items-end justify-between gap-4">
                     <div className="space-y-2">
-                      <h3 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight">
                         {col.node.title}
                       </h3>
                       <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">

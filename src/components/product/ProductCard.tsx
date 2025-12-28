@@ -124,8 +124,8 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
         {/* Quick View Trigger Overlay */}
         <div className="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-center justify-center">
           <div className="translate-y-8 group-hover:translate-y-0 transition-transform duration-700">
-            <span className="px-8 py-3 bg-white text-secondary text-[10px] font-black uppercase tracking-[0.5em] rounded-full shadow-premium">
-              Inspect Piece
+            <span className="px-8 py-3 bg-white text-secondary text-[10px] font-bold uppercase tracking-widest rounded-full shadow-premium">
+              Quick View
             </span>
           </div>
         </div>
@@ -144,7 +144,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             </div>
           </div>
           <Link to={`/product/${node.handle}`}>
-            <h3 className="text-xl md:text-2xl font-black text-slate-950 font-playfair italic leading-tight group-hover:text-primary transition-colors duration-500">
+            <h3 className="text-xl md:text-2xl font-bold text-slate-950 leading-tight group-hover:text-primary transition-colors duration-500">
               {node.title}
             </h3>
           </Link>
@@ -155,8 +155,8 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
         <div className="flex items-center justify-between pt-6 border-t border-slate-50">
           <div className="flex flex-col">
-            <span className="label-premium !text-slate-300 mb-1">Acquisition Investment</span>
-            <span className="text-2xl font-black text-secondary">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Price</span>
+            <span className="text-2xl font-black text-slate-900">
               <span className="text-xs font-bold mr-1">{node.priceRange.minVariantPrice.currencyCode}</span>
               {parseFloat(node.priceRange.minVariantPrice.amount).toLocaleString()}
             </span>

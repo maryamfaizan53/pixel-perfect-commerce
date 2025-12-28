@@ -58,9 +58,9 @@ export const Header = () => {
             className="bg-secondary text-secondary-foreground overflow-hidden border-b border-primary/20"
           >
             <div className="container-custom">
-              <div className="flex items-center justify-center h-10 text-[10px] font-black uppercase tracking-[0.4em]">
+              <div className="flex items-center justify-center h-10 text-[10px] font-bold uppercase tracking-widest">
                 <Sparkles className="w-3 h-3 mr-3 text-primary" />
-                <span>Complimentary Boutique Shipping Worldwide</span>
+                <span>Complimentary Shipping Worldwide</span>
                 <Sparkles className="w-3 h-3 ml-3 text-primary" />
               </div>
             </div>
@@ -88,10 +88,10 @@ export const Header = () => {
                 </div>
               </div>
               <div className="hidden sm:flex flex-col">
-                <span className="font-black text-2xl tracking-tighter text-foreground leading-none font-playfair italic">
-                  Pixel<span className="text-primary not-italic">Perfect</span>
+                <span className="font-bold text-xl tracking-tight text-slate-900 leading-none">
+                  Pixel<span className="text-primary">Perfect</span>
                 </span>
-                <span className="text-[8px] font-black uppercase tracking-[0.5em] text-muted-foreground mt-1">International Boutique</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest text-slate-400 mt-1.5">International Boutique</span>
               </div>
             </Link>
 
@@ -241,9 +241,9 @@ export const Header = () => {
               <div className="p-6 space-y-6">
                 {/* Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-border">
-                  <span className="font-black text-xl tracking-tight">
-                    LUXE<span className="text-primary">MART</span>
-                  </span>
+                <span className="font-bold text-xl tracking-tight">
+                  Pixel<span className="text-primary">Perfect</span>
+                </span>
                   <Button
                     variant="ghost"
                     size="icon"

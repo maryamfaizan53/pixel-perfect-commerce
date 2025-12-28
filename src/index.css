@@ -103,8 +103,8 @@ All colors MUST be HSL.
   h4,
   h5,
   h6 {
-    font-family: 'Playfair Display', serif;
-    @apply font-black tracking-tight;
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply font-bold tracking-tight;
   }
 }
 
@@ -165,8 +165,8 @@ All colors MUST be HSL.
   }
 
   .text-editorial {
-    font-family: 'Playfair Display', serif;
-    @apply tracking-tighter leading-[0.9] italic;
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply tracking-tight leading-[1.1] font-bold;
   }
 
   .text-gold-leaf {
@@ -178,7 +178,7 @@ All colors MUST be HSL.
   }
 
   .label-premium {
-    @apply text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/60;
+    @apply text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60;
   }
 
   .animate-float {

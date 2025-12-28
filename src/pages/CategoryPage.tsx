@@ -52,7 +52,7 @@ const CategoryPage = () => {
       setCollectionData(null);
       try {
         let list: ShopifyProduct[] = [];
-        
+
         if (category && category !== "all") {
           const collection = await fetchProductsByCollection(category, 50);
           if (collection) {
@@ -146,15 +146,15 @@ const CategoryPage = () => {
           {/* Collection Background Image */}
           {collectionData?.image?.url && (
             <div className="absolute inset-0 z-0">
-              <img 
-                src={collectionData.image.url} 
+              <img
+                src={collectionData.image.url}
                 alt={collectionData.image.altText || collectionData.title}
                 className="w-full h-full object-cover opacity-20"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/70" />
             </div>
           )}
-          
+
           <div className="container-custom relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -165,9 +165,9 @@ const CategoryPage = () => {
                 <LayoutGrid className="w-3.5 h-3.5 text-primary" />
                 {collectionData ? 'Collection' : 'All Products'}
               </div>
-              <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none mb-8">
+              <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight mb-8">
                 {collectionData?.title || (
-                  <>All <span className="text-glow italic">Products</span></>
+                  <>All Products</>
                 )}
               </h1>
               {collectionData?.description && (
@@ -181,8 +181,8 @@ const CategoryPage = () => {
                   <span className="text-3xl font-black text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/30">items</span></span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Curation</span>
-                  <span className="text-3xl font-black text-white">Top <span className="text-primary italic">Tier</span></span>
+                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Curation</span>
+                  <span className="text-3xl font-black text-white">Top Tier</span>
                 </div>
               </div>
             </motion.div>
@@ -249,8 +249,8 @@ const CategoryPage = () => {
               <div className="h-10 w-px bg-slate-200 hidden lg:block mx-2" />
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full lg:w-[220px] h-16 rounded-2xl border-none bg-slate-100/50 hover:bg-slate-100 font-black uppercase text-[10px] tracking-widest pl-6">
-                  <SelectValue placeholder="Sort Engine" />
+                <SelectTrigger className="w-full lg:w-[220px] h-16 rounded-2xl border-none bg-slate-100/50 hover:bg-slate-100 font-bold uppercase text-[10px] tracking-widest pl-6">
+                  <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white">
                   <SelectItem value="featured" className="rounded-xl font-bold py-3">Featured</SelectItem>
@@ -311,8 +311,8 @@ const CategoryPage = () => {
                     >
                       <div
                         className={`w-10 h-10 rounded-[12px] border-2 transition-all duration-500 group-hover:scale-110 flex items-center justify-center ${selectedColors.includes(color.value)
-                            ? 'border-primary ring-[6px] ring-primary/10'
-                            : 'border-slate-100'
+                          ? 'border-primary ring-[6px] ring-primary/10'
+                          : 'border-slate-100'
                           }`}
                         style={{ backgroundColor: `hsl(${color.hex})` }}
                       >
@@ -334,8 +334,8 @@ const CategoryPage = () => {
                       key={size}
                       onClick={() => toggleSize(size)}
                       className={`h-11 text-[10px] font-black rounded-xl border-2 transition-all duration-300 hover:border-primary ${selectedSizes.includes(size)
-                          ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                          : 'bg-white border-slate-100 text-slate-500'
+                        ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+                        : 'bg-white border-slate-100 text-slate-500'
                         }`}
                     >
                       {size}
@@ -418,7 +418,6 @@ const CategoryPage = () => {
                       >
                         <ProductCard
                           product={product}
-                          searchQuery={searchQuery}
                         />
                       </motion.div>
                     ))}
@@ -428,8 +427,8 @@ const CategoryPage = () => {
 
               {sortedProducts.length > 0 && (
                 <div className="mt-24 text-center">
-                  <Button size="lg" className="h-16 px-12 rounded-2xl glass-dark border-slate-200 text-slate-900 font-black uppercase text-xs tracking-[0.3em] hover:bg-slate-900 hover:text-white transition-all shadow-xl">
-                    Sequential Load
+                  <Button size="lg" className="h-16 px-12 rounded-2xl bg-white border border-slate-200 text-slate-900 font-bold uppercase text-xs tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-xl">
+                    Load More
                   </Button>
                 </div>
               )}

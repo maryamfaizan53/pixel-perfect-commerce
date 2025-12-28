@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { storefrontApiRequest, ShopifyProduct } from "@/lib/shopify";
+import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { ProductReviews } from "@/components/reviews/ProductReviews";
@@ -143,6 +143,7 @@ const ProductPage = () => {
   const [isInspecting, setIsInspecting] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const addItem = useCartStore(state => state.addItem);
 
   const { ref: priceRef, inView: priceInView } = useInView({ threshold: 0 });
@@ -197,12 +198,30 @@ const ProductPage = () => {
     });
   };
 
-  const handleOrderNow = () => {
-    handleAddToCart();
-    // In a real app, this would redirect to checkout immediately
-    toast.info("Proceeding to checkout...", {
-      description: "Securely processing your order request.",
-    });
+  const handleOrderNow = async () => {
+    if (!product || !selectedVariant) return;
+
+    setCheckoutLoading(true);
+    try {
+      const cartItem = {
+        product: { node: product as unknown as ShopifyProduct['node'] },
+        variantId: selectedVariant.id,
+        variantTitle: selectedVariant.title,
+        price: selectedVariant.price,
+        quantity,
+        selectedOptions: selectedVariant.selectedOptions || []
+      };
+
+      const checkoutUrl = await createStorefrontCheckout([cartItem]);
+      window.location.href = checkoutUrl;
+    } catch (error) {
+      console.error('Checkout failed:', error);
+      toast.error("Checkout failed", {
+        description: "Please try again later.",
+      });
+    } finally {
+      setCheckoutLoading(false);
+    }
   };
 
   if (loading) {
@@ -496,10 +515,14 @@ const ProductPage = () => {
                       size="lg"
                       className="w-full h-20 text-lg font-black rounded-2xl bg-primary hover:bg-primary/90 text-white shadow-gold transition-all duration-500 active:scale-[0.98] uppercase tracking-[0.2em] group"
                       onClick={handleOrderNow}
-                      disabled={isOutOfStock}
+                      disabled={isOutOfStock || checkoutLoading}
                     >
-                      <CreditCard className="w-5 h-5 mr-3 group-hover:-translate-y-1 transition-transform" />
-                      Order Now
+                      {checkoutLoading ? (
+                        <Loader2 className="w-6 h-6 animate-spin mr-3" />
+                      ) : (
+                        <CreditCard className="w-5 h-5 mr-3 group-hover:-translate-y-1 transition-transform" />
+                      )}
+                      {checkoutLoading ? "Redirecting..." : "Order Now"}
                     </Button>
                   </div>
                 </div>
@@ -665,9 +688,10 @@ const ProductPage = () => {
               <Button
                 size="lg"
                 onClick={handleOrderNow}
+                disabled={checkoutLoading}
                 className="flex-1 h-14 rounded-xl bg-primary text-white font-black uppercase tracking-widest text-[10px] shadow-gold border-none"
               >
-                Order Now
+                {checkoutLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Order Now"}
               </Button>
             </div>
           </motion.div>

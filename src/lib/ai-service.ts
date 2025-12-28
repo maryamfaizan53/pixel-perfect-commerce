@@ -52,7 +52,7 @@ export const generateEmbedding = async (text: string): Promise<number[]> => {
 export const retrieveContext = async (query: string, matchThreshold = 0.5, matchCount = 3) => {
     try {
         const embedding = await generateEmbedding(query);
-        const { data, error } = await supabase.rpc('match_documents', {
+        const { data, error } = await (supabase as any).rpc('match_documents', {
             query_embedding: embedding,
             match_threshold: matchThreshold,
             match_count: matchCount,

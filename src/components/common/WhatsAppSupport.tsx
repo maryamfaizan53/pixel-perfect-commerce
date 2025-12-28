@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X } from "lucide-react";
 import { useState } from "react";
 
-const SUPPORT_NUMBER = "+923001234567"; // Update with actual support number
+const SUPPORT_NUMBER = "+923328222026"; // Update with actual support number
 const SUPPORT_MESSAGE = "Hi! I have a question about a product on PixelPerfect.";
 
 export const WhatsAppSupport = () => {

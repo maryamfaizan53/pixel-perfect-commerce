@@ -234,7 +234,7 @@ const ProductPage = () => {
 *Price:* ${selectedVariant.price.currencyCode} ${parseFloat(selectedVariant.price.amount).toLocaleString()}
 *URL:* ${window.location.href}`;
 
-    const url = `https://wa.me/+923001234567?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/+923328222026?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
   };
 

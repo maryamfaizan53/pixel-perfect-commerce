@@ -165,7 +165,7 @@ const CategoryPage = () => {
                 <LayoutGrid className="w-3.5 h-3.5 text-primary" />
                 {collectionData ? 'Collection' : 'All Products'}
               </div>
-              <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tight leading-tight mb-6 sm:mb-8">
                 {collectionData?.title || (
                   <>All Products</>
                 )}
@@ -175,14 +175,14 @@ const CategoryPage = () => {
                   {collectionData.description}
                 </p>
               )}
-              <div className="flex flex-wrap items-center gap-10">
+              <div className="flex flex-wrap items-center gap-6 sm:gap-10">
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Products</span>
-                  <span className="text-3xl font-black text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/30">items</span></span>
+                  <span className="text-2xl sm:text-3xl font-black text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/30">items</span></span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Curation</span>
-                  <span className="text-3xl font-black text-white">Top Tier</span>
+                  <span className="text-2xl sm:text-3xl font-black text-white">Top Tier</span>
                 </div>
               </div>
             </motion.div>
@@ -205,7 +205,7 @@ const CategoryPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="glass-dark border-white/5 bg-white shadow-2xl rounded-[2.5rem] p-6 mb-12 flex flex-col lg:flex-row items-center justify-between gap-8"
+            className="glass-dark border-white/5 bg-white shadow-2xl rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-6 mb-8 sm:mb-12 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8"
           >
             <div className="relative w-full lg:max-w-md">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -214,7 +214,7 @@ const CategoryPage = () => {
                 placeholder="Search collection..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-14 pr-12 h-16 rounded-2xl border-none bg-slate-100/50 focus:bg-slate-100 font-bold text-lg placeholder:text-muted-foreground/50 transition-all"
+                className="pl-12 sm:pl-14 pr-10 sm:pr-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl border-none bg-slate-100/50 focus:bg-slate-100 font-bold text-base sm:text-lg placeholder:text-muted-foreground/50 transition-all"
               />
               {searchQuery && (
                 <button

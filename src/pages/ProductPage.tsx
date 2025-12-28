@@ -590,14 +590,14 @@ const ProductPage = () => {
                   </div>
 
                   {/* Artisan Signature Block (Subtle below description) */}
-                  <div className="mt-12 relative p-8 rounded-[2.5rem] bg-slate-950 text-white overflow-hidden group">
+                  <div className="mt-8 sm:mt-12 relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-slate-950 text-white overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] group-hover:w-48 transition-all duration-1000" />
-                    <div className="relative z-10 flex items-center justify-between">
+                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                       <div className="space-y-1">
                         <p className="text-[8px] font-black uppercase tracking-widest text-white/40">Artisan Integrity</p>
                         <h4 className="text-lg font-bold tracking-tight">Verified Boutique Selection</h4>
                       </div>
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         <p className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">Registry No.</p>
                         <p className="text-xs font-mono tracking-tighter text-primary">AQ-{Math.floor(Math.random() * 90000) + 10000}</p>
                       </div>
@@ -613,7 +613,7 @@ const ProductPage = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-slate-200/60"
+            className="mt-12 sm:mt-24 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 py-8 sm:py-12 border-y border-slate-200/60"
           >
             {[
               { icon: Shield, title: "Artisan Protected", desc: "100% Certified Source" },
@@ -621,12 +621,12 @@ const ProductPage = () => {
               { icon: CreditCard, title: "Encrypted Portal", desc: "Secure Vault Payment" },
               { icon: Star, title: "Registry Service", desc: "Lifetime Support" }
             ].map((item, i) => (
-              <div key={i} className="flex flex-col items-center text-center space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-white shadow-premium flex items-center justify-center">
-                  <item.icon className="w-6 h-6 text-primary" />
+              <div key={i} className="flex flex-row md:flex-col items-center md:text-center gap-4 md:space-y-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-premium flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div className="space-y-1">
-                  <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">{item.title}</h5>
+                  <h5 className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-900">{item.title}</h5>
                   <p className="text-[9px] text-slate-400 font-medium">{item.desc}</p>
                 </div>
               </div>
@@ -638,59 +638,60 @@ const ProductPage = () => {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-32"
+            className="mt-16 sm:mt-32"
           >
             <Tabs defaultValue="description" className="w-full">
-              <TabsList className="w-full justify-center border-b border-slate-200 h-auto p-0 bg-transparent mb-20">
-                {["description", "reviews", "specifications", "care"].map((tab) => (
-                  <TabsTrigger
-                    key={tab}
-                    value={tab}
-                    className="rounded-none border-b-4 border-transparent px-10 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all"
-                  >
-                    {tab}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              <div className="w-full overflow-x-auto no-scrollbar border-b border-slate-200 mb-10 md:mb-20">
+                <TabsList className="flex w-max min-w-full justify-start md:justify-center h-auto p-0 bg-transparent">
+                  {["description", "reviews", "specifications", "care"].map((tab) => (
+                    <TabsTrigger
+                      key={tab}
+                      value={tab}
+                      className="rounded-none border-b-4 border-transparent px-6 sm:px-10 py-4 sm:py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all whitespace-nowrap"
+                    >
+                      {tab}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
 
-              <div className="max-w-5xl mx-auto">
-                <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <div className="prose prose-slate max-w-none">
-                    <h3 className="text-2xl font-bold mb-6 text-slate-900">Product Narrative</h3>
-                    <p className="text-lg text-slate-600 leading-relaxed">
-                      {product.description}
-                    </p>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="reviews" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <ProductReviews productId={productId} productHandle={handle || ""} />
-                </TabsContent>
-
-                <TabsContent value="specifications" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    {product.options.map((opt: ProductOption) => (
-                      <div key={opt.name} className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-                        <span className="label-premium">{opt.name}</span>
-                        <span className="font-bold text-slate-900">{opt.values.join(', ')}</span>
-                      </div>
-                    ))}
-                    <div className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-                      <span className="label-premium">Vendor</span>
-                      <span className="font-bold text-slate-900">{product.vendor}</span>
+                <div className="max-w-5xl mx-auto">
+                  <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    <div className="prose prose-slate max-w-none">
+                      <h3 className="text-2xl font-bold mb-6 text-slate-900">Product Narrative</h3>
+                      <p className="text-lg text-slate-600 leading-relaxed">
+                        {product.description}
+                      </p>
                     </div>
-                  </div>
-                </TabsContent>
+                  </TabsContent>
 
-                <TabsContent value="care" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <div className="prose prose-slate max-w-none text-center">
-                    <h3 className="text-xl font-bold mb-6 text-slate-900">Product Care Guide</h3>
-                    <p className="text-base text-slate-600 max-w-2xl mx-auto font-medium">
-                      Each piece is built to last with quality materials. To maintain its condition, avoid prolonged exposure to moisture and clean with a dry, soft cloth.
-                    </p>
-                  </div>
-                </TabsContent>
-              </div>
+                  <TabsContent value="reviews" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    <ProductReviews productId={productId} productHandle={handle || ""} />
+                  </TabsContent>
+
+                  <TabsContent value="specifications" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      {product.options.map((opt: ProductOption) => (
+                        <div key={opt.name} className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+                          <span className="label-premium">{opt.name}</span>
+                          <span className="font-bold text-slate-900">{opt.values.join(', ')}</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+                        <span className="label-premium">Vendor</span>
+                        <span className="font-bold text-slate-900">{product.vendor}</span>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="care" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    <div className="prose prose-slate max-w-none text-center">
+                      <h3 className="text-xl font-bold mb-6 text-slate-900">Product Care Guide</h3>
+                      <p className="text-base text-slate-600 max-w-2xl mx-auto font-medium">
+                        Each piece is built to last with quality materials. To maintain its condition, avoid prolonged exposure to moisture and clean with a dry, soft cloth.
+                      </p>
+                    </div>
+                  </TabsContent>
+                </div>
             </Tabs>
           </motion.div>
         </div>

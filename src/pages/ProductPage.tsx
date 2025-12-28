@@ -12,7 +12,9 @@ import { toast } from "sonner";
 import { ProductReviews } from "@/components/reviews/ProductReviews";
 import { StarRating } from "@/components/reviews/StarRating";
 import { useReviews } from "@/hooks/useReviews";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+
 
 const PRODUCT_QUERY = `
   query GetProduct($handle: String!) {
@@ -79,7 +81,21 @@ const ProductPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [isInspecting, setIsInspecting] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [showStickyCTA, setShowStickyCTA] = useState(false);
   const addItem = useCartStore(state => state.addItem);
+
+  const { ref: priceRef, inView: priceInView } = useInView({ threshold: 0 });
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 600 && !priceInView) {
+      setShowStickyCTA(true);
+    } else {
+      setShowStickyCTA(false);
+    }
+  });
 
   const productId = product?.id?.replace("gid://shopify/Product/", "") || "";
   const { stats: reviewStats } = useReviews(productId, handle || "");
@@ -203,19 +219,55 @@ const ProductPage = () => {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-8 sticky top-32"
             >
-              <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border border-slate-100">
+              <div
+                className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border border-slate-100 cursor-zoom-in"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setMousePos({ x, y });
+                }}
+                onMouseEnter={() => setIsInspecting(true)}
+                onMouseLeave={() => setIsInspecting(false)}
+              >
                 <AnimatePresence mode="wait">
-                  <motion.img
+                  <motion.div
                     key={selectedImage}
-                    src={product.images.edges[selectedImage]?.node.url || "/placeholder.svg"}
-                    alt={product.title}
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.6 }}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                  />
+                    className="w-full h-full relative"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <motion.img
+                      src={product.images.edges[selectedImage]?.node.url || "/placeholder.svg"}
+                      alt={product.title}
+                      animate={{
+                        scale: isInspecting ? 2 : 1,
+                        transformOrigin: `${mousePos.x}% ${mousePos.y}%`
+                      }}
+                      transition={{ duration: 0.1, ease: "linear" }}
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
                 </AnimatePresence>
+
+                {/* Inspect Mode HUD */}
+                <AnimatePresence>
+                  {isInspecting && (
+                    <motion.div
+                      initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                      animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
+                      exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                      className="absolute inset-0 pointer-events-none flex items-center justify-center bg-black/5"
+                    >
+                      <div className="px-4 py-2 rounded-full bg-white/20 border border-white/30 text-white text-[8px] font-black uppercase tracking-[0.3em] backdrop-blur-md">
+                        High Fidelity Inspection
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <div className="absolute top-6 right-6 z-10 flex flex-col gap-3">
                   <Button size="icon" variant="ghost" className="w-12 h-12 rounded-2xl glass-dark border-white/10 text-white">
                     <Share2 className="w-5 h-5" />
@@ -260,6 +312,8 @@ const ProductPage = () => {
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">In Stock</span>
+                        <span className="w-1 h-1 rounded-full bg-slate-300 mx-1" />
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Only 8 left in boutique</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
@@ -275,8 +329,18 @@ const ProductPage = () => {
                 </div>
 
                 {/* 2. Rates (Price) */}
-                <div className="flex flex-col py-6 border-y border-slate-200/60">
-                  <span className="label-premium mb-2">Investment Rate</span>
+                <div ref={priceRef} className="flex flex-col py-6 border-y border-slate-200/60 transition-all duration-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="label-premium">Investment Rate</span>
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 rounded-full border border-primary/20"
+                    >
+                      <Sparkles className="w-3 h-3 text-primary" />
+                      <span className="text-[9px] font-black text-primary uppercase tracking-widest">Highly Coveted</span>
+                    </motion.div>
+                  </div>
                   <div className="flex items-baseline gap-3">
                     <span className="text-2xl font-bold text-primary">{currencyCode}</span>
                     <span className="text-7xl font-black text-foreground tracking-tighter font-playfair italic">
@@ -306,12 +370,25 @@ const ProductPage = () => {
                                     )?.node;
                                     if (newVariant) setSelectedVariant(newVariant);
                                   }}
-                                  className={`px-8 py-4 text-sm font-black rounded-2xl border-2 transition-all duration-300 ${isSelected
-                                    ? "bg-primary text-white border-primary shadow-2xl shadow-primary/30 scale-105"
-                                    : "bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm"
+                                  className={`px-8 py-4 text-sm font-black rounded-2xl border-2 transition-all duration-500 overflow-hidden relative group/opt ${isSelected
+                                    ? "bg-slate-950 text-white border-slate-950 shadow-2xl scale-105"
+                                    : "bg-white border-slate-100 text-slate-600 hover:border-primary/30 hover:text-primary shadow-sm"
                                     }`}
                                 >
-                                  {value}
+                                  <motion.span
+                                    initial={false}
+                                    animate={isSelected ? { y: 0, opacity: 1 } : { y: 0, opacity: 1 }}
+                                    className="relative z-10"
+                                  >
+                                    {value}
+                                  </motion.span>
+                                  {isSelected && (
+                                    <motion.div
+                                      layoutId="variant-bg"
+                                      className="absolute inset-0 bg-primary/20 pointer-events-none"
+                                      transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+                                    />
+                                  )}
                                 </button>
                               );
                             })}
@@ -338,7 +415,7 @@ const ProductPage = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-12 w-12 text-slate-900 hover:bg-slate-100 rounded-xl"
+                          className="h-12 w-12 text-slate-900 hover:bg-slate-100 rounded-xl transition-all active:scale-90"
                           onClick={() => setQuantity(quantity + 1)}
                         >
                           <Plus className="w-5 h-5" />
@@ -387,25 +464,77 @@ const ProductPage = () => {
                 </div>
 
                 {/* Trust Signatures */}
-                <div className="grid grid-cols-2 gap-4 pt-8 border-t border-slate-100">
-                  <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-50 shadow-sm">
-                    <Truck className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest">Global Escort</p>
-                      <p className="text-[9px] text-slate-400">Insured Delivery</p>
+                <div className="pt-8 border-t border-slate-100">
+                  <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-white border border-slate-50 shadow-sm group hover:border-primary/20 transition-all duration-500">
+                      <div className="w-10 h-10 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Truck className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Global Escort</p>
+                        <p className="text-[9px] text-slate-400">Insured Delivery</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-white border border-slate-50 shadow-sm group hover:border-primary/20 transition-all duration-500">
+                      <div className="w-10 h-10 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Shield className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Certified</p>
+                        <p className="text-[9px] text-slate-400">100% Authentic</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-50 shadow-sm">
-                    <Shield className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest">Certified</p>
-                      <p className="text-[9px] text-slate-400">100% Authentic</p>
+
+                  {/* Artisan Signature Block */}
+                  <div className="relative p-8 rounded-[2.5rem] bg-slate-950 text-white overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] group-hover:w-48 transition-all duration-1000" />
+                    <div className="relative z-10 flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="label-premium !text-white/40">Artisan Integrity</p>
+                        <h4 className="text-xl font-black italic font-playfair tracking-tight">Verified Boutique Selection</h4>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">Registry No.</p>
+                        <p className="text-xs font-mono tracking-tighter text-primary">AQ-{Math.floor(Math.random() * 90000) + 10000}</p>
+                      </div>
+                    </div>
+                    <div className="mt-6 flex items-center gap-4">
+                      <div className="w-10 h-[1px] bg-white/20" />
+                      <p className="text-[10px] font-medium text-white/60 italic leading-relaxed">
+                        "Each piece is a unique expression of artisan commitment, selected specifically for our curated collection."
+                      </p>
                     </div>
                   </div>
                 </div>
               </motion.div>
             </div>
           </div>
+
+          {/* Secure Trust Strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-slate-200/60"
+          >
+            {[
+              { icon: Shield, title: "Artisan Protected", desc: "100% Certified Source" },
+              { icon: Truck, title: "Concierge Shipping", desc: "Priority Global Escort" },
+              { icon: CreditCard, title: "Encrypted Portal", desc: "Secure Vault Payment" },
+              { icon: Star, title: "Registry Service", desc: "Lifetime Support" }
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col items-center text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-white shadow-premium flex items-center justify-center">
+                  <item.icon className="w-6 h-6 text-primary" />
+                </div>
+                <div className="space-y-1">
+                  <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">{item.title}</h5>
+                  <p className="text-[9px] text-slate-400 font-medium">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
 
           {/* Expanded Details Engine */}
           <motion.div
@@ -462,6 +591,36 @@ const ProductPage = () => {
       </main>
 
       <Footer />
+
+      {/* Sticky Mobile CTA Bar */}
+      <AnimatePresence>
+        {showStickyCTA && (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            className="fixed bottom-0 left-0 right-0 z-50 lg:hidden p-4 bg-white/80 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.1)]"
+          >
+            <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
+              <div className="flex flex-col">
+                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 truncate w-32">
+                  {product.title}
+                </span>
+                <span className="text-lg font-black text-secondary">
+                  {currencyCode} {price.toLocaleString()}
+                </span>
+              </div>
+              <Button
+                size="lg"
+                onClick={handleOrderNow}
+                className="flex-1 h-14 rounded-xl bg-primary text-white font-black uppercase tracking-widest text-[10px] shadow-gold border-none"
+              >
+                Procure Piece
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

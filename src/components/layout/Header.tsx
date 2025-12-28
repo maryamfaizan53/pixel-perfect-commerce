@@ -14,11 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { SearchBar } from "@/components/search/SearchBar";
+import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -120,17 +121,14 @@ export const Header = () => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-2 md:gap-3">
-              {/* Search */}
-              <div className="hidden md:block">
-                <SearchBar />
-              </div>
+              <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
-              {/* Mobile Search */}
+              {/* Search Trigger */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden w-10 h-10 rounded-xl hover:bg-muted"
-                onClick={() => {/* TODO: Mobile search modal */ }}
+                className="w-10 h-10 rounded-xl hover:bg-muted"
+                onClick={() => setSearchOpen(true)}
               >
                 <Search className="w-5 h-5" />
               </Button>

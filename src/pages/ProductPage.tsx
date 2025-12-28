@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2 } from "lucide-react";
+import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { storefrontApiRequest, ShopifyProduct } from "@/lib/shopify";
@@ -13,8 +13,6 @@ import { ProductReviews } from "@/components/reviews/ProductReviews";
 import { StarRating } from "@/components/reviews/StarRating";
 import { useReviews } from "@/hooks/useReviews";
 import { motion, AnimatePresence } from "framer-motion";
-
-const LOW_STOCK_THRESHOLD = 5;
 
 const PRODUCT_QUERY = `
   query GetProduct($handle: String!) {
@@ -161,7 +159,6 @@ const ProductPage = () => {
   const price = parseFloat(selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount);
   const currencyCode = selectedVariant?.price.currencyCode || product.priceRange.minVariantPrice.currencyCode;
   const isOutOfStock = !product.availableForSale;
-  const isLowStock = false;
   const collection = product.collections.edges[0]?.node;
 
   return (
@@ -170,7 +167,7 @@ const ProductPage = () => {
 
       <main className="flex-1 py-12 lg:py-24">
         <div className="container-custom">
-          {/* Elite Breadcrumb */}
+          {/* Breadcrumb */}
           <motion.nav
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -190,7 +187,7 @@ const ProductPage = () => {
           </motion.nav>
 
           <div className="grid lg:grid-cols-2 gap-20 xl:gap-32 items-start">
-            {/* Gallery Engine */}
+            {/* Gallery Section */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -233,211 +230,169 @@ const ProductPage = () => {
               </div>
             </motion.div>
 
-            {/* Information Engine */}
-            <div className="flex flex-col">
+            {/* Information Section */}
+            <div className="space-y-12">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mb-10 space-y-6"
+                transition={{ delay: 0.1 }}
+                className="space-y-8"
               >
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    {collection && (
-                      <Badge className="px-5 py-2 text-[10px] font-black uppercase tracking-[0.3em] bg-primary text-white border-none shadow-xl shadow-primary/20">
-                        {collection.title}
-                      </Badge>
-                    )}
-                    {product.productType && (
-                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">
-                        <Tag className="w-3.5 h-3.5" />
-                        {product.productType}
+                  <div className="flex items-center gap-4">
+                    <span className="px-5 py-2 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.5em] rounded-full border border-primary/10">
+                      {product.vendor || 'Boutique'} Exclusive
+                    </span>
+                    {product.availableForSale ? (
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">In Stock</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-slate-300" />
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reserved</span>
                       </div>
                     )}
                   </div>
-                  <h1 className="text-5xl font-black tracking-tighter text-foreground lg:text-8xl leading-[0.85] font-playfair italic">
+                  <h1 className="text-6xl font-black tracking-tighter text-foreground lg:text-9xl leading-[0.8] font-playfair italic">
                     {product.title}
                   </h1>
                 </div>
 
-                <div className="flex items-center gap-8">
-                  <div className="flex items-center gap-3 px-4 py-2 rounded-2xl glass-dark border-white/5 bg-slate-100">
+                <div className="flex items-center gap-10">
+                  <div className="flex items-center gap-3 bg-slate-100 px-6 py-3 rounded-2xl border border-slate-200">
                     <StarRating rating={reviewStats.averageRating} size="sm" />
                     <span className="text-sm font-black text-slate-900">
                       {reviewStats.averageRating.toFixed(1)}
                     </span>
                   </div>
-                  {product.vendor && (
-                    <div className="text-xs text-muted-foreground font-black uppercase tracking-[0.2em]">
-                      Curated by <span className="text-primary">{product.vendor}</span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-3">
+                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.5em] vertical-rl rotate-180">Authentic Series</span>
+                    <div className="w-10 h-[1px] bg-slate-300" />
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-6 py-8 border-y border-slate-200/60">
                   <div className="flex flex-col">
                     <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.5em] mb-2">Artisan Boutique Price</span>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xl font-bold text-primary">PKR</span>
+                      <span className="text-xl font-bold text-primary">{currencyCode}</span>
                       <span className="text-6xl font-black text-foreground tracking-tighter">
-                        {price.toLocaleString('en-PK')}
+                        {price.toLocaleString()}
                       </span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    {isOutOfStock ? (
-                      <Badge variant="destructive" className="rounded-full px-6 py-2 uppercase tracking-widest text-[10px] font-black">Out of Stock</Badge>
-                    ) : (
-                      <Badge className="bg-emerald-500 text-white border-none rounded-full px-6 py-2 uppercase tracking-widest text-[10px] font-black shadow-lg shadow-emerald-500/20">
-                        In Stock
-                      </Badge>
-                    )}
-                  </div>
                 </div>
-              </motion.div>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="text-xl text-slate-600 leading-relaxed mb-12 font-medium"
-              >
-                {product.description}
-              </motion.p>
+                <p className="text-xl text-slate-600 leading-relaxed font-medium">
+                  {product.description}
+                </p>
 
-              {product.options.length > 0 && product.options[0].name !== 'Title' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="space-y-10 mb-12"
-                >
-                  {product.options.map((option: any) => (
-                    <div key={option.name} className="space-y-4">
-                      <label className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 ml-1">{option.name}</label>
-                      <div className="flex flex-wrap gap-4">
-                        {option.values.map((value: string) => {
-                          const isSelected = selectedVariant?.selectedOptions?.some((opt: any) => opt.name === option.name && opt.value === value);
-                          return (
-                            <button
-                              key={value}
-                              onClick={() => {
-                                // Find variant with this option
-                                const newVariant = product.variants.edges.find((v: any) =>
-                                  v.node.selectedOptions.some((opt: any) => opt.name === option.name && opt.value === value)
-                                )?.node;
-                                if (newVariant) setSelectedVariant(newVariant);
-                              }}
-                              className={`px-8 py-3.5 text-sm font-black rounded-2xl border-2 transition-all duration-300 hover:scale-105 ${isSelected
-                                ? "bg-primary text-white border-primary shadow-2xl shadow-primary/30"
-                                : "bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm"
-                                }`}
-                            >
-                              {value}
-                            </button>
-                          );
-                        })}
+                {/* Variant Options */}
+                {product.options.length > 0 && product.options[0].name !== 'Title' && (
+                  <div className="space-y-10">
+                    {product.options.map((option: any) => (
+                      <div key={option.name} className="space-y-4">
+                        <label className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 ml-1">{option.name}</label>
+                        <div className="flex flex-wrap gap-4">
+                          {option.values.map((value: string) => {
+                            const isSelected = selectedVariant?.selectedOptions?.some((opt: any) => opt.name === option.name && opt.value === value);
+                            return (
+                              <button
+                                key={value}
+                                onClick={() => {
+                                  const newVariant = product.variants.edges.find((v: any) =>
+                                    v.node.selectedOptions.some((opt: any) => opt.name === option.name && opt.value === value)
+                                  )?.node;
+                                  if (newVariant) setSelectedVariant(newVariant);
+                                }}
+                                className={`px-8 py-3.5 text-sm font-black rounded-2xl border-2 transition-all duration-300 hover:scale-105 ${isSelected
+                                  ? "bg-primary text-white border-primary shadow-2xl shadow-primary/30"
+                                  : "bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm"
+                                  }`}
+                              >
+                                {value}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Quantity & Actions */}
+                <div className="space-y-8">
+                  <div className="flex flex-col sm:flex-row items-stretch gap-6">
+                    <div className="flex items-center justify-between glass border-slate-200 rounded-2xl px-3 py-2 bg-white shadow-xl min-w-[160px]">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-12 w-12 text-slate-900 hover:bg-slate-100 rounded-xl"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      >
+                        <Minus className="w-5 h-5" />
+                      </Button>
+                      <span className="px-6 text-xl font-black text-slate-900">{quantity}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-12 w-12 text-slate-900 hover:bg-slate-100 rounded-xl"
+                        onClick={() => setQuantity(quantity + 1)}
+                      >
+                        <Plus className="w-5 h-5" />
+                      </Button>
                     </div>
-                  ))}
-                </motion.div>
-              )}
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="space-y-8"
-              >
-                <div className="flex flex-col sm:flex-row items-stretch gap-6">
-                  <div className="flex items-center justify-between glass border-slate-200 rounded-2xl px-3 py-2 bg-white shadow-xl min-w-[160px]">
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-12 w-12 text-slate-900 hover:bg-slate-100 rounded-xl"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      size="lg"
+                      className="flex-1 h-20 text-lg font-black rounded-2xl bg-primary hover:bg-primary/90 text-white shadow-gold transition-all duration-500 active:scale-[0.98] group uppercase tracking-widest"
+                      onClick={handleAddToCart}
+                      disabled={isOutOfStock}
                     >
-                      <Minus className="w-5 h-5" />
-                    </Button>
-                    <span className="px-6 text-xl font-black text-slate-900">{quantity}</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-12 w-12 text-slate-900 hover:bg-slate-100 rounded-xl"
-                      onClick={() => setQuantity(quantity + 1)}
-                    >
-                      <Plus className="w-5 h-5" />
+                      <ShoppingBag className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-500" />
+                      {isOutOfStock ? 'Sold Out' : 'Acquire Piece'}
                     </Button>
                   </div>
 
-                  <Button
-                    size="lg"
-                    className="flex-1 h-20 text-lg font-black rounded-2xl btn-premium shadow-gold transition-all duration-500 active:scale-[0.98] group uppercase tracking-widest"
-                    onClick={handleAddToCart}
-                    disabled={isOutOfStock}
-                  >
-                    <ShoppingCart className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-500" />
-                    {isOutOfStock ? 'Sold Out' : 'Acquire Piece'}
-                  </Button>
-
-                  <Button
-                    size="lg"
-                    className="flex-1 h-20 text-lg font-black rounded-2xl bg-secondary hover:bg-secondary-hover text-white shadow-2xl transition-all duration-500 active:scale-[0.98] uppercase tracking-widest"
-                    onClick={() => {
-                      handleAddToCart();
-                      const { createCheckout } = useCartStore.getState();
-                      createCheckout().then(() => {
-                        const checkoutUrl = useCartStore.getState().checkoutUrl;
-                        if (checkoutUrl) window.open(checkoutUrl, '_blank');
-                      });
-                    }}
-                    disabled={isOutOfStock}
-                  >
-                    Secure Order
-                  </Button>
-
-                  <Button size="icon" variant="outline" className="h-20 w-20 rounded-2xl border-2 border-slate-100 text-slate-400 hover:text-rose-500 hover:border-rose-100 hover:bg-rose-50 transition-all shadow-xl bg-white">
-                    <Heart className="w-7 h-7" />
-                  </Button>
-                </div>
-
-                {/* Expert-Level Trust Badges */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {[
-                    { icon: Truck, label: "Express Delivery", meta: "Fast courier service" },
-                    { icon: Shield, label: "Secure Checkout", meta: "100% protected" }
-                  ].map((badge, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ y: -5 }}
-                      className="premium-card p-6 flex flex-col items-center text-center bg-white border-none shadow-xl"
-                    >
-                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center mb-4">
-                        <badge.icon className="w-6 h-6 text-primary" />
+                  {/* Trust Badges */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {[
+                      { icon: Truck, label: "Express Delivery", meta: "Fast courier service" },
+                      { icon: Shield, label: "Secure Checkout", meta: "100% protected" }
+                    ].map((badge, i) => (
+                      <div
+                        key={i}
+                        className="premium-card p-6 flex flex-col items-center text-center bg-white border-slate-100 shadow-md"
+                      >
+                        <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center mb-4">
+                          <badge.icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 mb-1">{badge.label}</p>
+                        <p className="text-[9px] text-muted-foreground font-medium">{badge.meta}</p>
                       </div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 mb-1">{badge.label}</p>
-                      <p className="text-[9px] text-muted-foreground font-medium">{badge.meta}</p>
-                    </motion.div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             </div>
           </div>
 
-          {/* Expert Tabs Architecture */}
+          {/* Expanded Details Tabs */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="mt-32"
           >
-            <Tabs defaultValue="description" className="w-full" id="reviews">
-              <TabsList className="w-full justify-center border-b border-slate-200 h-auto p-0 bg-transparent gap-16">
+            <Tabs defaultValue="description" className="w-full">
+              <TabsList className="w-full justify-center border-b border-slate-200 h-auto p-0 bg-transparent mb-20">
                 {["description", "reviews", "specifications"].map((tab) => (
                   <TabsTrigger
                     key={tab}
                     value={tab}
-                    className="rounded-none border-b-4 border-transparent px-0 py-6 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all"
+                    className="rounded-none border-b-4 border-transparent px-10 py-6 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all"
                   >
                     {tab}
                   </TabsTrigger>
@@ -445,19 +400,17 @@ const ProductPage = () => {
               </TabsList>
 
               <div className="max-w-5xl mx-auto">
-                <TabsContent value="description" className="mt-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <div className="prose prose-slate max-w-none">
-                    <p className="text-2xl text-slate-700 leading-[1.6] font-medium selection:bg-primary/20">
-                      {product.description}
-                    </p>
-                  </div>
+                <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <p className="text-2xl text-slate-700 leading-[1.6] font-medium text-center">
+                    {product.description}
+                  </p>
                 </TabsContent>
 
-                <TabsContent value="reviews" className="mt-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <TabsContent value="reviews" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                   <ProductReviews productId={productId} productHandle={handle || ""} />
                 </TabsContent>
 
-                <TabsContent value="specifications" className="mt-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <TabsContent value="specifications" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {product.options.map((opt: any) => (
                       <div key={opt.name} className="flex justify-between p-6 rounded-2xl bg-white shadow-sm border border-slate-100">

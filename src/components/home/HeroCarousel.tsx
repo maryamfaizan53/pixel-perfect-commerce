@@ -105,18 +105,18 @@ export const HeroCarousel = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-secondary/80 via-secondary/40 to-transparent z-10" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-10" />
 
-          {/* Parallax Image with Ken Burns Effect */}
+          {/* Parallax Image with Ultra-Smooth Ken Burns Effect */}
           <motion.div
-            className="absolute inset-0 scale-105"
+            className="absolute inset-0 scale-110"
             style={{ x: translateX, y: translateY }}
           >
             <motion.img
               src={slides[currentSlide].image}
               alt={slides[currentSlide].title}
               className="w-full h-full object-cover"
-              initial={{ scale: 1.2, x: "-2%", y: "-2%" }}
-              animate={{ scale: 1, x: "0%", y: "0%" }}
-              transition={{ duration: 12, ease: "linear" }}
+              initial={{ scale: 1.3, rotate: -2 }}
+              animate={{ scale: 1.1, rotate: 0 }}
+              transition={{ duration: 20, ease: "linear" }}
             />
           </motion.div>
 
@@ -198,7 +198,7 @@ export const HeroCarousel = () => {
       {/* Bottom Controls */}
       <div className="absolute bottom-0 left-0 right-0 z-30">
         <div className="container-custom">
-          <div className="flex items-center justify-between py-10 border-t border-white/10">
+          <div className="flex items-center justify-between py-10 border-t border-white/10 backdrop-blur-md bg-white/5 rounded-t-3xl px-12">
             {/* Navigation Arrows */}
             <div className="flex items-center gap-3">
               <button

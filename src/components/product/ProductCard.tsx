@@ -1,4 +1,4 @@
-import { ShoppingCart, Heart, AlertTriangle, Eye, ArrowRight, Sparkles } from "lucide-react";
+import { ShoppingBag, Heart, Star, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,33 +6,25 @@ import { ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "sonner";
-import { HighlightText } from "@/components/ui/highlight-text";
 import { useState } from "react";
-import { motion } from "framer-motion";
-
-const LOW_STOCK_THRESHOLD = 5;
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductCardProps {
   product: ShopifyProduct;
-  badge?: "sale" | "new" | "bestseller";
-  searchQuery?: string;
   index?: number;
 }
 
-export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: ProductCardProps) => {
+export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const { isInWishlist, toggleWishlist, loading: wishlistLoading } = useWishlist();
   const [imageLoaded, setImageLoaded] = useState(false);
+
   const { node } = product;
-
-  const price = parseFloat(node.priceRange.minVariantPrice.amount);
-  const currencyCode = node.priceRange.minVariantPrice.currencyCode;
-  const image = node.images.edges[0]?.node.url || "/placeholder.svg";
-  const defaultVariant = node.variants.edges[0]?.node;
   const inWishlist = isInWishlist(node.id);
-
   const isOutOfStock = !node.availableForSale;
-  const isLowStock = false; // Inventory check requires special API access
+  const isNew = node.handle.includes('new');
+
+  const defaultVariant = node.variants.edges[0]?.node;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -71,127 +63,112 @@ export const ProductCard = ({ product, badge, searchQuery = "", index = 0 }: Pro
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`group relative premium-card overflow-hidden bg-card ${isOutOfStock ? 'opacity-80' : ''}`}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative flex flex-col h-full bg-white rounded-[2.5rem] overflow-hidden border border-slate-50 hover:border-primary/20 transition-all duration-700 shadow-sm hover:shadow-premium"
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-slate-50">
-        <Link to={`/product/${node.handle}`} className="block h-full">
-          {!imageLoaded && (
-            <div className="absolute inset-0 animate-pulse bg-slate-200/50" />
+      {/* Product Image Section */}
+      <Link
+        to={`/product/${node.handle}`}
+        className="relative aspect-[4/5] overflow-hidden bg-slate-50 cursor-pointer block"
+      >
+        {/* Badges */}
+        <div className="absolute top-6 left-6 z-10 flex flex-col gap-2">
+          {isOutOfStock && (
+            <span className="px-5 py-2 bg-secondary text-primary text-[8px] font-black uppercase tracking-[0.4em] rounded-full shadow-lg border border-primary/20 scale-90 sm:scale-100">
+              Reserved
+            </span>
           )}
-          <motion.img
-            src={image}
-            alt={node.title}
-            onLoad={() => setImageLoaded(true)}
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className={`w-full h-full object-cover ${isOutOfStock ? 'grayscale opacity-60' : ''} ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-            loading="lazy"
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500" />
-        </Link>
-
-        {/* Status Badges */}
-        <div className="absolute top-5 left-5 flex flex-col gap-2 z-10">
-          {isOutOfStock ? (
-            <Badge variant="destructive" className="rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-xl border-none">
-              Out of Stock
-            </Badge>
-          ) : (
-            <>
-              {badge && (
-                <Badge
-                  className={`rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-none shadow-xl ${badge === "sale"
-                    ? "bg-rose-500 text-white"
-                    : badge === "new"
-                      ? "bg-primary text-white"
-                      : "bg-amber-500 text-white"
-                    }`}
-                >
-                  <Sparkles className="w-3 h-3 mr-2 inline" />
-                  {badge}
-                </Badge>
-              )}
-              {isLowStock && (
-                <Badge className="bg-orange-500 text-white border-none rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-1.5">
-                  <AlertTriangle className="w-3 h-3" />
-                  Rare Find
-                </Badge>
-              )}
-            </>
+          {isNew && (
+            <span className="px-5 py-2 bg-primary text-white text-[8px] font-black uppercase tracking-[0.4em] rounded-full shadow-gold scale-90 sm:scale-100">
+              New Arrival
+            </span>
           )}
         </div>
 
-        {/* Quick Actions */}
-        <div className="absolute top-6 right-6 flex flex-col gap-4 transform translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-700 z-10">
+        {/* Wishlist Toggle Overlay */}
+        <div className="absolute top-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-90 sm:scale-100">
           <Button
+            variant="ghost"
             size="icon"
             onClick={handleToggleWishlist}
             disabled={wishlistLoading}
-            className={`w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transition-all duration-500 hover:scale-110 ${inWishlist ? "text-rose-500 fill-rose-500" : "text-white hover:text-rose-500"
+            className={`w-12 h-12 rounded-full backdrop-blur-md border transition-all duration-500 ${inWishlist
+              ? 'bg-primary border-primary text-white'
+              : 'bg-white/20 border-white/33 text-white hover:bg-primary hover:border-primary'
               }`}
           >
-            <Heart className="w-6 h-6" />
+            <Heart className={`w-5 h-5 ${inWishlist ? 'fill-current' : ''}`} />
           </Button>
-          <Link to={`/product/${node.handle}`}>
-            <Button
-              size="icon"
-              className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl text-white hover:text-primary transition-all duration-500 hover:scale-110 shadow-gold"
-            >
-              <Eye className="w-6 h-6" />
-            </Button>
-          </Link>
         </div>
 
-        {/* Quick Add (Hover Only) */}
-        {!isOutOfStock && (
-          <div className="absolute bottom-6 left-6 right-6 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-10 hidden sm:block">
-            <Button
-              onClick={handleAddToCart}
-              className="w-full h-14 rounded-2xl bg-white text-slate-900 hover:bg-primary hover:text-white font-black text-xs uppercase tracking-widest shadow-2xl transition-all active:scale-95"
-            >
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              Add to Cart
-            </Button>
+        {/* Primary and Secondary Images */}
+        <div className="relative w-full h-full">
+          <motion.img
+            src={node.images.edges[0]?.node?.url || "/placeholder.svg"}
+            alt={node.title}
+            onLoad={() => setImageLoaded(true)}
+            className={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ${node.images.edges[1] ? 'group-hover:opacity-0' : ''}`}
+          />
+          {node.images.edges[1] && (
+            <img
+              src={node.images.edges[1].node.url}
+              alt={node.title}
+              className="absolute inset-0 w-full h-full object-cover scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-1000"
+            />
+          )}
+        </div>
+
+        {/* Quick View Trigger Overlay */}
+        <div className="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-center justify-center">
+          <div className="translate-y-8 group-hover:translate-y-0 transition-transform duration-700">
+            <span className="px-8 py-3 bg-white text-secondary text-[10px] font-black uppercase tracking-[0.5em] rounded-full shadow-premium">
+              Inspect Piece
+            </span>
           </div>
-        )}
-      </div>
+        </div>
+      </Link>
 
-      <div className="p-8 space-y-4">
-        <Link to={`/product/${node.handle}`} className="block group/title">
-          <h3 className="font-black text-foreground line-clamp-1 text-2xl group-hover/title:text-primary transition-colors flex items-center justify-between font-playfair italic">
-            <HighlightText text={node.title} highlight={searchQuery} />
-            <ArrowRight className="w-6 h-6 opacity-0 -translate-x-6 group-hover/title:opacity-100 group-hover/title:translate-x-0 transition-all duration-700 text-primary" />
-          </h3>
-        </Link>
-
-        {node.description && (
-          <p className="text-sm text-muted-foreground mb-6 line-clamp-2 leading-relaxed font-medium">
-            <HighlightText text={node.description} highlight={searchQuery} />
-          </p>
-        )}
-
-        <div className="flex items-end justify-between pt-4 border-t border-slate-100">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-1">Boutique Price</span>
-            <div className="flex items-baseline gap-1">
-              <span className="text-sm font-bold text-primary">PKR</span>
-              <span className="text-3xl font-black text-foreground tracking-tighter">
-                {price.toLocaleString('en-PK')}
-              </span>
+      {/* Product Content Section */}
+      <div className="p-8 flex flex-col flex-1 space-y-6">
+        <div className="space-y-3 flex-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">
+              {node.handle.split('-')[0]} Boutique
+            </span>
+            <div className="flex items-center gap-1">
+              <Star className="w-3 h-3 text-primary fill-current" />
+              <span className="text-[10px] font-black text-slate-400">4.9</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-[0.2em] bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          <Link to={`/product/${node.handle}`}>
+            <h3 className="text-xl md:text-2xl font-black text-slate-950 font-playfair italic leading-tight group-hover:text-primary transition-colors duration-500">
+              {node.title}
+            </h3>
+          </Link>
+          <p className="text-xs text-slate-500 font-medium leading-relaxed line-clamp-2 h-8">
+            {node.description}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+          <div className="flex flex-col">
+            <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1">Acquisition Investment</span>
+            <span className="text-2xl font-black text-secondary">
+              <span className="text-xs font-bold mr-1">{node.priceRange.minVariantPrice.currencyCode}</span>
+              {parseFloat(node.priceRange.minVariantPrice.amount).toLocaleString()}
             </span>
-            Ready for Shipment
           </div>
+
+          <Button
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 text-secondary hover:bg-primary hover:border-primary hover:text-white hover:shadow-gold transition-all duration-500 group/btn"
+          >
+            <ShoppingBag className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+          </Button>
         </div>
       </div>
     </motion.div>

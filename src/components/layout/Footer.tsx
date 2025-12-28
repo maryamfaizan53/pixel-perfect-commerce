@@ -115,14 +115,15 @@ export const Footer = () => {
             </div>
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.15, y: -8 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={scrollToTop}
-            className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-primary hover:border-primary transition-all duration-700 shadow-gold"
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="group relative flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-white/40 hover:text-white transition-all duration-700"
           >
-            <ChevronUp className="w-6 h-6" />
-          </motion.button>
+            <span className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 group-hover:bg-primary group-hover:border-primary group-hover:-translate-y-2 transition-all duration-700">
+              <ChevronUp className="w-5 h-5 group-hover:animate-bounce" />
+            </span>
+            <span className="hidden sm:inline">Back to Summit</span>
+          </button>
         </div>
       </div>
     </footer>

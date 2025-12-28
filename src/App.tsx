@@ -25,6 +25,7 @@ import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import { WhatsAppSupport } from "@/components/common/WhatsAppSupport";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <AnimatedRoutes />
+            <WhatsAppSupport />
           </BrowserRouter>
         </TooltipProvider>
       </WishlistProvider>

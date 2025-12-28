@@ -224,6 +224,20 @@ const ProductPage = () => {
     }
   };
 
+  const handleWhatsAppOrder = () => {
+    if (!product || !selectedVariant) return;
+
+    const message = `Hi! I'm interested in ordering:
+*Product:* ${product.title}
+*Variant:* ${selectedVariant.title}
+*Quantity:* ${quantity}
+*Price:* ${selectedVariant.price.currencyCode} ${parseFloat(selectedVariant.price.amount).toLocaleString()}
+*URL:* ${window.location.href}`;
+
+    const url = `https://wa.me/+923001234567?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">

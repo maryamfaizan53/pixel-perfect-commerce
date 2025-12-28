@@ -4,7 +4,7 @@ import {
     Sparkles,
     X,
     Send,
-    Bot,
+    Crown,
     User,
     Loader2,
     ChevronDown,
@@ -148,7 +148,7 @@ export const AIChatbot = () => {
                                                 ? "bg-primary/10 border-primary/20 text-primary"
                                                 : "bg-slate-100 border-slate-200 text-slate-400"
                                         )}>
-                                            {m.role === "assistant" ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                                            {m.role === "assistant" ? <Crown className="w-4 h-4" /> : <User className="w-4 h-4" />}
                                         </div>
                                         <div className={cn(
                                             "max-w-[80%] p-4 rounded-3xl text-sm leading-relaxed",
@@ -217,7 +217,7 @@ export const AIChatbot = () => {
                     <X className="w-7 h-7 text-white" />
                 ) : (
                     <div className="relative">
-                        <Bot className="w-7 h-7 text-white" />
+                        <Crown className="w-7 h-7 text-white" />
                         <motion.div
                             animate={{ opacity: [0, 1, 0] }}
                             transition={{ duration: 2, repeat: Infinity }}

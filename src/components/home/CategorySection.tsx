@@ -84,19 +84,27 @@ export const CategorySection = ({ handle, title, subtitle, reverse = false }: Ca
                     </motion.div>
 
                     {/* Products Grid */}
-                    <div className="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12">
-                        {collection.products.map((product, index) => (
-                            <motion.div
-                                key={product.node.id}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-100px" }}
-                                transition={{ delay: index * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                                className={index % 2 !== 0 ? "lg:mt-24" : ""}
-                            >
-                                <ProductCard product={product} />
-                            </motion.div>
-                        ))}
+                    <div className="lg:w-2/3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-20">
+                            {collection.products.map((product, index) => (
+                                <motion.div
+                                    key={product.node.id}
+                                    initial={{ opacity: 0, y: 60 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-100px" }}
+                                    transition={{
+                                        delay: index * 0.15,
+                                        duration: 1,
+                                        ease: [0.22, 1, 0.36, 1]
+                                    }}
+                                    className={`relative group ${index % 2 !== 0 ? "lg:translate-y-32" : ""}`}
+                                >
+                                    <div className="relative overflow-hidden rounded-[2.5rem] bg-slate-50 border border-slate-100 transition-all duration-700 hover:shadow-premium hover:-translate-y-4">
+                                        <ProductCard product={product} />
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

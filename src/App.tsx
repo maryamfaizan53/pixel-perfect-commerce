@@ -7,7 +7,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/layout/PageTransition";
-import { CustomCursor } from "@/components/ui/CustomCursor";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import ProductPage from "./pages/ProductPage";
@@ -63,7 +62,6 @@ const App = () => (
     <AuthProvider>
       <WishlistProvider>
         <TooltipProvider>
-          <CustomCursor />
           <Toaster />
           <Sonner />
           <BrowserRouter>

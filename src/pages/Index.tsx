@@ -4,7 +4,7 @@ import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { CategorySection } from "@/components/home/CategorySection";
-import { TrendingUp, Truck, Shield, HeadphonesIcon, Globe, Star, Zap, CreditCard, Mail, ArrowRight } from "lucide-react";
+import { Truck, Shield, HeadphonesIcon, Zap, Mail, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
@@ -99,18 +99,22 @@ const Index = () => {
         <CategoryGrid />
 
         {/* Dynamic Collection Sections */}
-        <CategorySection
-          handle="kitchen"
-          title="Culinary"
-          subtitle="Transform your workspace with artisan kitchen instruments designed for the modern gastronome."
-        />
+        <section id="kitchen-section">
+          <CategorySection
+            handle="kitchen"
+            title="Modern Kitchen"
+            subtitle="The heart of the home, reimagined with professional-grade instruments and artisan elegance."
+          />
+        </section>
 
-        <CategorySection
-          handle="hair"
-          title="Haircare"
-          subtitle="Professional-grade hair solutions that combine scientific precision with pure luxury."
-          reverse
-        />
+        <section id="hair-section">
+          <CategorySection
+            handle="hair"
+            title="Essential Haircare"
+            subtitle="Meticulously formulated solutions for those who demand the pinnacle of hair health and style."
+            reverse
+          />
+        </section>
 
         {/* Featured Products - Curation */}
         <FeaturedProducts />

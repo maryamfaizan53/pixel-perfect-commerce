@@ -42,9 +42,12 @@ interface ProductOption {
   values: string[];
 }
 
-interface ShopifyProductExtended extends ShopifyProduct {
+interface Product {
   id: string;
+  title: string;
   description: string;
+  handle: string;
+  availableForSale: boolean;
   productType: string;
   vendor: string;
   images: {
@@ -56,6 +59,12 @@ interface ShopifyProductExtended extends ShopifyProduct {
     }[];
   };
   options: ProductOption[];
+  priceRange: {
+    minVariantPrice: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
   collections: {
     edges: {
       node: {
@@ -126,7 +135,7 @@ const PRODUCT_QUERY = `
 
 const ProductPage = () => {
   const { handle } = useParams();
-  const [product, setProduct] = useState<ShopifyProductExtended | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -174,7 +183,7 @@ const ProductPage = () => {
     if (!product || !selectedVariant) return;
 
     const cartItem = {
-      product: { node: product },
+      product: { node: product as unknown as ShopifyProduct['node'] },
       variantId: selectedVariant.id,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price,
@@ -246,19 +255,19 @@ const ProductPage = () => {
           <motion.nav
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 text-xs mb-12 text-muted-foreground font-black uppercase tracking-[0.2em]"
+            className="flex items-center gap-2 text-[10px] mb-8 text-slate-500 font-bold uppercase tracking-widest"
           >
-            <Link to="/" className="hover:text-primary transition-colors">Portal</Link>
-            <ChevronRight className="w-3 h-3" />
+            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+            <ChevronRight className="w-3 h-3 opacity-30" />
             {collection && (
               <>
-                <Link to={`/category/${collection.handle}`} className="hover:text-primary transition-colors">
+                <Link to={`/collections/${collection.handle}`} className="hover:text-primary transition-colors">
                   {collection.title}
                 </Link>
-                <ChevronRight className="w-3 h-3" />
+                <ChevronRight className="w-3 h-3 opacity-30" />
               </>
             )}
-            <span className="text-foreground truncate opacity-50">{product.title}</span>
+            <span className="text-slate-900 truncate">{product.title}</span>
           </motion.nav>
 
           <div className="grid lg:grid-cols-2 gap-20 xl:gap-32 items-start">
@@ -405,7 +414,7 @@ const ProductPage = () => {
                     <div className="space-y-6">
                       {product.options.map((option: ProductOption) => (
                         <div key={option.name} className="space-y-4">
-                          <label className="label-premium ml-1">{option.name}</label>
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{option.name}</label>
                           <div className="flex flex-wrap gap-4">
                             {option.values.map((value: string) => {
                               const isSelected = selectedVariant?.selectedOptions?.some((opt: { name: string; value: string }) => opt.name === option.name && opt.value === value);
@@ -621,9 +630,9 @@ const ProductPage = () => {
 
                 <TabsContent value="care" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                   <div className="prose prose-slate max-w-none text-center">
-                    <h3 className="text-3xl font-black mb-6 italic font-playfair">Artisan Care Guide</h3>
-                    <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                      Each piece is a testament to timeless craftsmanship. To preserve its integrity, avoid direct exposure to harsh elements and cleanse with a soft, specialized cloth. Handle with the same passion it was created with.
+                    <h3 className="text-xl font-bold mb-6 text-slate-900">Product Care Guide</h3>
+                    <p className="text-base text-slate-600 max-w-2xl mx-auto font-medium">
+                      Each piece is built to last with quality materials. To maintain its condition, avoid prolonged exposure to moisture and clean with a dry, soft cloth.
                     </p>
                   </div>
                 </TabsContent>
@@ -649,7 +658,7 @@ const ProductPage = () => {
                 <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 truncate w-32">
                   {product.title}
                 </span>
-                <span className="text-lg font-black text-secondary">
+                <span className="text-sm font-bold text-slate-900">
                   {currencyCode} {price.toLocaleString()}
                 </span>
               </div>

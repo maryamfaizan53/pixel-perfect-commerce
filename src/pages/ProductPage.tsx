@@ -400,13 +400,6 @@ const ProductPage = () => {
                   </div>
                 </div>
 
-                {/* 3. Description (Now after Rates) */}
-                <div className="space-y-4 pt-2">
-                  <p className="text-lg text-slate-600 leading-relaxed font-normal italic font-playfair">
-                    {product.description}
-                  </p>
-                </div>
-
                 {/* 3. Variant Options & Buttons */}
                 <div className="space-y-10">
                   {/* Variant Selection */}
@@ -502,6 +495,13 @@ const ProductPage = () => {
                       Secure Order Now
                     </Button>
                   </div>
+
+                  {/* Description (Now after Action Buttons) */}
+                  <div className="pt-8 border-t border-slate-100">
+                    <p className="text-lg text-slate-600 leading-relaxed font-normal italic font-playfair">
+                      {product.description}
+                    </p>
+                  </div>
                 </div>
 
 
@@ -586,13 +586,13 @@ const ProductPage = () => {
             viewport={{ once: true }}
             className="mt-32"
           >
-            <Tabs defaultValue="reviews" className="w-full">
+            <Tabs defaultValue="description" className="w-full">
               <TabsList className="w-full justify-center border-b border-slate-200 h-auto p-0 bg-transparent mb-20">
-                {["reviews", "specifications", "care"].map((tab) => (
+                {["description", "reviews", "specifications", "care"].map((tab) => (
                   <TabsTrigger
                     key={tab}
                     value={tab}
-                    className="rounded-none border-b-4 border-transparent px-10 py-6 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all"
+                    className="rounded-none border-b-4 border-transparent px-10 py-6 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 data-[state=active]:border-primary data-[state=active]:text-slate-900 transition-all font-black"
                   >
                     {tab}
                   </TabsTrigger>
@@ -600,6 +600,15 @@ const ProductPage = () => {
               </TabsList>
 
               <div className="max-w-5xl mx-auto">
+                <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <div className="prose prose-slate max-w-none">
+                    <h3 className="text-4xl font-black mb-8 italic font-playfair text-slate-900">Masterpiece Journey</h3>
+                    <p className="text-xl text-slate-600 leading-relaxed font-medium">
+                      {product.description}
+                    </p>
+                  </div>
+                </TabsContent>
+
                 <TabsContent value="reviews" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                   <ProductReviews productId={productId} productHandle={handle || ""} />
                 </TabsContent>

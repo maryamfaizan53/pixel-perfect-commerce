@@ -164,6 +164,23 @@ All colors MUST be HSL.
     text-shadow: 0 0 20px hsla(var(--primary) / 0.5);
   }
 
+  .text-editorial {
+    font-family: 'Playfair Display', serif;
+    @apply tracking-tighter leading-[0.9] italic;
+  }
+
+  .text-gold-leaf {
+    background: linear-gradient(135deg, #d4af37 0%, #fcf6ba 45%, #d4af37 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+
+  .label-premium {
+    @apply text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/60;
+  }
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -208,6 +225,7 @@ All colors MUST be HSL.
     background-size: 200% 100%;
     background-position: 100% 0;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     transition: background-position 1s ease-out;
   }

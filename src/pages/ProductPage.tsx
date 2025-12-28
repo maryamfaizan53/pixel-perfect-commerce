@@ -238,27 +238,26 @@ const ProductPage = () => {
                 transition={{ delay: 0.1 }}
                 className="space-y-8"
               >
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <span className="px-5 py-2 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.5em] rounded-full border border-primary/10">
-                      {product.vendor || 'Boutique'} Exclusive
-                    </span>
-                    {product.availableForSale ? (
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">In Stock</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-slate-300" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reserved</span>
-                      </div>
-                    )}
-                  </div>
-                  <h1 className="text-6xl font-black tracking-tighter text-foreground lg:text-9xl leading-[0.8] font-playfair italic">
-                    {product.title}
-                  </h1>
+                <div className="flex items-center gap-4">
+                  <span className="px-5 py-2 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.5em] rounded-full border border-primary/10">
+                    {product.vendor || 'Boutique'} Exclusive
+                  </span>
+                  {product.availableForSale ? (
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">In Stock</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-slate-300" />
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reserved</span>
+                    </div>
+                  )}
                 </div>
+                <h1 className="text-5xl md:text-8xl lg:text-[10rem] font-black text-foreground text-editorial tracking-[-0.05em] leading-[0.8] mb-4">
+                  <span className="block opacity-90">{product.title.split(' ')[0]}</span>
+                  <span className="block text-gold-leaf">{product.title.split(' ').slice(1).join(' ')}</span>
+                </h1>
 
                 <div className="flex items-center gap-10">
                   <div className="flex items-center gap-3 bg-slate-100 px-6 py-3 rounded-2xl border border-slate-200">
@@ -275,10 +274,10 @@ const ProductPage = () => {
 
                 <div className="flex flex-wrap items-center gap-6 py-8 border-y border-slate-200/60">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.5em] mb-2">Artisan Boutique Price</span>
+                    <span className="label-premium mb-2">Artisan Boutique Price</span>
                     <div className="flex items-baseline gap-2">
                       <span className="text-xl font-bold text-primary">{currencyCode}</span>
-                      <span className="text-6xl font-black text-foreground tracking-tighter">
+                      <span className="text-6xl font-black text-foreground tracking-tighter font-playfair italic">
                         {price.toLocaleString()}
                       </span>
                     </div>
@@ -294,7 +293,7 @@ const ProductPage = () => {
                   <div className="space-y-10">
                     {product.options.map((option: any) => (
                       <div key={option.name} className="space-y-4">
-                        <label className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 ml-1">{option.name}</label>
+                        <label className="label-premium ml-1">{option.name}</label>
                         <div className="flex flex-wrap gap-4">
                           {option.values.map((value: string) => {
                             const isSelected = selectedVariant?.selectedOptions?.some((opt: any) => opt.name === option.name && opt.value === value);

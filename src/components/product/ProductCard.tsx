@@ -135,12 +135,12 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       <div className="p-8 flex flex-col flex-1 space-y-6">
         <div className="space-y-3 flex-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">
+            <span className="label-premium">
               {node.handle.split('-')[0]} Boutique
             </span>
             <div className="flex items-center gap-1">
               <Star className="w-3 h-3 text-primary fill-current" />
-              <span className="text-[10px] font-black text-slate-400">4.9</span>
+              <span className="label-premium">4.9</span>
             </div>
           </div>
           <Link to={`/product/${node.handle}`}>
@@ -155,7 +155,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
         <div className="flex items-center justify-between pt-6 border-t border-slate-50">
           <div className="flex flex-col">
-            <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1">Acquisition Investment</span>
+            <span className="label-premium !text-slate-300 mb-1">Acquisition Investment</span>
             <span className="text-2xl font-black text-secondary">
               <span className="text-xs font-bold mr-1">{node.priceRange.minVariantPrice.currencyCode}</span>
               {parseFloat(node.priceRange.minVariantPrice.amount).toLocaleString()}

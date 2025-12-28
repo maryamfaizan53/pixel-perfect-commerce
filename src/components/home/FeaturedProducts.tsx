@@ -69,14 +69,14 @@ export const FeaturedProducts = () => {
             viewport={{ once: true }}
             className="space-y-6 max-w-2xl"
           >
-            <div className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-secondary text-primary text-[10px] font-black uppercase tracking-[0.5em] border border-primary/20 shadow-gold">
+            <div className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-secondary text-primary label-premium border border-primary/20 shadow-gold">
               <Star className="w-3.5 h-3.5 fill-primary" />
               Diamond Tier Selection
             </div>
-            <h2 className="text-5xl md:text-8xl font-black text-foreground tracking-tighter leading-[0.85] font-playfair italic">
-              Artisan <span className="text-primary not-italic">Excellence</span>
+            <h2 className="text-6xl md:text-9xl font-black text-foreground tracking-tighter leading-[0.8] font-playfair italic">
+              Artisan <span className="text-gold-leaf not-italic">Excellence</span>
             </h2>
-            <p className="text-muted-foreground font-medium text-xl leading-relaxed max-w-xl opacity-70 italic">
+            <p className="text-muted-foreground font-medium text-xl leading-relaxed max-w-xl opacity-70 italic font-playfair">
               "Exquisite pieces meticulously selected for those who demand the pinnacle of artisan craftsmanship."
             </p>
           </motion.div>
@@ -88,7 +88,7 @@ export const FeaturedProducts = () => {
           >
             <Link
               to="/category/all"
-              className="group flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-slate-400 hover:text-primary transition-all pb-3 border-b-2 border-slate-100 hover:border-primary"
+              className="group flex items-center gap-4 label-premium !text-slate-400 hover:!text-primary transition-all pb-3 border-b-2 border-slate-100 hover:border-primary"
             >
               View Full Gallery
               <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />

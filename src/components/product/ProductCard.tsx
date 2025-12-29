@@ -73,7 +73,14 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
     try {
       setCheckoutLoading(true);
       const { createStorefrontCheckout } = await import("@/lib/shopify");
-      const checkoutUrl = await createStorefrontCheckout(defaultVariant.id, 1);
+      const checkoutUrl = await createStorefrontCheckout([{
+        product,
+        variantId: defaultVariant.id,
+        variantTitle: defaultVariant.title,
+        price: defaultVariant.price,
+        quantity: 1,
+        selectedOptions: defaultVariant.selectedOptions || []
+      }]);
       window.location.href = checkoutUrl;
     } catch (error) {
       console.error("Direct checkout failed:", error);

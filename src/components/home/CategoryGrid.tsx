@@ -44,10 +44,10 @@ export const CategoryGrid = () => {
               Curated Selection
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-[1.1]">
-              Signature <span className="text-primary">Collections</span>
+              Shop by <span className="text-primary">Category</span>
             </h2>
             <p className="text-muted-foreground text-lg md:text-xl max-w-lg mt-8 leading-relaxed font-medium opacity-70">
-              "Explore our meticulously curated vaults, where tradition meets modern luxury."
+              "Explore our curated collections designed for every aspect of your lifestyle."
             </p>
           </motion.div>
 

@@ -13,7 +13,7 @@ export const FeaturedProducts = () => {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const data = await fetchProducts(8);
+        const data = await fetchProducts(24);
         setProducts(data);
       } catch (error) {
         console.error('Failed to fetch products:', error);
@@ -40,23 +40,7 @@ export const FeaturedProducts = () => {
   }
 
   if (products.length === 0) {
-    return (
-      <section className="py-32 bg-slate-50/50">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="text-center py-32 bg-white rounded-[3rem] border border-slate-100 shadow-2xl"
-          >
-            <Sparkles className="w-20 h-20 text-slate-200 mx-auto mb-8 animate-pulse" />
-            <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tighter">Vault Update in Progress</h2>
-            <p className="text-slate-500 font-medium text-lg">
-              Our curators are securing new arrivals. Check back momentarily.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   return (
@@ -71,13 +55,13 @@ export const FeaturedProducts = () => {
           >
             <div className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-secondary text-primary label-premium border border-primary/20 shadow-gold">
               <Star className="w-3.5 h-3.5 fill-primary" />
-              Diamond Tier Selection
+              Complete Catalog
             </div>
             <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tighter leading-[1.1]">
-              Artisan <span className="text-primary">Excellence</span>
+              All <span className="text-primary">Products</span>
             </h2>
             <p className="text-muted-foreground font-medium text-lg leading-relaxed max-w-xl opacity-70">
-              "Exquisite pieces meticulously selected for those who demand the pinnacle of artisan craftsmanship."
+              "Browse our entire collection of premium artisan goods, crafted for excellence and durability."
             </p>
           </motion.div>
 

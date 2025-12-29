@@ -60,6 +60,8 @@ export const ProductQuickView = ({ product, index }: ProductQuickViewProps) => {
                         src={image}
                         alt={product.node.title}
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                         animate={{
                             scale: isHovered ? 1.1 : 1,
                         }}

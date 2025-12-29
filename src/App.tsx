@@ -86,8 +86,10 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <AnimatedRoutes />
-            <WhatsAppSupport />
-            <AIChatbot />
+            <Suspense fallback={null}>
+              <WhatsAppSupport />
+              <AIChatbot />
+            </Suspense>
           </BrowserRouter>
         </TooltipProvider>
       </WishlistProvider>

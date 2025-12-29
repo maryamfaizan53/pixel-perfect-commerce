@@ -60,7 +60,7 @@ export const Header = () => {
             <div className="container-custom">
               <div className="flex items-center justify-center h-10 text-[10px] font-bold uppercase tracking-widest">
                 <Sparkles className="w-3 h-3 mr-3 text-primary" />
-                <span>Complimentary Shipping Worldwide</span>
+                <span>Lowest Rates Guaranteed • Shipping Charges 200/- • Allow to Open Parcel</span>
                 <Sparkles className="w-3 h-3 ml-3 text-primary" />
               </div>
             </div>

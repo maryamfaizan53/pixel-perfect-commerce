@@ -180,6 +180,31 @@ const ProductPage = () => {
     }
   }, [handle]);
 
+  useEffect(() => {
+    if (product) {
+      const RECENTLY_VIEWED_KEY = "recently-viewed-products";
+      const stored = localStorage.getItem(RECENTLY_VIEWED_KEY);
+      let recent = [];
+      try {
+        recent = stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        recent = [];
+      }
+
+      const productToStore = {
+        node: product as any
+      };
+
+      // Filter out current product and keep last 10
+      const updated = [
+        productToStore,
+        ...recent.filter((p: any) => p.node.id !== product.id)
+      ].slice(0, 10);
+
+      localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(updated));
+    }
+  }, [product]);
+
   const handleAddToCart = () => {
     if (!product || !selectedVariant) return;
 

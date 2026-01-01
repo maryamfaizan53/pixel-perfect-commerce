@@ -105,7 +105,6 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
     const categories = useMemo(() => {
         const cats = new Set<string>();
         products.forEach(p => {
-            if (p.node.productType) cats.add(p.node.productType);
             const handlePart = p.node.handle.split('-')[0];
             if (handlePart) cats.add(handlePart.charAt(0).toUpperCase() + handlePart.slice(1));
         });
@@ -129,7 +128,6 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
         // Category Filter
         if (selectedCategory) {
             results = results.filter(p =>
-                p.node.productType === selectedCategory ||
                 p.node.handle.toLowerCase().includes(selectedCategory.toLowerCase())
             );
         }
@@ -628,7 +626,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                             <div className="flex flex-col gap-3 px-2">
                                                                 <div className="space-y-1">
                                                                     <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">
-                                                                        {p.node.productType || p.node.handle.split('-')[0]} Boutique
+                                                                        {p.node.handle.split('-')[0]} Boutique
                                                                     </span>
                                                                     <h4 className="text-lg font-black text-slate-900 group-hover:text-primary transition-colors tracking-tight line-clamp-1">{p.node.title}</h4>
                                                                 </div>

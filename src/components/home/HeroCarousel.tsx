@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, Sparkles, Loader2 } from "lucide-react";
+import { ArrowRight, Sparkles, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
-import { ProductQuickView } from "@/components/product/ProductQuickView";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const HeroCarousel = () => {
@@ -32,91 +31,99 @@ export const HeroCarousel = () => {
     if (products.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % products.length);
+      setCurrentIndex((prev) => (prev + 1) % Math.min(products.length, 4));
     }, 5000);
 
     return () => clearInterval(interval);
   }, [products.length]);
 
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % Math.min(products.length, 4));
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + Math.min(products.length, 4)) % Math.min(products.length, 4));
+  };
+
+  const featuredProducts = products.slice(0, 4);
+  const currentProduct = featuredProducts[currentIndex];
+
   return (
-    <div className="relative min-h-[600px] md:min-h-[700px] lg:min-h-[800px] w-full overflow-hidden rounded-[2.5rem] sm:rounded-[3rem] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-premium">
-      {/* Animated Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,58,237,0.3),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+    <div className="relative min-h-[500px] md:min-h-[600px] lg:min-h-[650px] w-full overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-secondary via-secondary/95 to-secondary shadow-xl">
+      {/* Subtle Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)] bg-[size:32px_32px]" />
       </div>
 
-      <div className="relative z-10 h-full container-custom py-12 md:py-16 lg:py-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center h-full">
+      <div className="relative z-10 h-full container-custom py-10 md:py-14 lg:py-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full">
           {/* Left: Content */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8 lg:space-y-10"
+            transition={{ duration: 0.6 }}
+            className="space-y-6 lg:space-y-8"
           >
             {/* Label */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center gap-4"
+              transition={{ delay: 0.15 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20"
             >
-              <div className="w-12 h-[2px] bg-primary" />
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary flex items-center gap-2">
-                <Sparkles className="w-4 h-4 animate-pulse" />
-                Latest Arrivals
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                New Collection
               </span>
             </motion.div>
 
             {/* Headline */}
             <div className="space-y-4">
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white leading-[0.95]"
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.1]"
               >
-                Discover
+                Premium Quality
                 <br />
-                <span className="text-primary uppercase text-[0.5em] tracking-[0.2em] block mt-4">
-                  Premium Collection
-                </span>
+                <span className="text-primary">Best Prices</span>
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="text-lg md:text-xl text-white/70 font-medium max-w-xl leading-relaxed"
+                transition={{ delay: 0.3 }}
+                className="text-base md:text-lg text-white/70 max-w-md leading-relaxed"
               >
-                Explore our handpicked selection of the finest products, curated for those who demand excellence.
+                Discover our handpicked collection of premium products. Quality you can trust, prices you'll love.
               </motion.p>
             </div>
 
             {/* CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-col sm:flex-row gap-4"
+              transition={{ delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-3"
             >
               <Button
                 size="lg"
                 asChild
-                className="h-14 sm:h-16 px-8 sm:px-10 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] group shadow-gold transition-all duration-500"
+                className="h-12 sm:h-14 px-8 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold group shadow-lg shadow-primary/25"
               >
-                <Link to="/category/all" className="flex items-center justify-center gap-3">
+                <Link to="/category/all" className="flex items-center gap-2">
                   Shop Now
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                className="h-14 sm:h-16 px-8 sm:px-10 rounded-2xl bg-transparent border-white/20 text-white hover:bg-white hover:text-slate-900 font-black uppercase tracking-[0.2em] transition-all duration-500"
+                asChild
+                className="h-12 sm:h-14 px-8 rounded-xl bg-white/5 border-white/20 text-white hover:bg-white/10 font-semibold"
               >
-                View Collections
+                <Link to="/category/all">View All Products</Link>
               </Button>
             </motion.div>
 
@@ -124,75 +131,112 @@ export const HeroCarousel = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="flex items-center gap-8 pt-8 border-t border-white/10"
+              transition={{ delay: 0.5 }}
+              className="flex items-center gap-8 pt-6 border-t border-white/10"
             >
               <div>
-                <div className="text-3xl font-black text-white">{products.length}+</div>
-                <div className="text-xs font-bold uppercase tracking-wider text-white/50">New Products</div>
+                <div className="text-2xl md:text-3xl font-bold text-white">{products.length}+</div>
+                <div className="text-xs text-white/50 font-medium">Products</div>
               </div>
               <div>
-                <div className="text-3xl font-black text-white">100%</div>
-                <div className="text-xs font-bold uppercase tracking-wider text-white/50">Premium Quality</div>
+                <div className="text-2xl md:text-3xl font-bold text-white">Free</div>
+                <div className="text-xs text-white/50 font-medium">Shipping*</div>
+              </div>
+              <div>
+                <div className="text-2xl md:text-3xl font-bold text-white">7 Days</div>
+                <div className="text-xs text-white/50 font-medium">Returns</div>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Right: Product Grid */}
+          {/* Right: Featured Product Showcase */}
           <div className="relative">
             {loading ? (
-              <div className="grid grid-cols-2 gap-4">
-                {[...Array(4)].map((_, i) => (
-                  <Skeleton key={i} className="aspect-[3/4] rounded-2xl bg-white/10" />
-                ))}
-              </div>
-            ) : products.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4">
-                {products.slice(0, 4).map((product, index) => (
-                  <ProductQuickView
-                    key={product.node.id}
-                    product={product}
-                    index={index}
-                  />
-                ))}
+              <div className="aspect-square rounded-2xl bg-white/10 animate-pulse" />
+            ) : featuredProducts.length > 0 ? (
+              <div className="relative">
+                {/* Main Featured Image */}
+                <AnimatePresence mode="wait">
+                  {currentProduct && (
+                    <motion.div
+                      key={currentIndex}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4 }}
+                      className="relative"
+                    >
+                      <Link to={`/product/${currentProduct.node.handle}`} className="block group">
+                        <div className="aspect-square rounded-2xl overflow-hidden bg-white shadow-2xl">
+                          <img
+                            src={currentProduct.node.images.edges[0]?.node?.url || "/placeholder.svg"}
+                            alt={currentProduct.node.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                        </div>
+                        
+                        {/* Product Info Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-b-2xl">
+                          <h3 className="text-lg font-semibold text-white mb-1 line-clamp-1">
+                            {currentProduct.node.title}
+                          </h3>
+                          <p className="text-xl font-bold text-primary">
+                            {currentProduct.node.priceRange.minVariantPrice.currencyCode}{' '}
+                            {parseFloat(currentProduct.node.priceRange.minVariantPrice.amount).toLocaleString()}
+                          </p>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Navigation Controls */}
+                <div className="absolute -bottom-14 left-0 right-0 flex items-center justify-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={prevSlide}
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </Button>
+                  
+                  {/* Dots */}
+                  <div className="flex gap-2">
+                    {featuredProducts.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          index === currentIndex 
+                            ? 'w-6 bg-primary' 
+                            : 'bg-white/30 hover:bg-white/50'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={nextSlide}
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center space-y-4">
-                  <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
-                  <p className="text-white/60 font-medium">Loading latest products...</p>
+              <div className="flex items-center justify-center aspect-square">
+                <div className="text-center space-y-3">
+                  <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto" />
+                  <p className="text-white/60 text-sm">Loading products...</p>
                 </div>
               </div>
             )}
-
-            {/* Floating Badge */}
-            <AnimatePresence mode="wait">
-              {!loading && products.length > 0 && (
-                <motion.div
-                  key={currentIndex}
-                  initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, rotate: 10 }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute -top-6 -right-6 bg-primary text-white px-6 py-3 rounded-full shadow-2xl"
-                >
-                  <div className="text-center">
-                    <div className="text-xs font-black uppercase tracking-wider">Featured</div>
-                    <div className="text-[10px] opacity-80">#{currentIndex + 1}</div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Decorative Elements */}
-            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/20 blur-[100px] rounded-full pointer-events-none" />
-            <div className="absolute -top-10 -left-10 w-40 h-40 bg-secondary/20 blur-[100px] rounded-full pointer-events-none" />
           </div>
         </div>
       </div>
-
-      {/* Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none" />
     </div>
   );
 };

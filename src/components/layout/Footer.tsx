@@ -1,129 +1,196 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Instagram, Youtube, Mail, ChevronUp, ShoppingCart, ShieldCheck } from "lucide-react";
+import { Facebook, Instagram, Mail, Phone, MapPin, ShoppingBag, CreditCard, Truck, Shield, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
 
 export const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-950 text-white relative overflow-hidden border-t border-white/5">
-      {/* Background Glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[150px] rounded-full pointer-events-none" />
-
-      <div className="container-custom relative z-10 pt-32 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
-          {/* Brand Identity */}
-          <div className="lg:col-span-4 space-y-8">
-            <Link to="/" className="flex items-center gap-4 group">
-              <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-full flex items-center justify-center shadow-2xl transition-all duration-700 group-hover:bg-primary group-hover:rotate-[360deg]">
-                <ShoppingCart className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
+    <footer className="bg-secondary text-secondary-foreground">
+      {/* Trust Badges Section */}
+      <div className="border-b border-white/10">
+        <div className="container-custom py-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Truck className="w-5 h-5 text-primary" />
               </div>
-              <div className="flex flex-col">
-                <span className="font-black text-3xl tracking-tighter text-white leading-none font-playfair italic">
-                  Pixel<span className="text-primary not-italic">Perfect</span>
-                </span>
-                <span className="text-[9px] font-black uppercase tracking-[0.6em] text-white/20 mt-1">Global Emporium</span>
+              <div>
+                <p className="font-semibold text-sm">Free Shipping</p>
+                <p className="text-xs text-secondary-foreground/60">On orders above PKR 5,000</p>
               </div>
-            </Link>
-            <p className="text-white/40 font-medium leading-relaxed max-w-sm">
-              The pinnacle of digital commerce, where artisan craftsmanship meets unprecedented technology. Curated for the global elite.
-            </p>
-            <div className="flex gap-4">
-              {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-                <Button key={i} size="icon" variant="ghost" className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all duration-500">
-                  <Icon className="w-5 h-5" />
-                </Button>
-              ))}
             </div>
-            <div className="pt-8 border-t border-white/5">
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary block mb-2 underline decoration-primary/30 underline-offset-8">Quality Certification</span>
-              <p className="text-[10px] text-white/20 font-black uppercase tracking-[0.2em]">Verified Professional Standard • Artisan Audited</p>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Shield className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm">Secure Payment</p>
+                <p className="text-xs text-secondary-foreground/60">100% secure checkout</p>
+              </div>
             </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="lg:col-span-2 space-y-8">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Catalog</h3>
-            <ul className="space-y-4">
-              {['Household', 'Kitchen', 'Stationery', 'Toys', 'Mobile', 'Beauty'].map((item) => (
-                <li key={item}>
-                  <Link to={`/category/${item.toLowerCase()}`} className="text-sm font-bold text-white/40 hover:text-white transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="lg:col-span-2 space-y-8">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Concierge</h3>
-            <ul className="space-y-4">
-              {['Help Center', 'Track Order', 'Returns', 'Shipping', 'Contact'].map((item) => (
-                <li key={item}>
-                  <Link to={`/${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-bold text-white/40 hover:text-white transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter / CTA */}
-          <div className="lg:col-span-4 space-y-8">
-            <div className="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 glass-noise">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-8">Bespoke Updates</h3>
-              <p className="text-sm font-medium text-white/50 mb-10 leading-relaxed italic font-playfair">
-                "Join our private circle for early prototype access and artisan-crafted rewards."
-              </p>
-              <div className="flex gap-4">
-                <Input
-                  type="email"
-                  placeholder="Registry Identity"
-                  className="h-16 rounded-2xl bg-white/5 border-white/10 text-white focus:ring-primary/30 placeholder:text-white/10 font-medium"
-                />
-                <Button size="icon" className="h-16 w-16 rounded-2xl btn-premium text-white flex-shrink-0 shadow-gold">
-                  <Mail className="w-6 h-6" />
-                </Button>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm">Easy Returns</p>
+                <p className="text-xs text-secondary-foreground/60">7-day return policy</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Phone className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm">24/7 Support</p>
+                <p className="text-xs text-secondary-foreground/60">WhatsApp available</p>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom bar */}
-        <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">
-              © 2024 PIXEL PERFECT • ALL RIGHTS RESERVED
+      {/* Main Footer Content */}
+      <div className="container-custom py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+          {/* Brand Column */}
+          <div className="lg:col-span-4 space-y-6">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                <ShoppingBag className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <span className="font-bold text-xl text-white">
+                  Pixel<span className="text-primary">Perfect</span>
+                </span>
+              </div>
+            </Link>
+            <p className="text-secondary-foreground/70 text-sm leading-relaxed max-w-sm">
+              Your trusted destination for premium products at the best prices. Quality guaranteed with fast delivery across Pakistan.
             </p>
-            <div className="flex items-center gap-6">
-              <Link to="/privacy" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-primary transition-colors">Privacy</Link>
-              <Link to="/terms" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-primary transition-colors">Terms</Link>
+            
+            {/* Contact Info */}
+            <div className="space-y-3">
+              <a href="tel:+923328222026" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Phone className="w-4 h-4" />
+                +92 332 8222026
+              </a>
+              <a href="mailto:support@pixelperfect.pk" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Mail className="w-4 h-4" />
+                support@pixelperfect.pk
+              </a>
+              <div className="flex items-start gap-3 text-sm text-secondary-foreground/70">
+                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>Lahore, Pakistan</span>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex gap-3 pt-2">
+              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-300">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-300">
+                <Instagram className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
-          <div className="flex items-center gap-12 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-            <ShieldCheck className="w-8 h-8 text-white" />
-            <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white/40">
-              <span>Visa</span>
-              <span>Mastercard</span>
-              <span>PayPal</span>
-              <span>Stripe</span>
-            </div>
+          {/* Quick Links */}
+          <div className="lg:col-span-2">
+            <h3 className="font-semibold text-white mb-4">Shop</h3>
+            <ul className="space-y-2.5">
+              {['All Products', 'New Arrivals', 'Best Sellers', 'On Sale'].map((item) => (
+                <li key={item}>
+                  <Link 
+                    to={`/category/all`} 
+                    className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="group relative flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-white/40 hover:text-white transition-all duration-700"
-          >
-            <span className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 group-hover:bg-primary group-hover:border-primary group-hover:-translate-y-2 transition-all duration-700">
-              <ChevronUp className="w-5 h-5 group-hover:animate-bounce" />
-            </span>
-            <span className="hidden sm:inline">Back to Summit</span>
-          </button>
+          {/* Customer Service */}
+          <div className="lg:col-span-2">
+            <h3 className="font-semibold text-white mb-4">Help</h3>
+            <ul className="space-y-2.5">
+              <li>
+                <Link to="/track-order" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                  Track Order
+                </Link>
+              </li>
+              <li>
+                <Link to="/shipping" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                  Shipping Info
+                </Link>
+              </li>
+              <li>
+                <Link to="/returns" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                  Returns & Exchange
+                </Link>
+              </li>
+              <li>
+                <Link to="/help" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div className="lg:col-span-4">
+            <h3 className="font-semibold text-white mb-4">Stay Updated</h3>
+            <p className="text-sm text-secondary-foreground/70 mb-4">
+              Subscribe for exclusive offers and new arrivals.
+            </p>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="h-11 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-primary"
+              />
+              <Button className="h-11 px-5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground">
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            {/* Payment Methods */}
+            <div className="mt-8">
+              <p className="text-xs text-secondary-foreground/50 mb-3">Accepted Payments</p>
+              <div className="flex items-center gap-4 text-xs font-medium text-secondary-foreground/60">
+                <span>Visa</span>
+                <span>Mastercard</span>
+                <span>JazzCash</span>
+                <span>EasyPaisa</span>
+                <span>COD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-white/10">
+        <div className="container-custom py-5">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-secondary-foreground/50">
+              © {currentYear} PixelPerfect. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6 text-xs text-secondary-foreground/50">
+              <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

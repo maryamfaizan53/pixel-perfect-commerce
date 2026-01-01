@@ -1,4 +1,4 @@
-import { Search, Menu, User, Heart, LogOut, ShoppingBag, X, Sparkles } from "lucide-react";
+import { Search, Menu, User, Heart, LogOut, ShoppingBag, X, Phone, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -25,7 +25,7 @@ export const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -48,20 +48,30 @@ export const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Announcement Bar */}
+      {/* Top Bar - Contact Info */}
       <AnimatePresence>
         {!scrolled && (
           <motion.div
             initial={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="bg-secondary text-secondary-foreground overflow-hidden border-b border-primary/20"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="bg-secondary text-secondary-foreground overflow-hidden"
           >
             <div className="container-custom">
-              <div className="flex items-center justify-center h-10 text-[10px] font-bold uppercase tracking-widest">
-                <Sparkles className="w-3 h-3 mr-3 text-primary" />
-                <span>Lowest Rates Guaranteed • Shipping Charges 200/- • Allow to Open Parcel</span>
-                <Sparkles className="w-3 h-3 ml-3 text-primary" />
+              <div className="flex items-center justify-between h-9 text-[11px]">
+                <div className="flex items-center gap-6">
+                  <a href="tel:+923328222026" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                    <Phone className="w-3 h-3" />
+                    <span className="font-semibold">+92 332 8222026</span>
+                  </a>
+                  <span className="hidden sm:block text-secondary-foreground/50">|</span>
+                  <span className="hidden sm:block text-secondary-foreground/70">Free Shipping on Orders Above PKR 5,000</span>
+                </div>
+                <div className="hidden md:flex items-center gap-4 text-secondary-foreground/70">
+                  <Link to="/track-order" className="hover:text-primary transition-colors">Track Order</Link>
+                  <span className="text-secondary-foreground/30">•</span>
+                  <Link to="/help" className="hover:text-primary transition-colors">Help</Link>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -71,56 +81,76 @@ export const Header = () => {
       {/* Main Navigation */}
       <motion.div
         animate={{
-          backgroundColor: scrolled ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 1)",
-          backdropFilter: scrolled ? "blur(20px)" : "blur(0px)",
-          boxShadow: scrolled ? "0 4px 30px rgba(0, 0, 0, 0.1)" : "0 1px 3px rgba(0, 0, 0, 0.05)"
+          backgroundColor: scrolled ? "rgba(255, 255, 255, 0.98)" : "rgba(255, 255, 255, 1)",
+          boxShadow: scrolled ? "0 4px 20px rgba(0, 0, 0, 0.08)" : "0 1px 0 rgba(0, 0, 0, 0.05)"
         }}
-        transition={{ duration: 0.3 }}
-        className="border-b border-border/50"
+        transition={{ duration: 0.2 }}
+        className="border-b border-border/30"
       >
         <div className="container-custom">
-          <div className="flex items-center justify-between h-16 md:h-20 gap-4">
+          <div className="flex items-center justify-between h-16 md:h-[72px] gap-4">
+            {/* Mobile Menu Toggle - Left side on mobile */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden w-10 h-10 rounded-xl hover:bg-muted -ml-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-4 group shrink-0">
+            <Link to="/" className="flex items-center gap-3 group shrink-0">
               <div className="relative">
-                <div className="w-12 h-12 bg-secondary border border-primary/30 rounded-full flex items-center justify-center transition-all duration-700 group-hover:bg-primary group-hover:scale-105 group-hover:rotate-[360deg] shadow-lg">
-                  <ShoppingBag className="w-5 h-5 text-primary group-hover:text-white transition-colors duration-500" />
+                <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-md">
+                  <ShoppingBag className="w-5 h-5 text-primary-foreground" />
                 </div>
               </div>
               <div className="hidden xs:flex flex-col">
-                <span className="font-bold text-lg sm:text-xl tracking-tight text-slate-900 leading-none">
+                <span className="font-bold text-lg md:text-xl tracking-tight text-foreground leading-none">
                   Pixel<span className="text-primary">Perfect</span>
                 </span>
-                <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-widest text-slate-400 mt-1 sm:mt-1.5">International Boutique</span>
+                <span className="text-[9px] font-medium uppercase tracking-widest text-muted-foreground mt-0.5">Premium Store</span>
               </div>
             </Link>
 
             {/* Center Navigation - Desktop */}
-            <nav className="hidden lg:flex items-center justify-center flex-1 max-w-2xl mx-8">
+            <nav className="hidden lg:flex items-center justify-center flex-1 max-w-xl mx-6">
               <ul className="flex items-center gap-1">
-                {categories.slice(0, 6).map((category, idx) => (
-                  <li key={category.name} className="relative group/nav">
+                {categories.slice(0, 5).map((category) => (
+                  <li key={category.name}>
                     <Link
                       to={category.path}
-                      className="nav-link-premium text-muted-foreground hover:text-foreground relative z-10 flex items-center gap-2"
+                      className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all duration-200"
                     >
                       {category.name}
-                      {idx < 2 && (
-                        <motion.span
-                          animate={{ opacity: [0.4, 1, 0.4] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                          className="w-1.5 h-1.5 bg-primary rounded-full"
-                        />
-                      )}
                     </Link>
-                    <div className="absolute -bottom-1 left-4 right-4 h-0.5 bg-primary scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-500 origin-left" />
                   </li>
                 ))}
+                {categories.length > 5 && (
+                  <li>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all duration-200 flex items-center gap-1">
+                          More
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="center" className="w-48 p-2 rounded-xl shadow-lg border-border/50 bg-background">
+                        {categories.slice(5).map((category) => (
+                          <DropdownMenuItem key={category.name} asChild className="rounded-lg cursor-pointer py-2.5">
+                            <Link to={category.path}>{category.name}</Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </li>
+                )}
               </ul>
             </nav>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center gap-1 md:gap-2">
               <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
               {/* Search Trigger */}
@@ -133,7 +163,7 @@ export const Header = () => {
                 <Search className="w-5 h-5" />
               </Button>
 
-              {/* User Menu */}
+              {/* User Menu - Desktop */}
               <div className="hidden sm:block">
                 {user ? (
                   <DropdownMenu>
@@ -142,25 +172,25 @@ export const Header = () => {
                         <User className="w-5 h-5" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl shadow-2xl border-border/50">
-                      <DropdownMenuItem asChild className="rounded-xl cursor-pointer py-3">
-                        <Link to="/account">
-                          <User className="w-4 h-4 mr-3" />
+                    <DropdownMenuContent align="end" className="w-52 p-2 rounded-xl shadow-lg border-border/50 bg-background">
+                      <DropdownMenuItem asChild className="rounded-lg cursor-pointer py-2.5">
+                        <Link to="/account" className="flex items-center gap-2.5">
+                          <User className="w-4 h-4" />
                           My Account
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="rounded-xl cursor-pointer py-3">
-                        <Link to="/wishlist">
-                          <Heart className="w-4 h-4 mr-3" />
+                      <DropdownMenuItem asChild className="rounded-lg cursor-pointer py-2.5">
+                        <Link to="/wishlist" className="flex items-center gap-2.5">
+                          <Heart className="w-4 h-4" />
                           Wishlist
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator className="my-2" />
+                      <DropdownMenuSeparator className="my-1.5" />
                       <DropdownMenuItem
                         onClick={handleSignOut}
-                        className="rounded-xl cursor-pointer py-3 text-destructive focus:text-destructive"
+                        className="rounded-lg cursor-pointer py-2.5 text-destructive focus:text-destructive focus:bg-destructive/10"
                       >
-                        <LogOut className="w-4 h-4 mr-3" />
+                        <LogOut className="w-4 h-4 mr-2.5" />
                         Sign Out
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -174,47 +204,15 @@ export const Header = () => {
                 )}
               </div>
 
-              {/* Wishlist */}
-              <Button variant="ghost" size="icon" className="hidden sm:flex w-10 h-10 rounded-xl hover:bg-muted group" asChild>
+              {/* Wishlist - Desktop */}
+              <Button variant="ghost" size="icon" className="hidden sm:flex w-10 h-10 rounded-xl hover:bg-muted" asChild>
                 <Link to="/wishlist">
-                  <Heart className="w-5 h-5 group-hover:fill-secondary group-hover:text-secondary transition-all" />
+                  <Heart className="w-5 h-5" />
                 </Link>
               </Button>
 
-              {/* Cart */}
+              {/* Cart - Always visible with emphasis */}
               <CartDrawer />
-
-              {/* Mobile Menu Toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden w-10 h-10 rounded-xl hover:bg-muted"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                <AnimatePresence mode="wait">
-                  {mobileMenuOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <X className="w-5 h-5" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <Menu className="w-5 h-5" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Button>
             </div>
           </div>
         </div>
@@ -229,25 +227,30 @@ export const Header = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-foreground/60 backdrop-blur-sm z-40 lg:hidden"
+              className="fixed inset-0 bg-foreground/50 backdrop-blur-sm z-40 lg:hidden"
             />
             <motion.div
-              initial={{ x: "100%" }}
+              initial={{ x: "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="fixed top-0 right-0 bottom-0 w-[320px] bg-background z-50 lg:hidden shadow-2xl overflow-y-auto"
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed top-0 left-0 bottom-0 w-[300px] bg-background z-50 lg:hidden shadow-2xl overflow-y-auto"
             >
-              <div className="p-6 space-y-6">
+              <div className="p-5 space-y-6">
                 {/* Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-border">
-                  <span className="font-bold text-xl tracking-tight">
-                    Pixel<span className="text-primary">Perfect</span>
-                  </span>
+                  <Link to="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                      <ShoppingBag className="w-4 h-4 text-primary-foreground" />
+                    </div>
+                    <span className="font-bold text-lg">
+                      Pixel<span className="text-primary">Perfect</span>
+                    </span>
+                  </Link>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-xl"
+                    className="w-9 h-9 rounded-lg"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <X className="w-5 h-5" />
@@ -255,30 +258,25 @@ export const Header = () => {
                 </div>
 
                 {/* Search in Mobile */}
-                <div className="pb-4 border-b border-border">
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="w-full h-12 bg-slate-100 rounded-xl pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setSearchOpen(true);
-                      }}
-                      readOnly
-                    />
-                  </div>
-                </div>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-muted rounded-xl text-muted-foreground text-sm"
+                >
+                  <Search className="w-4 h-4" />
+                  Search products...
+                </button>
 
                 {/* Categories */}
                 <div className="space-y-1">
-                  <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Shop</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">Categories</p>
                   {categories.map((category) => (
                     <Link
                       key={category.name}
                       to={category.path}
-                      className="block px-4 py-3 text-base font-semibold text-foreground hover:bg-muted rounded-xl transition-colors"
+                      className="block px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {category.name}
@@ -288,35 +286,71 @@ export const Header = () => {
 
                 {/* Account Links */}
                 <div className="pt-4 border-t border-border space-y-1">
-                  <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Account</p>
-                  <Link
-                    to="/account"
-                    className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-foreground hover:bg-muted rounded-xl transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <User className="w-5 h-5" />
-                    My Account
-                  </Link>
-                  <Link
-                    to="/wishlist"
-                    className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-foreground hover:bg-muted rounded-xl transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Heart className="w-5 h-5" />
-                    Wishlist
-                  </Link>
-                  {user && (
-                    <button
-                      onClick={() => {
-                        handleSignOut();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="flex items-center gap-3 w-full px-4 py-3 text-base font-semibold text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">Account</p>
+                  {user ? (
+                    <>
+                      <Link
+                        to="/account"
+                        className="flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <User className="w-4 h-4" />
+                        My Account
+                      </Link>
+                      <Link
+                        to="/wishlist"
+                        className="flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Heart className="w-4 h-4" />
+                        Wishlist
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleSignOut();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center gap-3 w-full px-3 py-2.5 text-[15px] font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      className="flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
                     >
-                      <LogOut className="w-5 h-5" />
-                      Sign Out
-                    </button>
+                      <User className="w-4 h-4" />
+                      Sign In / Register
+                    </Link>
                   )}
+                </div>
+
+                {/* Help Links */}
+                <div className="pt-4 border-t border-border space-y-1">
+                  <Link
+                    to="/track-order"
+                    className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Track Order
+                  </Link>
+                  <Link
+                    to="/help"
+                    className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Help Center
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Contact Us
+                  </Link>
                 </div>
               </div>
             </motion.div>

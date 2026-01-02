@@ -170,7 +170,7 @@ export const Header = () => {
                 <ShoppingBag className="w-4 h-4 text-primary-foreground" />
               </div>
               <span className="font-bold text-lg text-white hidden sm:block">
-                Pixel<span className="text-primary">Perfect</span>
+                AI<span className="text-primary"> Bazar</span>
               </span>
             </Link>
 
@@ -200,23 +200,26 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Quick Category Links */}
-              {categories.slice(0, 4).map((category) => (
-                <Link
-                  key={category.name}
-                  to={category.path}
-                  className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all whitespace-nowrap"
-                >
-                  {category.name}
-                </Link>
-              ))}
-
               <Link
                 to="/track-order"
                 className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all flex items-center gap-1.5"
               >
                 <Truck className="w-4 h-4" />
                 Track Order
+              </Link>
+
+              <Link
+                to="/help"
+                className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+              >
+                Help
+              </Link>
+
+              <Link
+                to="/contact"
+                className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+              >
+                Contact
               </Link>
             </nav>
 

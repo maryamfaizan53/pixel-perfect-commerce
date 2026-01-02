@@ -1,4 +1,4 @@
-import { Search, Menu, User, Heart, LogOut, ShoppingBag, X, Phone, ChevronDown } from "lucide-react";
+import { Search, Menu, User, Heart, LogOut, ShoppingBag, X, ChevronDown, MapPin, Truck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCartStore } from "@/stores/cartStore";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,9 +24,11 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { items } = useCartStore();
+  const cartItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > 5);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -47,310 +50,318 @@ export const Header = () => {
   }));
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Top Bar - Contact Info */}
-      <AnimatePresence>
-        {!scrolled && (
-          <motion.div
-            initial={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="bg-secondary text-secondary-foreground overflow-hidden"
-          >
-            <div className="container-custom">
-              <div className="flex items-center justify-between h-9 text-[11px]">
-                <div className="flex items-center gap-6">
-                  <a href="tel:+923328222026" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                    <Phone className="w-3 h-3" />
-                    <span className="font-semibold">+92 332 8222026</span>
-                  </a>
-                  <span className="hidden sm:block text-secondary-foreground/50">|</span>
-                  <span className="hidden sm:block text-secondary-foreground/70">Free Shipping on Orders Above PKR 5,000</span>
-                </div>
-                <div className="hidden md:flex items-center gap-4 text-secondary-foreground/70">
-                  <Link to="/track-order" className="hover:text-primary transition-colors">Track Order</Link>
-                  <span className="text-secondary-foreground/30">•</span>
-                  <Link to="/help" className="hover:text-primary transition-colors">Help</Link>
-                </div>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-shadow duration-300 ${scrolled ? 'shadow-lg' : ''}`}>
+      {/* Top Bar - Dark themed */}
+      <div className="bg-secondary text-secondary-foreground">
+        <div className="container-custom">
+          <div className="flex items-center justify-between h-10 text-xs">
+            {/* Left - Delivery Info */}
+            <div className="hidden md:flex items-center gap-2 text-secondary-foreground/80 hover:text-white cursor-pointer transition-colors">
+              <MapPin className="w-4 h-4" />
+              <div className="flex flex-col leading-tight">
+                <span className="text-[10px] text-secondary-foreground/60">Deliver to</span>
+                <span className="font-semibold text-sm">Pakistan</span>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Main Navigation */}
-      <motion.div
-        animate={{
-          backgroundColor: scrolled ? "rgba(255, 255, 255, 0.98)" : "rgba(255, 255, 255, 1)",
-          boxShadow: scrolled ? "0 4px 20px rgba(0, 0, 0, 0.08)" : "0 1px 0 rgba(0, 0, 0, 0.05)"
-        }}
-        transition={{ duration: 0.2 }}
-        className="border-b border-border/30"
-      >
-        <div className="container-custom">
-          <div className="flex items-center justify-between h-16 md:h-[72px] gap-4">
-            {/* Mobile Menu Toggle - Left side on mobile */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden w-10 h-10 rounded-xl hover:bg-muted -ml-2"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group shrink-0">
-              <div className="relative">
-                <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-md">
-                  <ShoppingBag className="w-5 h-5 text-primary-foreground" />
-                </div>
-              </div>
-              <div className="hidden xs:flex flex-col">
-                <span className="font-bold text-lg md:text-xl tracking-tight text-foreground leading-none">
-                  Pixel<span className="text-primary">Perfect</span>
-                </span>
-                <span className="text-[9px] font-medium uppercase tracking-widest text-muted-foreground mt-0.5">Premium Store</span>
-              </div>
-            </Link>
-
-            {/* Center Navigation - Desktop */}
-            <nav className="hidden lg:flex items-center justify-center flex-1 max-w-xl mx-6">
-              <ul className="flex items-center gap-1">
-                {categories.slice(0, 5).map((category) => (
-                  <li key={category.name}>
-                    <Link
-                      to={category.path}
-                      className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all duration-200"
-                    >
-                      {category.name}
-                    </Link>
-                  </li>
-                ))}
-                {categories.length > 5 && (
-                  <li>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all duration-200 flex items-center gap-1">
-                          More
-                          <ChevronDown className="w-3.5 h-3.5" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="center" className="w-48 p-2 rounded-xl shadow-lg border-border/50 bg-background">
-                        {categories.slice(5).map((category) => (
-                          <DropdownMenuItem key={category.name} asChild className="rounded-lg cursor-pointer py-2.5">
-                            <Link to={category.path}>{category.name}</Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </li>
-                )}
-              </ul>
-            </nav>
-
-            {/* Right Actions */}
-            <div className="flex items-center gap-1 md:gap-2">
-              <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-
-              {/* Search Trigger */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-10 h-10 rounded-xl hover:bg-muted"
+            {/* Center - Search Bar (Desktop) */}
+            <div className="flex-1 max-w-2xl mx-4 hidden lg:block">
+              <button
                 onClick={() => setSearchOpen(true)}
+                className="w-full flex items-center bg-white rounded-md overflow-hidden hover:ring-2 hover:ring-primary transition-all"
               >
-                <Search className="w-5 h-5" />
-              </Button>
+                <span className="flex-1 text-left px-4 py-2.5 text-muted-foreground text-sm">
+                  Search products, brands and more...
+                </span>
+                <div className="bg-primary hover:bg-primary/90 px-4 py-2.5 transition-colors">
+                  <Search className="w-5 h-5 text-primary-foreground" />
+                </div>
+              </button>
+            </div>
 
-              {/* User Menu - Desktop */}
-              <div className="hidden sm:block">
-                {user ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl hover:bg-muted">
-                        <User className="w-5 h-5" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-52 p-2 rounded-xl shadow-lg border-border/50 bg-background">
-                      <DropdownMenuItem asChild className="rounded-lg cursor-pointer py-2.5">
-                        <Link to="/account" className="flex items-center gap-2.5">
-                          <User className="w-4 h-4" />
-                          My Account
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="rounded-lg cursor-pointer py-2.5">
-                        <Link to="/wishlist" className="flex items-center gap-2.5">
-                          <Heart className="w-4 h-4" />
-                          Wishlist
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator className="my-1.5" />
-                      <DropdownMenuItem
-                        onClick={handleSignOut}
-                        className="rounded-lg cursor-pointer py-2.5 text-destructive focus:text-destructive focus:bg-destructive/10"
-                      >
-                        <LogOut className="w-4 h-4 mr-2.5" />
-                        Sign Out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : (
-                  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl hover:bg-muted" asChild>
-                    <Link to="/auth">
-                      <User className="w-5 h-5" />
-                    </Link>
-                  </Button>
-                )}
-              </div>
-
-              {/* Wishlist - Desktop */}
-              <Button variant="ghost" size="icon" className="hidden sm:flex w-10 h-10 rounded-xl hover:bg-muted" asChild>
-                <Link to="/wishlist">
-                  <Heart className="w-5 h-5" />
+            {/* Right - Account & Orders */}
+            <div className="flex items-center gap-1">
+              {/* Account Dropdown */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex flex-col items-start px-3 py-1 hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all">
+                      <span className="text-[10px] text-secondary-foreground/70">Hello, {user.email?.split('@')[0]}</span>
+                      <span className="font-semibold text-sm flex items-center gap-1">
+                        Account & Lists
+                        <ChevronDown className="w-3 h-3" />
+                      </span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 p-2 rounded-lg shadow-xl border bg-background">
+                    <DropdownMenuItem asChild className="cursor-pointer py-2.5 rounded-md">
+                      <Link to="/account" className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        My Account
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="cursor-pointer py-2.5 rounded-md">
+                      <Link to="/account" className="flex items-center gap-2">
+                        <ShoppingBag className="w-4 h-4" />
+                        Your Orders
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="cursor-pointer py-2.5 rounded-md">
+                      <Link to="/wishlist" className="flex items-center gap-2">
+                        <Heart className="w-4 h-4" />
+                        Wishlist
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleSignOut}
+                      className="cursor-pointer py-2.5 rounded-md text-destructive focus:text-destructive focus:bg-destructive/10"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="flex flex-col items-start px-3 py-1 hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+                >
+                  <span className="text-[10px] text-secondary-foreground/70">Hello, Sign in</span>
+                  <span className="font-semibold text-sm flex items-center gap-1">
+                    Account & Lists
+                    <ChevronDown className="w-3 h-3" />
+                  </span>
                 </Link>
-              </Button>
+              )}
 
-              {/* Cart - Always visible with emphasis */}
+              {/* Returns & Orders */}
+              <Link
+                to="/account"
+                className="hidden sm:flex flex-col items-start px-3 py-1 hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+              >
+                <span className="text-[10px] text-secondary-foreground/70">Returns</span>
+                <span className="font-semibold text-sm">& Orders</span>
+              </Link>
+
+              {/* Cart */}
               <CartDrawer />
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Mobile Menu */}
+      {/* Main Navigation Bar */}
+      <div className="bg-secondary/95 border-t border-white/10">
+        <div className="container-custom">
+          <div className="flex items-center h-11 gap-2">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden flex items-center gap-1.5 px-2 py-1.5 text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+            >
+              <Menu className="w-5 h-5" />
+              <span className="text-sm font-medium">All</span>
+            </button>
+
+            {/* Logo - Mobile & Desktop */}
+            <Link to="/" className="flex items-center gap-2 px-2 py-1 hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <ShoppingBag className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-lg text-white hidden sm:block">
+                Pixel<span className="text-primary">Perfect</span>
+              </span>
+            </Link>
+
+            {/* Desktop Navigation Links */}
+            <nav className="hidden lg:flex items-center gap-0.5 ml-2">
+              <Link
+                to="/"
+                className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+              >
+                Home
+              </Link>
+              
+              {/* All Categories Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all flex items-center gap-1">
+                    All Categories
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56 p-2 rounded-lg shadow-xl border bg-background">
+                  {categories.map((category) => (
+                    <DropdownMenuItem key={category.name} asChild className="cursor-pointer py-2.5 rounded-md">
+                      <Link to={category.path}>{category.name}</Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Quick Category Links */}
+              {categories.slice(0, 4).map((category) => (
+                <Link
+                  key={category.name}
+                  to={category.path}
+                  className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all whitespace-nowrap"
+                >
+                  {category.name}
+                </Link>
+              ))}
+
+              <Link
+                to="/track-order"
+                className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all flex items-center gap-1.5"
+              >
+                <Truck className="w-4 h-4" />
+                Track Order
+              </Link>
+            </nav>
+
+            {/* Right Side - Search (Mobile) & Wishlist */}
+            <div className="flex items-center gap-1 ml-auto">
+              {/* Mobile Search */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="lg:hidden p-2 text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
+              {/* Wishlist */}
+              <Link
+                to="/wishlist"
+                className="hidden sm:flex p-2 text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+              >
+                <Heart className="w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Search Overlay */}
+      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+
+      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-foreground/50 backdrop-blur-sm z-40 lg:hidden"
+              className="fixed inset-0 bg-black/60 z-40 lg:hidden"
             />
+            
+            {/* Drawer */}
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 left-0 bottom-0 w-[300px] bg-background z-50 lg:hidden shadow-2xl overflow-y-auto"
+              className="fixed top-0 left-0 bottom-0 w-[300px] bg-background z-50 lg:hidden overflow-y-auto"
             >
-              <div className="p-5 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-border">
-                  <Link to="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-                      <ShoppingBag className="w-4 h-4 text-primary-foreground" />
-                    </div>
-                    <span className="font-bold text-lg">
-                      Pixel<span className="text-primary">Perfect</span>
-                    </span>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-9 h-9 rounded-lg"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <X className="w-5 h-5" />
-                  </Button>
-                </div>
-
-                {/* Search in Mobile */}
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setSearchOpen(true);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 bg-muted rounded-xl text-muted-foreground text-sm"
-                >
-                  <Search className="w-4 h-4" />
-                  Search products...
-                </button>
-
-                {/* Categories */}
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">Categories</p>
-                  {categories.map((category) => (
-                    <Link
-                      key={category.name}
-                      to={category.path}
-                      className="block px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                </div>
-
-                {/* Account Links */}
-                <div className="pt-4 border-t border-border space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">Account</p>
+              {/* Header */}
+              <div className="bg-secondary text-secondary-foreground p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-foreground" />
+                  </div>
                   {user ? (
-                    <>
+                    <span className="font-semibold">Hello, {user.email?.split('@')[0]}</span>
+                  ) : (
+                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="font-semibold">
+                      Hello, Sign In
+                    </Link>
+                  )}
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Menu Content */}
+              <div className="p-4 space-y-6">
+                {/* Shop by Category */}
+                <div>
+                  <h3 className="font-bold text-lg mb-3 text-foreground">Shop by Category</h3>
+                  <div className="space-y-1">
+                    {categories.map((category) => (
+                      <Link
+                        key={category.name}
+                        to={category.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border-t border-border" />
+
+                {/* Help & Settings */}
+                <div>
+                  <h3 className="font-bold text-lg mb-3 text-foreground">Help & Settings</h3>
+                  <div className="space-y-1">
+                    {user && (
                       <Link
                         to="/account"
-                        className="flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
                       >
-                        <User className="w-4 h-4" />
-                        My Account
+                        Your Account
                       </Link>
-                      <Link
-                        to="/wishlist"
-                        className="flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Heart className="w-4 h-4" />
-                        Wishlist
-                      </Link>
+                    )}
+                    <Link
+                      to="/wishlist"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
+                    >
+                      Wishlist
+                    </Link>
+                    <Link
+                      to="/track-order"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
+                    >
+                      Track Order
+                    </Link>
+                    <Link
+                      to="/help"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
+                    >
+                      Help Center
+                    </Link>
+                    <Link
+                      to="/contact"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
+                    >
+                      Contact Us
+                    </Link>
+                    {user && (
                       <button
                         onClick={() => {
                           handleSignOut();
                           setMobileMenuOpen(false);
                         }}
-                        className="flex items-center gap-3 w-full px-3 py-2.5 text-[15px] font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                        className="w-full text-left py-2.5 px-3 text-destructive hover:bg-destructive/10 rounded-md transition-colors"
                       >
-                        <LogOut className="w-4 h-4" />
                         Sign Out
                       </button>
-                    </>
-                  ) : (
-                    <Link
-                      to="/auth"
-                      className="flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <User className="w-4 h-4" />
-                      Sign In / Register
-                    </Link>
-                  )}
-                </div>
-
-                {/* Help Links */}
-                <div className="pt-4 border-t border-border space-y-1">
-                  <Link
-                    to="/track-order"
-                    className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Track Order
-                  </Link>
-                  <Link
-                    to="/help"
-                    className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Help Center
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Contact Us
-                  </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>

@@ -45,14 +45,22 @@ export const CartDrawer = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative w-12 h-12 rounded-2xl hover:bg-primary/5 group">
-          <ShoppingBag className="h-6 w-6 text-foreground group-hover:text-primary transition-colors" />
-          {totalItems > 0 && (
-            <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-[10px] font-black bg-primary text-white border-none shadow-premium">
-              {totalItems}
-            </Badge>
-          )}
-        </Button>
+        <button className="flex items-center gap-1 px-3 py-1 text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all">
+          <div className="relative">
+            <ShoppingCart className="h-6 w-6" />
+            {totalItems > 0 && (
+              <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-[10px] font-bold bg-primary text-primary-foreground border-none">
+                {totalItems}
+              </Badge>
+            )}
+          </div>
+          <div className="flex flex-col items-start ml-1 hidden sm:flex">
+            <span className="text-[10px] text-secondary-foreground/70">Cart</span>
+            <span className="font-semibold text-sm leading-tight">
+              {totalItems > 0 ? `${currencyCode} ${totalPrice.toLocaleString('en-PK', { maximumFractionDigits: 0 })}` : 'Empty'}
+            </span>
+          </div>
+        </button>
       </SheetTrigger>
 
       <SheetContent className="w-full sm:max-w-md flex flex-col h-full glass-dark border-white/10 p-0 overflow-hidden">

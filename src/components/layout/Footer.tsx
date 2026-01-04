@@ -58,12 +58,12 @@ export const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-4 space-y-6">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+              <div className="w-11 h-11 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
                 <ShoppingBag className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <span className="font-bold text-xl text-white">
-                  Pixel<span className="text-primary">Perfect</span>
+                <span className="font-extrabold text-xl text-white tracking-tight">
+                  AI <span className="text-primary">Bazar</span>
                 </span>
               </div>
             </Link>
@@ -77,13 +77,17 @@ export const Footer = () => {
                 <Phone className="w-4 h-4" />
                 +92 332 8222026
               </a>
-              <a href="mailto:support@pixelperfect.pk" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+              <a href="mailto:contact@aiagentixz.com" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                 <Mail className="w-4 h-4" />
-                support@pixelperfect.pk
+                contact@aiagentixz.com
+              </a>
+              <a href="https://www.aiagentixz.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                www.aiagentixz.com
               </a>
               <div className="flex items-start gap-3 text-sm text-secondary-foreground/70">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Lahore, Pakistan</span>
+                <span>Karachi, Pakistan</span>
               </div>
             </div>
 
@@ -184,7 +188,7 @@ export const Footer = () => {
         <div className="container-custom py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-secondary-foreground/50">
-              © {currentYear} PixelPerfect. All rights reserved.
+              © {currentYear} AI Bazar. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-xs text-secondary-foreground/50">
               <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>

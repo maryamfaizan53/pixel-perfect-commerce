@@ -1,31 +1,46 @@
 import os
 from typing import List, Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from pydantic import BaseModel, validator
 from dotenv import load_dotenv
 from supabase import create_client, Client
 import google.generativeai as genai
 from openai import OpenAI
 import asyncio
+import time
+from collections import defaultdict
+import jwt
 
 # Load environment variables
 load_dotenv()
 
 app = FastAPI(title="PixelPerfect AI Concierge API")
 
-# Configure CORS
+# Security scheme
+security = HTTPBearer()
+
+# Rate limiting storage (in-memory - use Redis in production)
+rate_limit_storage = defaultdict(list)
+RATE_LIMIT_REQUESTS = 50  # requests per window
+RATE_LIMIT_WINDOW = 3600  # 1 hour in seconds
+
+# Configure CORS - restrict to specific origins in production
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust in production
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["authorization", "content-type", "x-client-info", "apikey"],
 )
 
 # Initialize Supabase
 supabase_url = os.getenv("SUPABASE_URL")
 supabase_key = os.getenv("SUPABASE_KEY")
+supabase_jwt_secret = os.getenv("SUPABASE_JWT_SECRET", "")
 supabase: Client = create_client(supabase_url, supabase_key)
 
 # API Keys
@@ -36,15 +51,93 @@ keys = {
     "openrouter": os.getenv("OPENROUTER_API_KEY"),
 }
 
-# Models
+# Models with input validation
 class Message(BaseModel):
     role: str
     content: str
+    
+    @validator('role')
+    def validate_role(cls, v):
+        if v not in ['user', 'assistant', 'system']:
+            raise ValueError('Role must be user, assistant, or system')
+        return v
+    
+    @validator('content')
+    def validate_content(cls, v):
+        if len(v) > 10000:  # Max 10k characters per message
+            raise ValueError('Message content too long (max 10000 characters)')
+        return v
 
 class ChatRequest(BaseModel):
     messages: List[Message]
     provider: Optional[str] = "gemini"
     use_rag: Optional[bool] = True
+    
+    @validator('messages')
+    def validate_messages(cls, v):
+        if len(v) > 50:  # Max 50 messages in conversation
+            raise ValueError('Too many messages (max 50)')
+        if len(v) == 0:
+            raise ValueError('At least one message required')
+        return v
+    
+    @validator('provider')
+    def validate_provider(cls, v):
+        valid_providers = ['gemini', 'openai', 'grok', 'openrouter']
+        if v not in valid_providers:
+            raise ValueError(f'Invalid provider. Must be one of: {valid_providers}')
+        return v
+
+
+def verify_supabase_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+    """Verify Supabase JWT token and extract user info."""
+    token = credentials.credentials
+    
+    try:
+        # Decode without verification first to get the payload structure
+        # In production, verify with the actual JWT secret
+        if supabase_jwt_secret:
+            decoded = jwt.decode(
+                token,
+                supabase_jwt_secret,
+                algorithms=["HS256"],
+                audience="authenticated"
+            )
+        else:
+            # If no secret configured, decode without verification (development only)
+            decoded = jwt.decode(token, options={"verify_signature": False})
+        
+        user_id = decoded.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token: missing user ID")
+        
+        return {"user_id": user_id, "email": decoded.get("email")}
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
+
+
+def check_rate_limit(user_id: str):
+    """Check if user has exceeded rate limit."""
+    current_time = time.time()
+    user_requests = rate_limit_storage[user_id]
+    
+    # Remove old requests outside the window
+    rate_limit_storage[user_id] = [
+        req_time for req_time in user_requests 
+        if current_time - req_time < RATE_LIMIT_WINDOW
+    ]
+    
+    if len(rate_limit_storage[user_id]) >= RATE_LIMIT_REQUESTS:
+        raise HTTPException(
+            status_code=429, 
+            detail=f"Rate limit exceeded. Max {RATE_LIMIT_REQUESTS} requests per hour."
+        )
+    
+    # Add current request
+    rate_limit_storage[user_id].append(current_time)
+
 
 # AI Service Implementation
 class AIService:
@@ -90,7 +183,8 @@ class AIService:
         client = OpenAI(api_key=keys["openai"])
         response = client.chat.completions.create(
             model="gpt-4o",
-            messages=messages
+            messages=messages,
+            max_tokens=1000  # Cost control
         )
         return response.choices[0].message.content
 
@@ -100,7 +194,8 @@ class AIService:
         client = OpenAI(api_key=keys["grok"], base_url="https://api.x.ai/v1")
         response = client.chat.completions.create(
             model="grok-beta",
-            messages=messages
+            messages=messages,
+            max_tokens=1000  # Cost control
         )
         return response.choices[0].message.content
 
@@ -113,12 +208,19 @@ class AIService:
         )
         response = client.chat.completions.create(
             model="meta-llama/llama-3.1-405b",
-            messages=messages
+            messages=messages,
+            max_tokens=1000  # Cost control
         )
         return response.choices[0].message.content
 
+
 @app.post("/chat")
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest, user: dict = Depends(verify_supabase_token)):
+    """Protected chat endpoint requiring Supabase authentication."""
+    
+    # Check rate limit for this user
+    check_rate_limit(user["user_id"])
+    
     context = ""
     if request.use_rag:
         last_msg = request.messages[-1].content
@@ -164,9 +266,11 @@ CONTEXT:
 
     raise HTTPException(status_code=503, detail={"message": "All AI providers failed.", "errors": errors})
 
+
 @app.get("/health")
 async def health():
     return {"status": "luxury-ready"}
+
 
 if __name__ == "__main__":
     import uvicorn

@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { SEOContent } from "@/components/home/SEOContent";
 import { motion } from "framer-motion";
 
 const Index = () => {
@@ -30,6 +31,9 @@ const Index = () => {
       </main>
 
       <Footer />
+
+      {/* SEO Content Section */}
+      <SEOContent />
     </div>
   );
 };

@@ -182,7 +182,7 @@ export const Header = () => {
               >
                 Home
               </Link>
-              
+
               {/* All Categories Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -220,6 +220,13 @@ export const Header = () => {
                 className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
               >
                 Contact
+              </Link>
+
+              <Link
+                to="/blog"
+                className="px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+              >
+                Blog
               </Link>
             </nav>
 
@@ -260,7 +267,7 @@ export const Header = () => {
               onClick={() => setMobileMenuOpen(false)}
               className="fixed inset-0 bg-black/60 z-40 lg:hidden"
             />
-            
+
             {/* Drawer */}
             <motion.div
               initial={{ x: "-100%" }}
@@ -352,6 +359,13 @@ export const Header = () => {
                       className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
                     >
                       Contact Us
+                    </Link>
+                    <Link
+                      to="/blog"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block py-2.5 px-3 text-foreground hover:bg-muted rounded-md transition-colors"
+                    >
+                      Blog
                     </Link>
                     {user && (
                       <button

@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { BlogPreview } from "@/components/home/BlogPreview";
 import { SEOContent } from "@/components/home/SEOContent";
 import { motion } from "framer-motion";
 
@@ -28,6 +29,9 @@ const Index = () => {
 
         {/* Featured Products */}
         <FeaturedProducts />
+
+        {/* Blog Preview Section */}
+        <BlogPreview />
       </main>
 
       <Footer />

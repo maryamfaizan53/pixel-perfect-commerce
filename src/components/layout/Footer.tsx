@@ -148,6 +148,11 @@ export const Footer = () => {
                   Contact Us
                 </Link>
               </li>
+              <li>
+                <Link to="/blog" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                  Blog
+                </Link>
+              </li>
             </ul>
           </div>
 

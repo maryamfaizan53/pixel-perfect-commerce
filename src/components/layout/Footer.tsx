@@ -70,7 +70,7 @@ export const Footer = () => {
             <p className="text-secondary-foreground/70 text-sm leading-relaxed max-w-sm">
               Your trusted destination for premium products at the best prices. Quality guaranteed with fast delivery across Pakistan.
             </p>
-            
+
             {/* Contact Info */}
             <div className="space-y-3">
               <a href="tel:+923328222026" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
@@ -108,8 +108,8 @@ export const Footer = () => {
             <ul className="space-y-2.5">
               {['All Products', 'New Arrivals', 'Best Sellers', 'On Sale'].map((item) => (
                 <li key={item}>
-                  <Link 
-                    to={`/category/all`} 
+                  <Link
+                    to={`/category/all`}
                     className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors"
                   >
                     {item}
@@ -167,7 +167,7 @@ export const Footer = () => {
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
-            
+
             {/* Payment Methods */}
             <div className="mt-8">
               <p className="text-xs text-secondary-foreground/50 mb-3">Accepted Payments</p>
@@ -193,6 +193,82 @@ export const Footer = () => {
             <div className="flex items-center gap-6 text-xs text-secondary-foreground/50">
               <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
               <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO Text Section */}
+      <div className="bg-white text-black border-t border-gray-200">
+        <div className="container-custom py-12 md:py-16">
+          <div className="max-w-6xl mx-auto space-y-8">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
+                Your Premier Online Shopping Destination in Pakistan
+              </h2>
+              <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                Welcome to <strong>AI Bazar</strong>, Pakistan's leading e-commerce platform offering an extensive collection of premium products at competitive prices.
+                We pride ourselves on delivering exceptional quality, authentic products, and outstanding customer service to shoppers across Karachi, Lahore, Islamabad,
+                and all major cities throughout Pakistan.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-xl font-bold mb-3 text-gray-900">Why Choose AI Bazar?</h3>
+                <ul className="space-y-2 text-gray-700 text-sm md:text-base">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">✓</span>
+                    <span><strong>Authentic Products:</strong> 100% genuine items with quality guarantee</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">✓</span>
+                    <span><strong>Fast Delivery:</strong> Quick shipping across Pakistan with real-time tracking</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">✓</span>
+                    <span><strong>Secure Payment:</strong> Multiple payment options including COD, JazzCash, EasyPaisa, and cards</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">✓</span>
+                    <span><strong>Easy Returns:</strong> Hassle-free 7-day return and exchange policy</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">✓</span>
+                    <span><strong>24/7 Support:</strong> Dedicated customer service via WhatsApp and phone</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold mb-3 text-gray-900">Shop by Category</h3>
+                <p className="text-gray-700 leading-relaxed text-sm md:text-base mb-3">
+                  Explore our diverse range of products including electronics, fashion, home & kitchen, beauty & health, sports & fitness,
+                  and much more. Whether you're looking for the latest gadgets, trendy apparel, home essentials, or lifestyle products,
+                  AI Bazar has everything you need in one convenient location.
+                </p>
+                <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                  Our curated collections feature top brands and best-selling items, carefully selected to meet the needs of Pakistani shoppers.
+                  Enjoy exclusive deals, seasonal sales, and special promotions on your favorite products.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900">Nationwide Delivery Across Pakistan</h3>
+              <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                We deliver to all major cities and regions including Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Multan, Peshawar,
+                Quetta, Sialkot, Gujranwala, and beyond. Experience fast, reliable shipping with free delivery on orders above PKR 5,000.
+                Track your order in real-time and receive updates at every step of the delivery process.
+              </p>
+            </div>
+
+            <div className="pt-6 border-t border-gray-200">
+              <p className="text-gray-600 text-xs md:text-sm text-center">
+                <strong>Keywords:</strong> Online shopping Pakistan, e-commerce Pakistan, buy online, online store, shopping website,
+                best prices Pakistan, authentic products, cash on delivery, COD Pakistan, free shipping, online marketplace,
+                Karachi shopping, Lahore online store, Islamabad delivery, Pakistani e-commerce, trusted online shop
+              </p>
             </div>
           </div>
         </div>

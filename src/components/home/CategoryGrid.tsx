@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { fetchCollections } from "@/lib/shopify";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Star, Zap, Crown, Gift, Heart, ShoppingBag } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 
@@ -48,33 +48,70 @@ const categoryImages: Record<string, string> = {
   "default": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=1000&fit=crop",
 };
 
-// Gradient overlays for variety
-const gradientOverlays = [
-  "from-violet-900/80 via-violet-900/40 to-transparent",
-  "from-rose-900/80 via-rose-900/40 to-transparent",
-  "from-emerald-900/80 via-emerald-900/40 to-transparent",
-  "from-amber-900/80 via-amber-900/40 to-transparent",
-  "from-cyan-900/80 via-cyan-900/40 to-transparent",
-  "from-fuchsia-900/80 via-fuchsia-900/40 to-transparent",
+// Card color themes
+const cardThemes = [
+  { bg: "from-violet-600 to-purple-800", accent: "bg-violet-400", glow: "shadow-violet-500/25" },
+  { bg: "from-rose-600 to-pink-800", accent: "bg-rose-400", glow: "shadow-rose-500/25" },
+  { bg: "from-emerald-600 to-teal-800", accent: "bg-emerald-400", glow: "shadow-emerald-500/25" },
+  { bg: "from-amber-500 to-orange-700", accent: "bg-amber-400", glow: "shadow-amber-500/25" },
+  { bg: "from-cyan-600 to-blue-800", accent: "bg-cyan-400", glow: "shadow-cyan-500/25" },
+  { bg: "from-fuchsia-600 to-purple-800", accent: "bg-fuchsia-400", glow: "shadow-fuchsia-500/25" },
+  { bg: "from-indigo-600 to-blue-900", accent: "bg-indigo-400", glow: "shadow-indigo-500/25" },
+  { bg: "from-red-600 to-rose-800", accent: "bg-red-400", glow: "shadow-red-500/25" },
+];
+
+// Category badges and icons
+const categoryBadges = [
+  { label: "Most Popular", icon: TrendingUp, color: "bg-gradient-to-r from-amber-400 to-orange-500" },
+  { label: "Trending Now", icon: Zap, color: "bg-gradient-to-r from-pink-500 to-rose-500" },
+  { label: "New Arrivals", icon: Star, color: "bg-gradient-to-r from-emerald-400 to-teal-500" },
+  { label: "Best Sellers", icon: Crown, color: "bg-gradient-to-r from-violet-500 to-purple-600" },
+  { label: "Hot Deals", icon: Gift, color: "bg-gradient-to-r from-red-500 to-orange-500" },
+  { label: "Staff Picks", icon: Heart, color: "bg-gradient-to-r from-pink-400 to-fuchsia-500" },
+  { label: "Limited", icon: Sparkles, color: "bg-gradient-to-r from-cyan-400 to-blue-500" },
+  { label: "Exclusive", icon: ShoppingBag, color: "bg-gradient-to-r from-indigo-500 to-purple-600" },
 ];
 
 const getCategoryImage = (handle: string, fallbackUrl?: string): string => {
   const normalizedHandle = handle.toLowerCase().replace(/\s+/g, '-');
   
-  // Check for exact match
   if (categoryImages[normalizedHandle]) {
     return categoryImages[normalizedHandle];
   }
   
-  // Check for partial matches
   for (const key of Object.keys(categoryImages)) {
     if (normalizedHandle.includes(key) || key.includes(normalizedHandle)) {
       return categoryImages[key];
     }
   }
   
-  // Use collection image or default
   return fallbackUrl || categoryImages.default;
+};
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 12,
+    },
+  },
 };
 
 export const CategoryGrid = () => {
@@ -85,15 +122,16 @@ export const CategoryGrid = () => {
 
   if (isLoading) {
     return (
-      <section className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/30">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <Skeleton className="h-8 w-48 mx-auto mb-4" />
-            <Skeleton className="h-4 w-72 mx-auto" />
+      <section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-background via-muted/20 to-background">
+        <div className="container-custom px-4 sm:px-6">
+          <div className="text-center mb-10 sm:mb-14">
+            <Skeleton className="h-6 w-40 mx-auto mb-4 rounded-full" />
+            <Skeleton className="h-10 sm:h-12 w-64 sm:w-80 mx-auto mb-4" />
+            <Skeleton className="h-4 w-56 sm:w-72 mx-auto" />
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-2xl" />
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+            {[...Array(8)].map((_, i) => (
+              <Skeleton key={i} className="aspect-[3/4] rounded-2xl sm:rounded-3xl" />
             ))}
           </div>
         </div>
@@ -104,146 +142,159 @@ export const CategoryGrid = () => {
   if (collections.length === 0) return null;
 
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
-      {/* Background Decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+    <section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/2 left-0 w-48 sm:w-72 h-48 sm:h-72 bg-accent/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="container-custom relative z-10">
+      <div className="container-custom px-4 sm:px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14"
+          className="text-center mb-10 sm:mb-14 md:mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-primary/5 text-primary text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20 backdrop-blur-sm"
+          >
             <Sparkles className="w-3.5 h-3.5" />
-            Explore Categories
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Shop by Category
+            <span>Explore Categories</span>
+          </motion.div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 sm:mb-4 tracking-tight">
+            Shop by{" "}
+            <span className="bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
+              Category
+            </span>
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Discover our carefully curated collections designed to meet all your needs
+          <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base">
+            Discover our carefully curated collections designed for you
           </p>
         </motion.div>
 
-        {/* Main Category Grid - Feature Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
-          {collections.slice(0, 4).map((col, index) => (
-            <motion.div
-              key={col.node.id}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
-            >
-              <Link
-                to={`/category/${col.node.handle}`}
-                className="group relative block aspect-[3/4] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
-              >
-                {/* Image with zoom effect */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <img
-                    src={getCategoryImage(col.node.handle, col.node.image?.url)}
-                    alt={col.node.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                </div>
-
-                {/* Gradient Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-t ${gradientOverlays[index % gradientOverlays.length]}`} />
-                
-                {/* Shine effect on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
-
-                {/* Content */}
-                <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6">
-                  {/* Category Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-[10px] font-semibold uppercase tracking-wider">
-                      {index === 0 ? "Most Popular" : index === 1 ? "Trending" : index === 2 ? "New Arrivals" : "Best Sellers"}
-                    </span>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight group-hover:translate-x-1 transition-transform duration-300">
-                      {col.node.title}
-                    </h3>
-                    <p className="text-white/70 text-sm line-clamp-2 hidden md:block">
-                      {col.node.description || "Explore our amazing collection"}
-                    </p>
-                    <div className="flex items-center gap-2 text-white pt-2">
-                      <span className="text-sm font-medium group-hover:text-primary transition-colors">
-                        Shop Now
-                      </span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-300" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Border glow effect */}
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-white/10 group-hover:ring-primary/30 transition-all duration-300" />
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Secondary Categories - Horizontal Cards */}
-        {collections.length > 4 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {collections.slice(4, 8).map((col, index) => (
+        {/* Category Cards Grid */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6"
+        >
+          {collections.slice(0, 8).map((col, index) => {
+            const theme = cardThemes[index % cardThemes.length];
+            const badge = categoryBadges[index % categoryBadges.length];
+            const BadgeIcon = badge.icon;
+            
+            return (
               <motion.div
                 key={col.node.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: (index + 4) * 0.08, duration: 0.5 }}
+                variants={itemVariants}
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                className="group"
               >
                 <Link
                   to={`/category/${col.node.handle}`}
-                  className="group flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg hover:bg-accent/50 transition-all duration-300"
+                  className={`relative block aspect-[3/4] sm:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl ${theme.glow} transition-all duration-500`}
                 >
-                  <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 ring-2 ring-border group-hover:ring-primary/30 transition-all">
+                  {/* Background Image */}
+                  <div className="absolute inset-0">
                     <img
                       src={getCategoryImage(col.node.handle, col.node.image?.url)}
                       alt={col.node.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
                     />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+
+                  {/* Gradient Overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-t ${theme.bg} opacity-70 group-hover:opacity-80 transition-opacity duration-500`} />
+                  
+                  {/* Mesh Pattern Overlay */}
+                  <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500" 
+                    style={{
+                      backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+                      backgroundSize: "20px 20px"
+                    }}
+                  />
+
+                  {/* Shine Effect */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-tr from-transparent via-white/20 to-transparent translate-x-full group-hover:translate-x-0 transition-transform duration-1000" />
+
+                  {/* Category Badge */}
+                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4">
+                    <motion.div 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 + 0.2 }}
+                      className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 ${badge.color} rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-lg`}
+                    >
+                      <BadgeIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                      <span className="hidden xs:inline sm:inline">{badge.label}</span>
+                    </motion.div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 md:p-5">
+                    {/* Decorative Line */}
+                    <div className={`w-8 sm:w-10 md:w-12 h-0.5 sm:h-1 ${theme.accent} rounded-full mb-2 sm:mb-3 group-hover:w-12 sm:group-hover:w-16 md:group-hover:w-20 transition-all duration-500`} />
+                    
+                    {/* Title */}
+                    <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white leading-tight mb-1 sm:mb-2 group-hover:translate-x-1 transition-transform duration-300 line-clamp-2">
                       {col.node.title}
                     </h3>
-                    <span className="text-xs text-muted-foreground">Explore collection</span>
+                    
+                    {/* Description - Hidden on small mobile */}
+                    <p className="text-white/70 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-3 hidden sm:block">
+                      {col.node.description || "Explore our amazing collection"}
+                    </p>
+
+                    {/* Shop Now Button */}
+                    <div className="flex items-center gap-2 text-white group/btn">
+                      <span className="text-xs sm:text-sm font-semibold group-hover/btn:text-white/90 transition-colors">
+                        Shop Now
+                      </span>
+                      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
+                        <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-0.5 transition-transform duration-300" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors">
-                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+
+                  {/* Hover Border Glow */}
+                  <div className="absolute inset-0 rounded-2xl sm:rounded-3xl ring-1 ring-white/20 group-hover:ring-2 group-hover:ring-white/40 transition-all duration-300" />
+                  
+                  {/* Corner Accent */}
+                  <div className="absolute top-0 right-0 w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 overflow-hidden rounded-bl-full opacity-30 group-hover:opacity-50 transition-opacity">
+                    <div className={`w-full h-full ${theme.accent} blur-xl`} />
                   </div>
                 </Link>
               </motion.div>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </motion.div>
 
-        {/* View All Link */}
+        {/* View All Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-12"
+          transition={{ delay: 0.4 }}
+          className="text-center mt-10 sm:mt-12 md:mt-16"
         >
           <Link
             to="/category/all"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-secondary text-secondary-foreground rounded-full font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
+            className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground rounded-full font-semibold text-sm sm:text-base hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 hover:-translate-y-1"
           >
-            View All Categories
-            <ArrowRight className="w-5 h-5" />
+            <span>View All Categories</span>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform" />
+            </div>
           </Link>
         </motion.div>
       </div>

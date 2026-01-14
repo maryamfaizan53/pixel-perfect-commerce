@@ -11,17 +11,17 @@ export const HeroCategories = () => {
         queryFn: () => fetchCollections(6),
     });
 
-    const getOverrideImage = (title: string) => {
+    const getCategoryImage = (title: string) => {
         const normalized = title.toLowerCase().trim();
-        if (normalized.includes('household')) return '/household.png';
+        if (normalized.includes('household')) return { local: '/household.png', fallback: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80' };
         if (normalized.includes('home') && (normalized.includes('living') || normalized.includes('&') || normalized.includes('and')))
-            return '/home-living.png';
+            return { local: '/home-living.png', fallback: 'https://images.unsplash.com/photo-1513519247388-4e28265121e0?w=800&q=80' };
         if (normalized.includes('health') || normalized.includes('beauty'))
-            return '/health-beauty.png';
+            return { local: '/health-beauty.png', fallback: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&q=80' };
         if (normalized.includes('hair') && normalized.includes('straightener'))
-            return '/hair-straightener.png';
+            return { local: '/hair-straightener.png', fallback: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&q=80' };
         if (normalized.includes('kitchen'))
-            return '/kitchen.png';
+            return { local: '/kitchen.png', fallback: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80' };
         return null;
     };
 
@@ -77,7 +77,14 @@ export const HeroCategories = () => {
                             <Link to={`/category/${col.node.handle}`}>
                                 <div className="relative aspect-[16/9] md:aspect-video rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500">
                                     <img
-                                        src={getOverrideImage(col.node.title) || col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"}
+                                        src={getCategoryImage(col.node.title)?.local || col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"}
+                                        onError={(e) => {
+                                            const img = e.currentTarget;
+                                            const fallback = getCategoryImage(col.node.title)?.fallback;
+                                            if (fallback && img.src !== fallback) {
+                                                img.src = fallback;
+                                            }
+                                        }}
                                         alt={col.node.title}
                                         className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                                     />

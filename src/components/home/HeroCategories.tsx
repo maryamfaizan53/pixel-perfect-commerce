@@ -72,8 +72,8 @@ export const HeroCategories = () => {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                    {collections.slice(0, 8).map((col, index) => (
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {collections.slice(0, 6).map((col, index) => (
                         <motion.div
                             key={col.node.id}
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -83,7 +83,7 @@ export const HeroCategories = () => {
                             className="group"
                         >
                             <Link to={`/category/${col.node.handle}`}>
-                                <div className="relative aspect-[4/5] md:aspect-[3/4] rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500 shadow-xl">
+                                <div className="relative aspect-[16/9] md:aspect-video rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500">
                                     <img
                                         src={(() => {
                                             const category = getCategoryImage(col.node.title);
@@ -103,7 +103,7 @@ export const HeroCategories = () => {
                                         alt={col.node.title}
                                         className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                                     <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                                         <h3 className="text-xl md:text-2xl lg:text-3xl font-black text-white mb-2 group-hover:text-primary transition-colors">

@@ -18,6 +18,10 @@ export const HeroCategories = () => {
             return '/home-living.png';
         if (normalized.includes('health') || normalized.includes('beauty'))
             return '/health-beauty.png';
+        if (normalized.includes('hair') && normalized.includes('straightener'))
+            return '/hair-straightener.png';
+        if (normalized.includes('kitchen'))
+            return '/kitchen.png';
         return null;
     };
 

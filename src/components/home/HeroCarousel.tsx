@@ -19,7 +19,7 @@ const heroSlides = [
     ctaSecondary: "View Collection",
     gradient: "from-rose-500 via-pink-500 to-violet-600",
     accentColor: "rose",
-    bgImage: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&q=80&auto=format",
+    bgImage: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1920&q=80&auto=format",
     bgPattern: "radial-gradient(circle at 20% 80%, rgba(251,113,133,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(168,85,247,0.2) 0%, transparent 50%)",
   },
   {
@@ -34,7 +34,7 @@ const heroSlides = [
     ctaSecondary: "See What's New",
     gradient: "from-emerald-400 via-teal-500 to-cyan-600",
     accentColor: "emerald",
-    bgImage: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=1600&q=80&auto=format",
+    bgImage: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80&auto=format",
     bgPattern: "radial-gradient(circle at 30% 70%, rgba(52,211,153,0.3) 0%, transparent 50%), radial-gradient(circle at 70% 30%, rgba(34,211,238,0.2) 0%, transparent 50%)",
   },
   {

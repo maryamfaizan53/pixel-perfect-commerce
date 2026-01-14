@@ -73,7 +73,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       {/* Product Image Section */}
       <Link
         to={`/product/${node.handle}`}
-        className="relative aspect-square overflow-hidden bg-muted"
+        className="relative aspect-square overflow-hidden"
       >
         {/* Status Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">

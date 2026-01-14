@@ -12,6 +12,7 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
     width?: number;
     quality?: number;
     priority?: boolean;
+    fallbackSrc?: string;
 }
 
 export const OptimizedImage = ({
@@ -23,9 +24,11 @@ export const OptimizedImage = ({
     width,
     quality = 80,
     priority = false,
+    fallbackSrc = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
     ...props
 }: OptimizedImageProps) => {
     const [isLoaded, setIsLoaded] = useState(false);
+    const [error, setError] = useState(false);
     const { ref, inView } = useInView({
         triggerOnce: true,
         rootMargin: '200px 0px',
@@ -76,9 +79,13 @@ export const OptimizedImage = ({
 
             {shouldShow && (
                 <img
-                    src={optimizedSrc}
+                    src={error ? fallbackSrc : optimizedSrc}
                     alt={alt}
                     onLoad={() => setIsLoaded(true)}
+                    onError={() => {
+                        setError(true);
+                        setIsLoaded(true);
+                    }}
                     className={cn(
                         "w-full h-full object-cover transition-opacity duration-500",
                         isLoaded ? "opacity-100" : "opacity-0",

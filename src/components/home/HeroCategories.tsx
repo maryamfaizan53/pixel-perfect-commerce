@@ -84,7 +84,7 @@ export const HeroCategories = () => {
                             className="group"
                         >
                             <Link to={`/category/${col.node.handle}`}>
-                                <div className="relative aspect-[16/9] md:aspect-video rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500">
+                                <div className="relative aspect-[16/9] md:aspect-video rounded-[2rem] overflow-hidden border border-white/10 hover:border-primary/50 transition-all duration-500">
                                     <OptimizedImage
                                         src={(() => {
                                             const category = getCategoryImage(col.node.title);
@@ -94,7 +94,7 @@ export const HeroCategories = () => {
                                         alt={col.node.title}
                                         width={600}
                                         quality={75}
-                                        containerClassName="w-full h-full"
+                                        containerClassName="absolute inset-0"
                                         className="group-hover:scale-110 transition-all duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />

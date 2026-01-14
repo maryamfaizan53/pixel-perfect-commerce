@@ -50,11 +50,8 @@ const Index = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-
-      {/* SEO Content Section */}
       <SEOContent />
+      <Footer />
     </div>
   );
 };

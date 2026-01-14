@@ -41,14 +41,6 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
         loadProducts();
     }, [handle, inView]);
 
-    if (!inView && loading) {
-        return (
-            <section ref={ref} className="py-12 bg-background min-h-[300px]">
-                <div className="container-custom" />
-            </section>
-        );
-    }
-
     if (loading) {
         return (
             <section ref={ref} className="py-12 bg-background">

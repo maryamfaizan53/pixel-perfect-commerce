@@ -90,11 +90,10 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             size="icon"
             onClick={handleToggleWishlist}
             disabled={wishlistLoading}
-            className={`w-9 h-9 rounded-full backdrop-blur-sm transition-all ${
-              inWishlist
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white/80 text-foreground/70 hover:bg-white hover:text-primary opacity-0 group-hover:opacity-100'
-            }`}
+            className={`w-9 h-9 rounded-full backdrop-blur-sm transition-all ${inWishlist
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-white/80 text-foreground/70 hover:bg-white hover:text-primary opacity-0 group-hover:opacity-100'
+              }`}
           >
             <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
           </Button>
@@ -124,17 +123,17 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       {/* Product Info */}
       <div className="p-4 flex flex-col flex-1">
         <Link to={`/product/${node.handle}`} className="flex-1">
-          <h3 className="font-medium text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+          <h3 className="text-xs font-medium text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
             {node.title}
           </h3>
         </Link>
-        
+
         <div className="flex items-center justify-between mt-auto pt-2">
           <p className="text-lg font-bold text-foreground">
             <span className="text-xs font-normal text-muted-foreground mr-1">{currencyCode}</span>
             {price.toLocaleString()}
           </p>
-          
+
           <Button
             variant="ghost"
             size="icon"

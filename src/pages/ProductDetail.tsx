@@ -45,7 +45,7 @@ const ProductDetail = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 py-8">
         <div className="container-custom">
           {/* Breadcrumb */}
@@ -72,9 +72,8 @@ const ProductDetail = () => {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
-                      selectedImage === index ? "border-primary" : "border-border"
-                    }`}
+                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors ${selectedImage === index ? "border-primary" : "border-border"
+                      }`}
                   >
                     <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
                   </button>
@@ -85,18 +84,17 @@ const ProductDetail = () => {
             {/* Product Info */}
             <div>
               <Badge className="badge-sale mb-4">Save {discount}%</Badge>
-              <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+              <h1 className="text-lg md:text-xl font-bold mb-4">{product.name}</h1>
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(product.rating)
-                          ? "fill-warning text-warning"
-                          : "fill-muted text-muted"
-                      }`}
+                      className={`w-5 h-5 ${i < Math.floor(product.rating)
+                        ? "fill-warning text-warning"
+                        : "fill-muted text-muted"
+                        }`}
                     />
                   ))}
                 </div>

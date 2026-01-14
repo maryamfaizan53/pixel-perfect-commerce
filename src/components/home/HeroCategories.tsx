@@ -78,14 +78,15 @@ export const HeroCategories = () => {
                             <Link to={`/category/${col.node.handle}`}>
                                 <div className="relative aspect-[16/9] md:aspect-video rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500">
                                     <img
-                                        src={getCategoryImage(col.node.title)?.local || col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"}
-                                        onError={(e) => {
-                                            const img = e.currentTarget;
-                                            const fallback = getCategoryImage(col.node.title)?.fallback;
-                                            if (fallback && img.src !== fallback) {
-                                                img.src = fallback;
-                                            }
-                                        }}
+                                        src={(() => {
+                                            const category = getCategoryImage(col.node.title);
+                                            // Prioritize fallback Unsplash images to ensure the site looks good immediately
+                                            if (category) return category.fallback;
+
+                                            const url = col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
+                                            const separator = url.includes('?') ? '&' : '?';
+                                            return `${url}${separator}width=600&quality=75`;
+                                        })()}
                                         alt={col.node.title}
                                         className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                                     />

@@ -201,9 +201,10 @@ export const HeroCarousel = () => {
                 <img
                   src={currentHero.bgImage}
                   alt=""
-                  className="w-full h-full object-cover opacity-30 mix-blend-overlay"
+                  className="w-full h-full object-cover opacity-60"
                   loading={currentSlide === 0 ? "eager" : "lazy"}
                 />
+                <div className="absolute inset-0 bg-secondary/40" />
               </div>
             )}
 
@@ -460,7 +461,11 @@ export const HeroCarousel = () => {
                   >
                     {/* Product Image */}
                     <img
-                      src={`${product.node.images.edges[0]?.node?.url || "/placeholder.svg"}&width=400&quality=80`}
+                      src={(() => {
+                        const url = product.node.images.edges[0]?.node?.url || "/placeholder.svg";
+                        const separator = url.includes('?') ? '&' : '?';
+                        return `${url}${separator}width=400&quality=80`;
+                      })()}
                       alt={product.node.title}
                       loading={index < 2 ? "eager" : "lazy"}
                       {...((index < 2) ? { fetchpriority: "high" } : {})}

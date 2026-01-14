@@ -16,7 +16,7 @@ export const HeroCategories = () => {
 
         // Use regex for broad matching to ensure variations like "Home and Living" or "HomeDecor" are caught
         if (/home|living|decor|furniture/i.test(normalized))
-            return { local: '/home-living.png', fallback: 'https://images.unsplash.com/photo-1584622650111-993a426fbf9a?w=800&q=80&auto=format' };
+            return { local: '/home-living.png', fallback: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80&auto=format' };
 
         if (/household/i.test(normalized))
             return { local: '/household.png', fallback: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80&auto=format' };

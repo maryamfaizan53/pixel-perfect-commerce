@@ -97,7 +97,7 @@ const CountdownTimer = () => {
 // Live Activity Indicator
 const LiveActivity = () => {
   const [viewers, setViewers] = useState(127);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setViewers((prev) => prev + Math.floor(Math.random() * 5) - 2);
@@ -175,7 +175,7 @@ export const HeroCarousel = () => {
   return (
     <div className="w-full space-y-5">
       {/* Main Hero Section */}
-      <div 
+      <div
         ref={heroRef}
         className="relative min-h-[600px] md:min-h-[650px] rounded-[2rem] overflow-hidden"
       >
@@ -191,13 +191,13 @@ export const HeroCarousel = () => {
           >
             {/* Base Gradient */}
             <div className="absolute inset-0 bg-secondary" />
-            
+
             {/* Dynamic Color Pattern */}
-            <div 
+            <div
               className="absolute inset-0 transition-all duration-1000"
               style={{ background: currentHero.bgPattern }}
             />
-            
+
             {/* Animated Gradient Orbs with Mouse Parallax */}
             <motion.div
               className={`absolute w-[600px] h-[600px] bg-gradient-to-br ${currentHero.gradient} rounded-full blur-[120px] opacity-40`}
@@ -213,20 +213,20 @@ export const HeroCarousel = () => {
                 left: `${-5 + mousePosition.x * 8}%`,
               }}
             />
-            
+
             {/* Floating Particles */}
             <div className="absolute inset-0 overflow-hidden">
               {[...Array(20)].map((_, i) => (
                 <motion.div
                   key={i}
                   className="absolute w-1 h-1 bg-white/30 rounded-full"
-                  initial={{ 
-                    x: Math.random() * 100 + "%", 
+                  initial={{
+                    x: Math.random() * 100 + "%",
                     y: "100%",
-                    opacity: 0 
+                    opacity: 0
                   }}
-                  animate={{ 
-                    y: "-10%", 
+                  animate={{
+                    y: "-10%",
                     opacity: [0, 1, 0],
                   }}
                   transition={{
@@ -243,7 +243,7 @@ export const HeroCarousel = () => {
             <div className="absolute inset-0 opacity-[0.03]">
               <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
-            
+
             {/* Noise Texture */}
             <div className="absolute inset-0 opacity-[0.02] bg-[url('data:image/svg+xml,%3Csvg viewBox=%270 0 200 200%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.65%27 numOctaves=%273%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27/%3E%3C/svg%3E')]" />
           </motion.div>
@@ -396,11 +396,10 @@ export const HeroCarousel = () => {
                     onClick={() => setCurrentSlide(index)}
                     className="group relative"
                   >
-                    <div className={`h-1.5 rounded-full transition-all duration-500 ${
-                      index === currentSlide 
-                        ? `w-12 bg-gradient-to-r ${currentHero.gradient}` 
-                        : "w-3 bg-white/30 group-hover:bg-white/50"
-                    }`} />
+                    <div className={`h-1.5 rounded-full transition-all duration-500 ${index === currentSlide
+                      ? `w-12 bg-gradient-to-r ${currentHero.gradient}`
+                      : "w-3 bg-white/30 group-hover:bg-white/50"
+                      }`} />
                     {index === currentSlide && (
                       <motion.div
                         layoutId="slideIndicator"
@@ -446,14 +445,16 @@ export const HeroCarousel = () => {
                   >
                     {/* Product Image */}
                     <img
-                      src={product.node.images.edges[0]?.node?.url || "/placeholder.svg"}
+                      src={`${product.node.images.edges[0]?.node?.url || "/placeholder.svg"}&width=400&quality=80`}
                       alt={product.node.title}
+                      loading={index < 2 ? "eager" : "lazy"}
+                      {...((index < 2) ? { fetchpriority: "high" } : {})}
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                     />
-                    
+
                     {/* Gradient Overlay */}
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-300 ${hoveredProduct === index ? "opacity-100" : "opacity-60"}`} />
-                    
+
                     {/* Badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-2">
                       {index === 0 && (
@@ -476,7 +477,7 @@ export const HeroCarousel = () => {
                         </span>
                       )}
                     </div>
-                    
+
                     {/* Wishlist Button */}
                     <motion.button
                       initial={{ opacity: 0, scale: 0.5 }}
@@ -486,7 +487,7 @@ export const HeroCarousel = () => {
                     >
                       <Heart className="w-4 h-4 text-secondary" />
                     </motion.button>
-                    
+
                     {/* Product Info */}
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <motion.div
@@ -510,7 +511,7 @@ export const HeroCarousel = () => {
                           </div>
                         </div>
                       </motion.div>
-                      
+
                       {/* Quick Add Button */}
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}

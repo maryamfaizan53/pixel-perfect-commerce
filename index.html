@@ -39,12 +39,111 @@
   <meta name="format-detection" content="telephone=no" />
   <meta name="mobile-web-app-capable" content="yes" />
 
-  <!-- Fonts -->
+  <!-- Resource Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://cdn.shopify.com">
+
+  <!-- Preloads -->
+  <link rel="preload" as="image" href="/og-image.png" fetchpriority="high" />
+  <link rel="preload" as="font" href="https://fonts.gstatic.com/s/outfit/v11/QGYsz_Z8S2S2s127S7-L4_O.woff2"
+    type="font/woff2" crossorigin="anonymous">
+
+  <!-- Font Loading Optimization -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap"
-    rel="stylesheet">
+    rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap"
+      rel="stylesheet">
+  </noscript>
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "AI Bazar",
+      "url": "https://www.aibazar.pk/",
+      "logo": "https://www.aibazar.pk/favicon.png",
+      "sameAs": [
+        "https://facebook.com/aibazar.pk",
+        "https://instagram.com/aibazar.pk"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "aibazarad@gmail.com",
+        "contactType": "customer service",
+        "areaServed": "PK"
+      }
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "AI Bazar",
+      "url": "https://www.aibazar.pk/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.aibazar.pk/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "AI Bazar Pakistan",
+      "image": "https://www.aibazar.pk/og-image.png",
+      "@id": "https://www.aibazar.pk/",
+      "url": "https://www.aibazar.pk/",
+      "telephone": "+92",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Main Road",
+        "addressLocality": "Karachi",
+        "addressRegion": "Sindh",
+        "postalCode": "75500",
+        "addressCountry": "PK"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 24.8607,
+        "longitude": 67.0011
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      }
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.aibazar.pk/"
+      }]
+    }
+  </script>
 
   <!-- Favicon and Theme -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />

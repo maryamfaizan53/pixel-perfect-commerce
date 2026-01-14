@@ -72,7 +72,7 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                     {products.slice(0, 4).map((product, index) => (
                         <motion.div
                             key={product.node.id}

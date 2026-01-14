@@ -55,9 +55,16 @@ const CategoryPage = () => {
 
         if (category && category !== "all") {
           const collection = await fetchProductsByCollection(category, 50);
-          if (collection) {
+          if (collection && collection.products && collection.products.length > 0) {
             setCollectionData(collection);
             list = collection.products;
+          } else {
+            // If collection not found or empty, fallback to all products
+            // but keep the title as the handle for context if it was "frontpage"
+            if (collection) {
+              setCollectionData(collection);
+            }
+            list = await fetchProducts(50);
           }
         } else {
           list = await fetchProducts(50);
@@ -199,13 +206,13 @@ const CategoryPage = () => {
           />
         </section>
 
-        <div className="container-custom -mt-16 relative z-20 pb-24">
+        <div className="container-custom -mt-12 sm:-mt-16 relative z-20 pb-24">
           {/* Action Bar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="glass-dark border-white/5 bg-white shadow-2xl rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-6 mb-8 sm:mb-12 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8"
+            className="glass-dark border-white/5 bg-white shadow-2xl rounded-[1.5rem] sm:rounded-[2.5rem] p-3 sm:p-6 mb-8 sm:mb-12 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-8"
           >
             <div className="relative w-full lg:max-w-md">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -226,8 +233,8 @@ const CategoryPage = () => {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
-              <div className="flex bg-slate-100 p-1.5 rounded-2xl">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto">
+              <div className="flex bg-slate-100 p-1.5 rounded-2xl flex-1 sm:flex-initial justify-center sm:justify-start">
                 <Button
                   variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="icon"

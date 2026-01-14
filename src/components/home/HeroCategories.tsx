@@ -64,7 +64,7 @@ export const HeroCategories = () => {
                         <Sparkles className="w-4 h-4" />
                         Featured Collections
                     </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight mb-4">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight mb-4">
                         Shop by <span className="text-primary">Category</span>
                     </h1>
                     <p className="text-white/60 max-w-2xl mx-auto text-lg">
@@ -72,7 +72,7 @@ export const HeroCategories = () => {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                     {collections.slice(0, 6).map((col, index) => (
                         <motion.div
                             key={col.node.id}
@@ -111,7 +111,7 @@ export const HeroCategories = () => {
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                                     <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                                        <h3 className="text-xl md:text-2xl lg:text-3xl font-black text-white mb-2 group-hover:text-primary transition-colors">
+                                        <h3 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-white mb-1 md:mb-2 group-hover:text-primary transition-colors">
                                             {col.node.title}
                                         </h3>
                                         <div className="flex items-center gap-2 text-white/70 text-sm font-bold uppercase tracking-widest">

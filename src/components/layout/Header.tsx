@@ -60,7 +60,7 @@ export const Header = () => {
               <MapPin className="w-4 h-4" />
               <div className="flex flex-col leading-tight">
                 <span className="text-[10px] text-secondary-foreground/60">Deliver to</span>
-                <span className="font-semibold text-sm">Pakistan</span>
+                <span className="font-semibold text-xs sm:text-sm">Pakistan</span>
               </div>
             </div>
 
@@ -125,11 +125,11 @@ export const Header = () => {
               ) : (
                 <Link
                   to="/auth"
-                  className="flex flex-col items-start px-3 py-1 hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
+                  className="flex flex-col items-start px-2 sm:px-3 py-1 hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
                 >
                   <span className="text-[10px] text-secondary-foreground/70">Hello, Sign in</span>
-                  <span className="font-semibold text-sm flex items-center gap-1">
-                    Account & Lists
+                  <span className="font-semibold text-xs sm:text-sm flex items-center gap-1 text-nowrap">
+                    Account
                     <ChevronDown className="w-3 h-3" />
                   </span>
                 </Link>
@@ -141,7 +141,7 @@ export const Header = () => {
                 className="hidden sm:flex flex-col items-start px-3 py-1 hover:outline hover:outline-1 hover:outline-white rounded-sm transition-all"
               >
                 <span className="text-[10px] text-secondary-foreground/70">Returns</span>
-                <span className="font-semibold text-sm">& Orders</span>
+                <span className="font-semibold text-xs sm:text-sm">& Orders</span>
               </Link>
 
               {/* Cart */}

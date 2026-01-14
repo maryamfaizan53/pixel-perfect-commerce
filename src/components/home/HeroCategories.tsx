@@ -6,15 +6,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 
 export const HeroCategories = () => {
-    const { data: collections = [], isLoading } = useQuery({
-        queryKey: ['collections'],
-        queryFn: () => fetchCollections(6),
-    });
-
-    const categoryImages: Record<string, string> = {
-        'Household': 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80',
-        'Home & Living': 'https://images.unsplash.com/photo-1513519247388-4e28265121e0?w=800&q=80',
-        'Health & Beauty': 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&q=80',
+    const getOverrideImage = (title: string) => {
+        const normalized = title.toLowerCase().trim();
+        if (normalized.includes('household')) return 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80';
+        if (normalized.includes('home') && (normalized.includes('living') || normalized.includes('&') || normalized.includes('and')))
+            return 'https://images.unsplash.com/photo-1513519247388-4e28265121e0?w=800&q=80';
+        if (normalized.includes('health') || normalized.includes('beauty'))
+            return 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&q=80';
+        return null;
     };
 
     if (isLoading) {
@@ -69,7 +68,7 @@ export const HeroCategories = () => {
                             <Link to={`/category/${col.node.handle}`}>
                                 <div className="relative aspect-[16/9] md:aspect-video rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500">
                                     <img
-                                        src={categoryImages[col.node.title] || col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"}
+                                        src={getOverrideImage(col.node.title) || col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"}
                                         alt={col.node.title}
                                         className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                                     />

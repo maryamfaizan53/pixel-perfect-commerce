@@ -4,9 +4,15 @@ import { HeroCategories } from "@/components/home/HeroCategories";
 import { CategoryProductRow } from "@/components/home/CategoryProductRow";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { SEOContent } from "@/components/home/SEOContent";
-import { motion } from "framer-motion";
+import { fetchCollections } from "@/lib/shopify";
+import { useQuery } from "@tanstack/react-query";
 
 const Index = () => {
+  const { data: collections = [] } = useQuery({
+    queryKey: ['all-collections-rows'],
+    queryFn: () => fetchCollections(50), // Fetch up to 50 categories for the rows
+  });
+
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Header />
@@ -15,20 +21,16 @@ const Index = () => {
         {/* Hero Section - Display Categories */}
         <HeroCategories />
 
-        {/* Global Stats or Promo bar can go here if needed, but following prompt exactly */}
-
-        {/* Category specific sections */}
-        <CategoryProductRow title="Household" handle="household" />
-
-        <CategoryProductRow title="Home & Living" handle="home-living" />
-
-        <CategoryProductRow title="Health & Beauty" handle="health-beauty" />
-
-        <CategoryProductRow title="Hair Straightener" handle="hair-straightener" />
-
-        <CategoryProductRow title="Kitchen" handle="kitchen" />
-
-        <CategoryProductRow title="Toys" handle="toys" />
+        {/* Dynamic Category sections */}
+        <div className="space-y-4">
+          {collections.map((col) => (
+            <CategoryProductRow
+              key={col.node.id}
+              title={col.node.title}
+              handle={col.node.handle}
+            />
+          ))}
+        </div>
 
         {/* All Products Section */}
         <section className="bg-slate-50 pt-12 pb-20">
@@ -56,4 +58,5 @@ const Index = () => {
 };
 
 export default Index;
+
 

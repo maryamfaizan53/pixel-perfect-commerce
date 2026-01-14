@@ -14,7 +14,8 @@ export const HeroCategories = () => {
     const getCategoryImage = (title: string) => {
         const normalized = title.toLowerCase().trim();
         if (normalized.includes('household')) return { local: '/household.png', fallback: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=75&auto=format' };
-        if (normalized.includes('home') && (normalized.includes('living') || normalized.includes('&') || normalized.includes('and')))
+        // Broaden home matching to include decor, lifestyle, furniture etc.
+        if (normalized.includes('home') || normalized.includes('decor') || normalized.includes('living'))
             return { local: '/home-living.png', fallback: 'https://images.unsplash.com/photo-1513519247388-4e28265121e0?w=600&q=75&auto=format' };
         if (normalized.includes('health') || normalized.includes('beauty'))
             return { local: '/health-beauty.png', fallback: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=75&auto=format' };

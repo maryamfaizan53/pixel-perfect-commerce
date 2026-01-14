@@ -19,6 +19,7 @@ const heroSlides = [
     ctaSecondary: "View Collection",
     gradient: "from-rose-500 via-pink-500 to-violet-600",
     accentColor: "rose",
+    bgImage: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&q=80&auto=format",
     bgPattern: "radial-gradient(circle at 20% 80%, rgba(251,113,133,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(168,85,247,0.2) 0%, transparent 50%)",
   },
   {
@@ -33,6 +34,7 @@ const heroSlides = [
     ctaSecondary: "See What's New",
     gradient: "from-emerald-400 via-teal-500 to-cyan-600",
     accentColor: "emerald",
+    bgImage: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=1600&q=80&auto=format",
     bgPattern: "radial-gradient(circle at 30% 70%, rgba(52,211,153,0.3) 0%, transparent 50%), radial-gradient(circle at 70% 30%, rgba(34,211,238,0.2) 0%, transparent 50%)",
   },
   {
@@ -47,6 +49,7 @@ const heroSlides = [
     ctaSecondary: "Learn More",
     gradient: "from-amber-400 via-orange-500 to-red-500",
     accentColor: "amber",
+    bgImage: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1600&q=80&auto=format",
     bgPattern: "radial-gradient(circle at 25% 75%, rgba(251,191,36,0.3) 0%, transparent 50%), radial-gradient(circle at 75% 25%, rgba(239,68,68,0.2) 0%, transparent 50%)",
   },
 ];
@@ -191,6 +194,18 @@ export const HeroCarousel = () => {
           >
             {/* Base Gradient */}
             <div className="absolute inset-0 bg-secondary" />
+
+            {/* Background Image */}
+            {currentHero.bgImage && (
+              <div className="absolute inset-0">
+                <img
+                  src={currentHero.bgImage}
+                  alt=""
+                  className="w-full h-full object-cover opacity-30 mix-blend-overlay"
+                  loading={currentSlide === 0 ? "eager" : "lazy"}
+                />
+              </div>
+            )}
 
             {/* Dynamic Color Pattern */}
             <div

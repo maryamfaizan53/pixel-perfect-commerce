@@ -77,17 +77,17 @@ export const Footer = () => {
                 <Phone className="w-4 h-4" />
                 +92 332 8222026
               </a>
-              <a href="mailto:contact@aiagentixz.com" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+              <a href="mailto:aibazarad@gmail.com" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                 <Mail className="w-4 h-4" />
-                contact@aiagentixz.com
+                aibazarad@gmail.com
               </a>
-              <a href="https://www.aiagentixz.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+              <a href="https://www.aibazar.pk" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-                www.aiagentixz.com
+                www.aibazar.pk
               </a>
               <div className="flex items-start gap-3 text-sm text-secondary-foreground/70">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Karachi, Pakistan</span>
+                <span>Pakistan</span>
               </div>
             </div>
 

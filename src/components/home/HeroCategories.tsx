@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import { OptimizedImage } from "@/components/common/OptimizedImage";
 
 export const HeroCategories = () => {
     const { data: collections = [], isLoading } = useQuery({
@@ -84,29 +85,17 @@ export const HeroCategories = () => {
                         >
                             <Link to={`/category/${col.node.handle}`}>
                                 <div className="relative aspect-[16/9] md:aspect-video rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-500">
-                                    <img
+                                    <OptimizedImage
                                         src={(() => {
                                             const category = getCategoryImage(col.node.title);
-                                            // Prioritize local image if available, otherwise use fallback
                                             if (category) return category.local;
-
-                                            const url = col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
-                                            const separator = url.includes('?') ? '&' : '?';
-                                            return `${url}${separator}width=800&quality=80`;
+                                            return col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8";
                                         })()}
-                                        onError={(e) => {
-                                            const img = e.currentTarget;
-                                            const category = getCategoryImage(col.node.title);
-
-                                            // If local image fails (not found in public/), use the premium fallback
-                                            if (category?.fallback && !img.src.includes(category.fallback)) {
-                                                img.src = category.fallback;
-                                            } else if (!img.src.includes('unsplash')) {
-                                                img.src = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
-                                            }
-                                        }}
                                         alt={col.node.title}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
+                                        width={600}
+                                        quality={75}
+                                        containerClassName="w-full h-full"
+                                        className="group-hover:scale-110 transition-all duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 

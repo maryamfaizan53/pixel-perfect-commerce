@@ -2,16 +2,21 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { OptimizedImage } from "@/components/common/OptimizedImage";
 
 export const HomeHero = () => {
     return (
         <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-secondary">
             {/* Background Cinematic Visual */}
             <div className="absolute inset-0">
-                <img
-                    src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1920&q=80&auto=format"
+                <OptimizedImage
+                    src="https://images.unsplash.com/photo-1550745165-9bc0b252726f"
                     alt="AI Bazar Hero"
-                    className="w-full h-full object-cover opacity-60"
+                    width={1920}
+                    quality={80}
+                    priority
+                    containerClassName="absolute inset-0"
+                    className="opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/80 to-transparent" />
             </div>

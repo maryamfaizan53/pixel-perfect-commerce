@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useInView } from "react-intersection-observer";
 
 interface CategoryProductRowProps {
     title: string;
@@ -16,7 +17,14 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
     const [products, setProducts] = useState<ShopifyProduct[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const { ref, inView } = useInView({
+        triggerOnce: true,
+        rootMargin: '400px 0px', // Fetch products when user is within 400px of the row
+    });
+
     useEffect(() => {
+        if (!inView) return;
+
         const loadProducts = async () => {
             try {
                 const data = await fetchProductsByCollection(handle, 8);
@@ -31,11 +39,19 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
         };
 
         loadProducts();
-    }, [handle]);
+    }, [handle, inView]);
+
+    if (!inView && loading) {
+        return (
+            <section ref={ref} className="py-12 bg-background min-h-[300px]">
+                <div className="container-custom" />
+            </section>
+        );
+    }
 
     if (loading) {
         return (
-            <section className="py-12 bg-background">
+            <section ref={ref} className="py-12 bg-background">
                 <div className="container-custom">
                     <Skeleton className="h-8 w-48 mb-6" />
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -53,7 +69,7 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
     }
 
     return (
-        <section className="py-12 bg-background">
+        <section ref={ref} className="py-12 bg-background">
             <div className="container-custom">
                 <div className="flex items-center justify-between mb-8 border-l-4 border-primary pl-4">
                     <div>

@@ -7,6 +7,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "sonner";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { OptimizedImage } from "@/components/common/OptimizedImage";
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -100,11 +101,13 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
         </div>
 
         {/* Product Image */}
-        <img
+        <OptimizedImage
           src={node.images.edges[0]?.node?.url || "/placeholder.svg"}
           alt={node.title}
-          onLoad={() => setImageLoaded(true)}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          width={400}
+          quality={80}
+          containerClassName="w-full h-full"
+          className="transition-transform duration-500 group-hover:scale-105"
         />
 
         {/* Quick Add Overlay */}

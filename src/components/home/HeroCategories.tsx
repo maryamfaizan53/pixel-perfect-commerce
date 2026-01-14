@@ -87,8 +87,8 @@ export const HeroCategories = () => {
                                     <img
                                         src={(() => {
                                             const category = getCategoryImage(col.node.title);
-                                            // Always use fallback if specified to ensure premium look
-                                            if (category) return category.fallback;
+                                            // Prioritize local image if available, otherwise use fallback
+                                            if (category) return category.local;
 
                                             const url = col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
                                             const separator = url.includes('?') ? '&' : '?';
@@ -96,7 +96,12 @@ export const HeroCategories = () => {
                                         })()}
                                         onError={(e) => {
                                             const img = e.currentTarget;
-                                            if (!img.src.includes('unsplash')) {
+                                            const category = getCategoryImage(col.node.title);
+
+                                            // If local image fails (not found in public/), use the premium fallback
+                                            if (category?.fallback && !img.src.includes(category.fallback)) {
+                                                img.src = category.fallback;
+                                            } else if (!img.src.includes('unsplash')) {
                                                 img.src = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
                                             }
                                         }}

@@ -20,10 +20,7 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* Hero Banner Section */}
-        <HeroCarousel />
-
-        {/* Featured Categories Grid */}
+        {/* Hero Section - Display Categories */}
         <HeroCategories />
 
         {/* Dynamic Category sections */}

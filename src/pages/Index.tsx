@@ -1,12 +1,13 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { HeroCategories } from "@/components/home/HeroCategories";
 import { CategoryProductRow } from "@/components/home/CategoryProductRow";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { SEOContent } from "@/components/home/SEOContent";
+
 import { fetchCollections } from "@/lib/shopify";
 import { useQuery } from "@tanstack/react-query";
-
 
 const Index = () => {
   const { data: collections = [] } = useQuery({
@@ -19,7 +20,10 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* Hero Section - Display Categories */}
+        {/* Hero Banner Section */}
+        <HeroCarousel />
+
+        {/* Featured Categories Grid */}
         <HeroCategories />
 
         {/* Dynamic Category sections */}

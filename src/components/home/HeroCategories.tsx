@@ -6,6 +6,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 
 export const HeroCategories = () => {
+    const { data: collections = [], isLoading } = useQuery({
+        queryKey: ['collections'],
+        queryFn: () => fetchCollections(6),
+    });
+
     const getOverrideImage = (title: string) => {
         const normalized = title.toLowerCase().trim();
         if (normalized.includes('household')) return 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80';

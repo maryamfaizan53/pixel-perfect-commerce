@@ -8,21 +8,28 @@ import { motion } from "framer-motion";
 export const HeroCategories = () => {
     const { data: collections = [], isLoading } = useQuery({
         queryKey: ['collections'],
-        queryFn: () => fetchCollections(6),
+        queryFn: () => fetchCollections(12),
     });
 
     const getCategoryImage = (title: string) => {
         const normalized = title.toLowerCase().trim();
-        if (normalized.includes('household')) return { local: '/household.png', fallback: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=75&auto=format' };
-        // Broaden home matching to include decor, lifestyle, furniture etc.
-        if (normalized.includes('home') || normalized.includes('decor') || normalized.includes('living'))
-            return { local: '/home-living.png', fallback: 'https://images.unsplash.com/photo-1513519247388-4e28265121e0?w=600&q=75&auto=format' };
-        if (normalized.includes('health') || normalized.includes('beauty'))
-            return { local: '/health-beauty.png', fallback: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=75&auto=format' };
-        if (normalized.includes('hair') && normalized.includes('straightener'))
+
+        // Use regex for broad matching to ensure variations like "Home and Living" or "HomeDecor" are caught
+        if (/home|living|decor|furniture/i.test(normalized))
+            return { local: '/home-living.png', fallback: 'https://images.unsplash.com/photo-1584622650111-993a426fbf9a?w=800&q=80&auto=format' };
+
+        if (/household/i.test(normalized))
+            return { local: '/household.png', fallback: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80&auto=format' };
+
+        if (/health|beauty/i.test(normalized))
+            return { local: '/health-beauty.png', fallback: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&q=80&auto=format' };
+
+        if (/hair|straight/i.test(normalized))
             return { local: '/hair-straightener.png', fallback: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=600&q=75&auto=format' };
-        if (normalized.includes('kitchen'))
-            return { local: '/kitchen.png', fallback: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&q=75&auto=format' };
+
+        if (/kitchen/i.test(normalized))
+            return { local: '/kitchen.png', fallback: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80&auto=format' };
+
         return null;
     };
 
@@ -85,10 +92,10 @@ export const HeroCategories = () => {
 
                                             const url = col.node.image?.url || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
                                             const separator = url.includes('?') ? '&' : '?';
-                                            return `${url}${separator}width=600&quality=75`;
+                                            return `${url}${separator}width=800&quality=80`;
                                         })()}
                                         alt={col.node.title}
-                                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 

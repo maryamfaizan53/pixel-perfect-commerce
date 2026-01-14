@@ -199,12 +199,12 @@ export const HeroCarousel = () => {
             {currentHero.bgImage && (
               <div className="absolute inset-0">
                 <img
-                  src={currentHero.bgImage}
+                  src={`${currentHero.bgImage}&w=1920&q=90&auto=format`}
                   alt=""
-                  className="w-full h-full object-cover opacity-60"
+                  className="w-full h-full object-cover"
                   loading={currentSlide === 0 ? "eager" : "lazy"}
                 />
-                <div className="absolute inset-0 bg-secondary/40" />
+                <div className="absolute inset-0 bg-secondary/60 mix-blend-multiply" />
               </div>
             )}
 

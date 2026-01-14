@@ -7,10 +7,11 @@ import { SEOContent } from "@/components/home/SEOContent";
 import { fetchCollections } from "@/lib/shopify";
 import { useQuery } from "@tanstack/react-query";
 
+
 const Index = () => {
   const { data: collections = [] } = useQuery({
     queryKey: ['all-collections-rows'],
-    queryFn: () => fetchCollections(50), // Fetch up to 50 categories for the rows
+    queryFn: () => fetchCollections(20), // Fetch up to 20 categories for the rows
   });
 
   return (

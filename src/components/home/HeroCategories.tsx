@@ -13,11 +13,11 @@ export const HeroCategories = () => {
 
     const getOverrideImage = (title: string) => {
         const normalized = title.toLowerCase().trim();
-        if (normalized.includes('household')) return 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80';
+        if (normalized.includes('household')) return '/household.png';
         if (normalized.includes('home') && (normalized.includes('living') || normalized.includes('&') || normalized.includes('and')))
-            return 'https://images.unsplash.com/photo-1513519247388-4e28265121e0?w=800&q=80';
+            return '/home-living.png';
         if (normalized.includes('health') || normalized.includes('beauty'))
-            return 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&q=80';
+            return '/health-beauty.png';
         return null;
     };
 

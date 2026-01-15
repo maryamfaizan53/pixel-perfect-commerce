@@ -27,7 +27,7 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
 
         const loadProducts = async () => {
             try {
-                const data = await fetchProductsByCollection(handle, 8);
+                const data = await fetchProductsByCollection(handle, 12);
                 if (data) {
                     setProducts(data.products);
                 }
@@ -46,8 +46,8 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
             <section ref={ref} className="py-12 bg-background">
                 <div className="container-custom">
                     <Skeleton className="h-8 w-48 mb-6" />
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {[...Array(4)].map((_, i) => (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {[...Array(12)].map((_, i) => (
                             <Skeleton key={i} className="aspect-[4/5] rounded-xl" />
                         ))}
                     </div>
@@ -81,13 +81,13 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                    {products.slice(0, 4).map((product, index) => (
+                    {products.slice(0, 12).map((product, index) => (
                         <motion.div
                             key={product.node.id}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: index * 0.05 }}
+                            transition={{ delay: (index % 4) * 0.05 }}
                         >
                             <ProductCard product={product} index={index} />
                         </motion.div>

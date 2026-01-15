@@ -421,7 +421,7 @@ const ProductPage = () => {
               >
                 {/* 1. Heading */}
                 <div className="space-y-4">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tight leading-tight">
+                  <h1 className="text-base md:text-lg lg:text-xl font-bold text-foreground tracking-tight leading-tight">
                     <span className="block opacity-90">{product.title}</span>
                   </h1>
                   <span className="inline-block px-5 py-2 bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-widest border border-slate-200 rounded-lg">

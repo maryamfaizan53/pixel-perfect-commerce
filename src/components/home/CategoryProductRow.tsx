@@ -65,7 +65,7 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
             <div className="container-custom">
                 <div className="flex items-center justify-between mb-8 border-l-4 border-primary pl-4">
                     <div>
-                        <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight uppercase">
+                        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase">
                             {title}
                         </h2>
                         <p className="text-muted-foreground text-sm font-medium">

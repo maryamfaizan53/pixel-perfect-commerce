@@ -38,7 +38,7 @@ const Index = () => {
         <section className="bg-slate-50 pt-12 pb-20">
           <div className="container-custom">
             <div className="flex flex-col items-center text-center mb-12">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight uppercase mb-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight uppercase mb-4">
                 All Products
               </h2>
               <div className="w-24 h-1.5 bg-primary rounded-full mb-6" />

@@ -172,7 +172,7 @@ const CategoryPage = () => {
                 <LayoutGrid className="w-3.5 h-3.5 text-primary" />
                 {collectionData ? 'Collection' : 'All Products'}
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tight leading-tight mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight mb-6 sm:mb-8">
                 {collectionData?.title || (
                   <>All Products</>
                 )}

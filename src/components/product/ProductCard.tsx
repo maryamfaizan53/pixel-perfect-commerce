@@ -1,4 +1,4 @@
-import { ShoppingBag, Heart, Star, Loader2 } from "lucide-react";
+import { ShoppingBag, Heart, Star, Loader2, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShopifyProduct } from "@/lib/shopify";
@@ -18,8 +18,15 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const { isInWishlist, toggleWishlist, loading: wishlistLoading } = useWishlist();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const { node } = product;
+
+  // Find the first video media
+  const videoMedia = node.media?.edges.find(
+    edge => edge.node.mediaContentType === 'VIDEO' || edge.node.mediaContentType === 'EXTERNAL_VIDEO'
+  );
+  const hasVideo = !!videoMedia;
   const inWishlist = isInWishlist(node.id);
   const isOutOfStock = !node.availableForSale;
 
@@ -68,6 +75,8 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="group relative flex flex-col h-full bg-card rounded-xl overflow-hidden border border-border/50 hover:border-border hover:shadow-lg transition-all duration-300"
     >
       {/* Product Image Section */}
@@ -80,6 +89,12 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           {isOutOfStock && (
             <span className="px-2.5 py-1 bg-muted text-muted-foreground text-[10px] font-semibold uppercase rounded-md">
               Sold Out
+            </span>
+          )}
+          {hasVideo && !isOutOfStock && (
+            <span className="px-2.5 py-1 bg-primary/90 text-primary-foreground text-[10px] font-bold uppercase rounded-md flex items-center gap-1 shadow-lg">
+              <Play className="w-2.5 h-2.5 fill-current" />
+              Video
             </span>
           )}
         </div>
@@ -107,8 +122,30 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           width={400}
           quality={80}
           containerClassName="w-full h-full"
-          className="transition-transform duration-500 group-hover:scale-105"
+          className={`transition-transform duration-500 group-hover:scale-105 ${isHovered && hasVideo ? 'opacity-0' : 'opacity-100'}`}
         />
+
+        {/* Video Preview Overlay */}
+        {hasVideo && isHovered && (
+          <div className="absolute inset-0 z-0">
+            {videoMedia.node.mediaContentType === 'VIDEO' && videoMedia.node.sources?.[0] ? (
+              <video
+                src={videoMedia.node.sources[0].url}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : videoMedia.node.mediaContentType === 'EXTERNAL_VIDEO' && videoMedia.node.embeddedUrl ? (
+              <iframe
+                src={`${videoMedia.node.embeddedUrl}${videoMedia.node.embeddedUrl.includes('?') ? '&' : '?'}autoplay=1&mute=1&controls=0&loop=1&playlist=${videoMedia.node.embeddedUrl.split('/').pop()}`}
+                className="w-full h-full pointer-events-none"
+                allow="autoplay; encrypted-media"
+              />
+            ) : null}
+          </div>
+        )}
 
         {/* Quick Add Overlay */}
         <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">

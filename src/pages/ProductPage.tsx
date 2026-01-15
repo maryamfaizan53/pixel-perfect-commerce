@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag, CreditCard } from "lucide-react";
+import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag, CreditCard, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout } from "@/lib/shopify";
@@ -16,10 +16,22 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent }
 import { useInView } from "react-intersection-observer";
 import { Sparkles } from "lucide-react";
 
-interface ProductImage {
+interface ProductMedia {
   node: {
-    url: string;
+    mediaContentType: 'IMAGE' | 'VIDEO' | 'EXTERNAL_VIDEO' | 'MODEL_3D';
     altText: string | null;
+    previewImage?: {
+      url: string;
+    };
+    image?: {
+      url: string;
+    };
+    sources?: Array<{
+      url: string;
+      mimeType: string;
+      format: string;
+    }>;
+    embeddedUrl?: string;
   };
 }
 
@@ -50,8 +62,8 @@ interface Product {
   availableForSale: boolean;
   productType: string;
   vendor: string;
-  images: {
-    edges: ProductImage[];
+  media: {
+    edges: ProductMedia[];
   };
   variants: {
     edges: {
@@ -92,11 +104,32 @@ const PRODUCT_QUERY = `
           currencyCode
         }
       }
-      images(first: 5) {
+      media(first: 10) {
         edges {
           node {
-            url
+            mediaContentType
             altText
+            previewImage {
+              url
+            }
+            ... on MediaImage {
+              id
+              image {
+                url
+              }
+            }
+            ... on Video {
+              id
+              sources {
+                url
+                mimeType
+                format
+              }
+            }
+            ... on ExternalVideo {
+              id
+              embeddedUrl
+            }
           }
         }
       }
@@ -356,16 +389,50 @@ const ProductPage = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.4 }}
                   >
-                    <motion.img
-                      src={product.images.edges[selectedImage]?.node.url || "/placeholder.svg"}
-                      alt={product.title}
-                      animate={{
-                        scale: isInspecting ? 2 : 1,
-                        transformOrigin: `${mousePos.x}% ${mousePos.y}%`
-                      }}
-                      transition={{ duration: 0.1, ease: "linear" }}
-                      className="w-full h-full object-cover"
-                    />
+                    {(() => {
+                      const mediaNode = product.media.edges[selectedImage]?.node;
+                      if (!mediaNode) return <img src="/placeholder.svg" alt={product.title} className="w-full h-full object-cover" />;
+
+                      if (mediaNode.mediaContentType === 'VIDEO' && mediaNode.sources?.[0]) {
+                        return (
+                          <video
+                            src={mediaNode.sources[0].url}
+                            controls
+                            autoPlay
+                            muted
+                            loop
+                            className="w-full h-full object-cover"
+                            poster={mediaNode.previewImage?.url}
+                          />
+                        );
+                      }
+
+                      if (mediaNode.mediaContentType === 'EXTERNAL_VIDEO' && mediaNode.embeddedUrl) {
+                        return (
+                          <iframe
+                            src={mediaNode.embeddedUrl}
+                            className="w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        );
+                      }
+
+                      const imageUrl = mediaNode.image?.url || mediaNode.previewImage?.url || "/placeholder.svg";
+
+                      return (
+                        <motion.img
+                          src={imageUrl}
+                          alt={mediaNode.altText || product.title}
+                          animate={{
+                            scale: isInspecting ? 2 : 1,
+                            transformOrigin: `${mousePos.x}% ${mousePos.y}%`
+                          }}
+                          transition={{ duration: 0.1, ease: "linear" }}
+                          className="w-full h-full object-cover"
+                        />
+                      );
+                    })()}
                   </motion.div>
                 </AnimatePresence>
 
@@ -396,16 +463,27 @@ const ProductPage = () => {
               </div>
 
               <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-none justify-center">
-                {product.images.edges.map((image: ProductImage, index: number) => (
+                {product.media.edges.map((media: ProductMedia, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-24 h-24 rounded-[1.25rem] overflow-hidden border-2 transition-all duration-500 hover:scale-105 ${selectedImage === index
+                    className={`flex-shrink-0 w-24 h-24 rounded-[1.25rem] overflow-hidden border-2 transition-all duration-500 hover:scale-105 relative ${selectedImage === index
                       ? "border-primary ring-[6px] ring-primary/10 shadow-xl"
                       : "border-transparent opacity-60 hover:opacity-100"
                       }`}
                   >
-                    <img src={image.node.url} alt={`${product.title} ${index + 1}`} className="w-full h-full object-cover" />
+                    <img
+                      src={media.node.previewImage?.url || media.node.image?.url || "/placeholder.svg"}
+                      alt={`${product.title} ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    {(media.node.mediaContentType === 'VIDEO' || media.node.mediaContentType === 'EXTERNAL_VIDEO') && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <div className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center">
+                          <Play className="w-4 h-4 text-white fill-white" />
+                        </div>
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>

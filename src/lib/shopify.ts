@@ -30,11 +30,23 @@ export interface ShopifyProduct {
         currencyCode: string;
       };
     };
-    images: {
+    media: {
       edges: Array<{
         node: {
-          url: string;
+          mediaContentType: 'IMAGE' | 'VIDEO' | 'EXTERNAL_VIDEO' | 'MODEL_3D';
           altText: string | null;
+          previewImage?: {
+            url: string;
+          };
+          image?: {
+            url: string;
+          };
+          sources?: Array<{
+            url: string;
+            mimeType: string;
+            format: string;
+          }>;
+          embeddedUrl?: string;
         };
       }>;
     };
@@ -78,11 +90,32 @@ export const STOREFRONT_PRODUCTS_QUERY = `
               currencyCode
             }
           }
-          images(first: 5) {
+          media(first: 10) {
             edges {
               node {
-                url
+                mediaContentType
                 altText
+                previewImage {
+                  url
+                }
+                ... on MediaImage {
+                  id
+                  image {
+                    url
+                  }
+                }
+                ... on Video {
+                  id
+                  sources {
+                    url
+                    mimeType
+                    format
+                  }
+                }
+                ... on ExternalVideo {
+                  id
+                  embeddedUrl
+                }
               }
             }
           }
@@ -156,11 +189,32 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
                 currencyCode
               }
             }
-            images(first: 5) {
+            media(first: 10) {
               edges {
                 node {
-                  url
+                  mediaContentType
                   altText
+                  previewImage {
+                    url
+                  }
+                  ... on MediaImage {
+                    id
+                    image {
+                      url
+                    }
+                  }
+                  ... on Video {
+                    id
+                    sources {
+                      url
+                      mimeType
+                      format
+                    }
+                  }
+                  ... on ExternalVideo {
+                    id
+                    embeddedUrl
+                  }
                 }
               }
             }
@@ -206,11 +260,32 @@ export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
           currencyCode
         }
       }
-      images(first: 5) {
+      media(first: 10) {
         edges {
           node {
-            url
+            mediaContentType
             altText
+            previewImage {
+              url
+            }
+            ... on MediaImage {
+              id
+              image {
+                url
+              }
+            }
+            ... on Video {
+              id
+              sources {
+                url
+                mimeType
+                format
+              }
+            }
+            ... on ExternalVideo {
+              id
+              embeddedUrl
+            }
           }
         }
       }

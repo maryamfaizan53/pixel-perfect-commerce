@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-export const SHOPIFY_API_VERSION = '2025-07';
+export const SHOPIFY_API_VERSION = '2024-04';
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = 'next-shop-apex-c8kgm.myshopify.com';
 export const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
 export const SHOPIFY_STOREFRONT_TOKEN = 'afc3b50fa1a47d2ca42338230468d047';
@@ -34,7 +34,6 @@ export interface ShopifyProduct {
       edges: Array<{
         node: {
           mediaContentType: 'IMAGE' | 'VIDEO' | 'EXTERNAL_VIDEO' | 'MODEL_3D';
-          altText: string | null;
           previewImage?: {
             url: string;
           };
@@ -94,7 +93,6 @@ export const STOREFRONT_PRODUCTS_QUERY = `
             edges {
               node {
                 mediaContentType
-                altText
                 previewImage {
                   url
                 }
@@ -193,7 +191,6 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
               edges {
                 node {
                   mediaContentType
-                  altText
                   previewImage {
                     url
                   }
@@ -264,7 +261,6 @@ export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
         edges {
           node {
             mediaContentType
-            altText
             previewImage {
               url
             }

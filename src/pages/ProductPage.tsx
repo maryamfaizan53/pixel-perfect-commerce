@@ -108,7 +108,6 @@ const PRODUCT_QUERY = `
         edges {
           node {
             mediaContentType
-            altText
             previewImage {
               url
             }
@@ -423,7 +422,7 @@ const ProductPage = () => {
                       return (
                         <motion.img
                           src={imageUrl}
-                          alt={mediaNode.altText || product.title}
+                          alt={product.title}
                           animate={{
                             scale: isInspecting ? 2 : 1,
                             transformOrigin: `${mousePos.x}% ${mousePos.y}%`

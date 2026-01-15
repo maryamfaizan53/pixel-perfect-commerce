@@ -11,41 +11,41 @@ export const Footer = () => {
       {/* Trust Badges Section */}
       <div className="border-b border-white/10">
         <div className="container-custom py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Truck className="w-5 h-5 text-primary" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <div className="flex items-center gap-4 group">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
+                <Truck className="w-6 h-6 text-primary" />
               </div>
-              <div>
-                <p className="font-semibold text-sm">Free Shipping</p>
-                <p className="text-xs text-secondary-foreground/60">On orders above PKR 5,000</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Shield className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm">Secure Payment</p>
-                <p className="text-xs text-secondary-foreground/60">100% secure checkout</p>
+              <div className="space-y-0.5">
+                <p className="font-bold text-sm text-white">Free Shipping</p>
+                <p className="text-xs text-secondary-foreground/60 leading-tight">On orders above PKR 5,000</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-primary" />
+            <div className="flex items-center gap-4 group">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
+                <Shield className="w-6 h-6 text-primary" />
               </div>
-              <div>
-                <p className="font-semibold text-sm">Easy Returns</p>
-                <p className="text-xs text-secondary-foreground/60">7-day return policy</p>
+              <div className="space-y-0.5">
+                <p className="font-bold text-sm text-white">Secure Payment</p>
+                <p className="text-xs text-secondary-foreground/60 leading-tight">100% secure checkout</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Phone className="w-5 h-5 text-primary" />
+            <div className="flex items-center gap-4 group">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
+                <CreditCard className="w-6 h-6 text-primary" />
               </div>
-              <div>
-                <p className="font-semibold text-sm">24/7 Support</p>
-                <p className="text-xs text-secondary-foreground/60">WhatsApp available</p>
+              <div className="space-y-0.5">
+                <p className="font-bold text-sm text-white">Easy Returns</p>
+                <p className="text-xs text-secondary-foreground/60 leading-tight">7-day return policy</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 group">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
+                <Phone className="w-6 h-6 text-primary" />
+              </div>
+              <div className="space-y-0.5">
+                <p className="font-bold text-sm text-white">24/7 Support</p>
+                <p className="text-xs text-secondary-foreground/60 leading-tight">WhatsApp available</p>
               </div>
             </div>
           </div>
@@ -162,14 +162,14 @@ export const Footer = () => {
             <p className="text-sm text-secondary-foreground/70 mb-4">
               Subscribe for exclusive offers and new arrivals.
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Input
                 type="email"
                 placeholder="Enter your email"
-                className="h-11 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-primary"
+                className="h-12 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-primary flex-1"
               />
-              <Button className="h-11 px-5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground">
-                <ArrowRight className="w-4 h-4" />
+              <Button className="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/20">
+                Subscribe
               </Button>
             </div>
 

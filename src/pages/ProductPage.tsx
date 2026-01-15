@@ -369,95 +369,99 @@ const ProductPage = () => {
               className="space-y-4 sm:space-y-8 lg:sticky lg:top-32"
             >
               <div
-                className="aspect-[4/5] rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border border-slate-100 cursor-zoom-in"
-                onMouseMove={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = ((e.clientX - rect.left) / rect.width) * 100;
-                  const y = ((e.clientY - rect.top) / rect.height) * 100;
-                  setMousePos({ x, y });
-                }}
-                onMouseEnter={() => setIsInspecting(true)}
-                onMouseLeave={() => setIsInspecting(false)}
+                className="px-4 sm:px-0"
               >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={selectedImage}
-                    className="w-full h-full relative"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    {(() => {
-                      const mediaNode = product.media.edges[selectedImage]?.node;
-                      if (!mediaNode) return <img src="/placeholder.svg" alt={product.title} className="w-full h-full object-cover" />;
-
-                      if (mediaNode.mediaContentType === 'VIDEO' && mediaNode.sources?.[0]) {
-                        return (
-                          <video
-                            src={mediaNode.sources[0].url}
-                            controls
-                            autoPlay
-                            muted
-                            loop
-                            className="w-full h-full object-cover"
-                            poster={mediaNode.previewImage?.url}
-                          />
-                        );
-                      }
-
-                      if (mediaNode.mediaContentType === 'EXTERNAL_VIDEO' && mediaNode.embeddedUrl) {
-                        return (
-                          <iframe
-                            src={mediaNode.embeddedUrl}
-                            className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                          />
-                        );
-                      }
-
-                      const imageUrl = mediaNode.image?.url || mediaNode.previewImage?.url || "/placeholder.svg";
-
-                      return (
-                        <motion.img
-                          src={imageUrl}
-                          alt={product.title}
-                          animate={{
-                            scale: isInspecting ? 2 : 1,
-                            transformOrigin: `${mousePos.x}% ${mousePos.y}%`
-                          }}
-                          transition={{ duration: 0.1, ease: "linear" }}
-                          className="w-full h-full object-cover"
-                        />
-                      );
-                    })()}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Inspect Mode HUD */}
-                <AnimatePresence>
-                  {isInspecting && (
+                <div
+                  className="aspect-[4/5] rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border border-slate-100 cursor-zoom-in"
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    setMousePos({ x, y });
+                  }}
+                  onMouseEnter={() => setIsInspecting(true)}
+                  onMouseLeave={() => setIsInspecting(false)}
+                >
+                  <AnimatePresence mode="wait">
                     <motion.div
-                      initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                      animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
-                      exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                      className="absolute inset-0 pointer-events-none flex items-center justify-center bg-black/5"
+                      key={selectedImage}
+                      className="w-full h-full relative"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4 }}
                     >
-                      <div className="px-4 py-2 rounded-full bg-white/20 border border-white/30 text-white text-[8px] font-black uppercase tracking-[0.3em] backdrop-blur-md">
-                        High Fidelity Inspection
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      {(() => {
+                        const mediaNode = product.media.edges[selectedImage]?.node;
+                        if (!mediaNode) return <img src="/placeholder.svg" alt={product.title} className="w-full h-full object-cover" />;
 
-                <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 flex flex-col gap-2 sm:gap-3">
-                  <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-dark border-white/10 text-white">
-                    <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-light border-slate-200 text-slate-800 bg-white/70">
-                    <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </Button>
+                        if (mediaNode.mediaContentType === 'VIDEO' && mediaNode.sources?.[0]) {
+                          return (
+                            <video
+                              src={mediaNode.sources[0].url}
+                              controls
+                              autoPlay
+                              muted
+                              loop
+                              className="w-full h-full object-cover"
+                              poster={mediaNode.previewImage?.url}
+                            />
+                          );
+                        }
+
+                        if (mediaNode.mediaContentType === 'EXTERNAL_VIDEO' && mediaNode.embeddedUrl) {
+                          return (
+                            <iframe
+                              src={mediaNode.embeddedUrl}
+                              className="w-full h-full"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          );
+                        }
+
+                        const imageUrl = mediaNode.image?.url || mediaNode.previewImage?.url || "/placeholder.svg";
+
+                        return (
+                          <motion.img
+                            src={imageUrl}
+                            alt={product.title}
+                            animate={{
+                              scale: isInspecting ? 2 : 1,
+                              transformOrigin: `${mousePos.x}% ${mousePos.y}%`
+                            }}
+                            transition={{ duration: 0.1, ease: "linear" }}
+                            className="w-full h-full object-cover"
+                          />
+                        );
+                      })()}
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* Inspect Mode HUD */}
+                  <AnimatePresence>
+                    {isInspecting && (
+                      <motion.div
+                        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
+                        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        className="absolute inset-0 pointer-events-none flex items-center justify-center bg-black/5"
+                      >
+                        <div className="px-4 py-2 rounded-full bg-white/20 border border-white/30 text-white text-[8px] font-black uppercase tracking-[0.3em] backdrop-blur-md">
+                          High Fidelity Inspection
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 flex flex-col gap-2 sm:gap-3">
+                    <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-dark border-white/10 text-white">
+                      <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-light border-slate-200 text-slate-800 bg-white/70">
+                      <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 

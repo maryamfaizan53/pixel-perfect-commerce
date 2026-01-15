@@ -144,6 +144,60 @@ export const STOREFRONT_PRODUCTS_QUERY = `
   }
 `;
 
+export const STOREFRONT_PRODUCTS_SUMMARY_QUERY = `
+  query GetProductsSummary($first: Int!, $query: String) {
+    products(first: $first, query: $query) {
+      edges {
+        node {
+          id
+          title
+          handle
+          availableForSale
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          media(first: 1) {
+            edges {
+              node {
+                mediaContentType
+                previewImage {
+                  url
+                }
+                ... on MediaImage {
+                  id
+                  image {
+                    url
+                  }
+                }
+              }
+            }
+          }
+          variants(first: 1) {
+            edges {
+              node {
+                id
+                title
+                price {
+                  amount
+                  currencyCode
+                }
+                availableForSale
+                selectedOptions {
+                  name
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const STOREFRONT_COLLECTIONS_QUERY = `
   query GetCollections($first: Int!) {
     collections(first: $first) {
@@ -171,14 +225,12 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
       description
       image {
         url
-        altText
       }
       products(first: $first) {
         edges {
           node {
             id
             title
-            description
             handle
             availableForSale
             priceRange {
@@ -187,7 +239,7 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
                 currencyCode
               }
             }
-            media(first: 10) {
+            media(first: 1) {
               edges {
                 node {
                   mediaContentType
@@ -200,22 +252,10 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
                       url
                     }
                   }
-                  ... on Video {
-                    id
-                    sources {
-                      url
-                      mimeType
-                      format
-                    }
-                  }
-                  ... on ExternalVideo {
-                    id
-                    embeddedUrl
-                  }
                 }
               }
             }
-            variants(first: 10) {
+            variants(first: 1) {
               edges {
                 node {
                   id
@@ -231,10 +271,6 @@ export const STOREFRONT_PRODUCTS_BY_COLLECTION_QUERY = `
                   }
                 }
               }
-            }
-            options {
-              name
-              values
             }
           }
         }
@@ -387,8 +423,8 @@ export async function storefrontApiRequest(query: string, variables: any = {}) {
   return data;
 }
 
-export async function fetchProducts(first: number = 20, query?: string): Promise<ShopifyProduct[]> {
-  const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first, query });
+export async function fetchProducts(first: number = 20, query?: string, full: boolean = false): Promise<ShopifyProduct[]> {
+  const data = await storefrontApiRequest(full ? STOREFRONT_PRODUCTS_QUERY : STOREFRONT_PRODUCTS_SUMMARY_QUERY, { first, query });
   return data.data.products.edges;
 }
 

@@ -120,6 +120,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           src={node.media?.edges[0]?.node?.previewImage?.url || node.media?.edges[0]?.node?.image?.url || "/placeholder.svg"}
           alt={node.title}
           width={400}
+          mobileWidth={300}
           quality={80}
           containerClassName="w-full h-full"
           className={`transition-transform duration-500 group-hover:scale-105 ${isHovered && hasVideo ? 'opacity-0' : 'opacity-100'}`}

@@ -10,6 +10,7 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
     containerClassName?: string;
     aspectRatio?: "square" | "video" | "wide" | "auto";
     width?: number;
+    mobileWidth?: number;
     quality?: number;
     priority?: boolean;
     fallbackSrc?: string;
@@ -22,6 +23,7 @@ export const OptimizedImage = ({
     containerClassName,
     aspectRatio = "auto",
     width,
+    mobileWidth,
     quality = 80,
     priority = false,
     fallbackSrc = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
@@ -31,7 +33,7 @@ export const OptimizedImage = ({
     const [error, setError] = useState(false);
     const { ref, inView } = useInView({
         triggerOnce: true,
-        rootMargin: '200px 0px',
+        rootMargin: typeof window !== 'undefined' && window.innerWidth < 768 ? '100px 0px' : '300px 0px',
         skip: priority, // Don't skip if priority is needed immediately
     });
 
@@ -48,19 +50,23 @@ export const OptimizedImage = ({
     const optimizedSrc = React.useMemo(() => {
         if (!src) return src;
 
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+        const targetWidth = isMobile && mobileWidth ? mobileWidth : width;
+        const targetQuality = isMobile ? Math.min(quality, 75) : quality;
+
         let url = src;
         if (src.includes('cdn.shopify.com')) {
             const separator = url.includes('?') ? '&' : '?';
-            if (width) url += `${separator}width=${width}`;
-            if (quality) url += `${url.includes('quality') ? '' : `&quality=${quality}`}`;
+            if (targetWidth) url += `${separator}width=${targetWidth}`;
+            if (targetQuality) url += `${url.includes('quality') ? '' : `&quality=${targetQuality}`}`;
         } else if (src.includes('images.unsplash.com')) {
             const separator = url.includes('?') ? '&' : '?';
-            if (width) url += `${separator}w=${width}`;
-            if (quality) url += `&q=${quality}`;
+            if (targetWidth) url += `${separator}w=${targetWidth}`;
+            if (targetQuality) url += `&q=${targetQuality}`;
             if (!url.includes('auto=format')) url += '&auto=format';
         }
         return url;
-    }, [src, width, quality]);
+    }, [src, width, mobileWidth, quality]);
 
     const shouldShow = priority || inView;
 

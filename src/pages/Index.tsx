@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 const Index = () => {
   const { data: collections = [] } = useQuery({
     queryKey: ['all-collections-rows'],
-    queryFn: () => fetchCollections(20), // Fetch up to 20 categories for the rows
+    queryFn: () => fetchCollections(8), // Fetch 8 categories for better balancing of speed and content
   });
 
   return (

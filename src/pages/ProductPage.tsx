@@ -366,10 +366,10 @@ const ProductPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="space-y-8 sticky top-32"
+              className="space-y-4 sm:space-y-8 lg:sticky lg:top-32"
             >
               <div
-                className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border border-slate-100 cursor-zoom-in"
+                className="aspect-[4/5] rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border border-slate-100 cursor-zoom-in"
                 onMouseMove={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
                   const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -451,23 +451,23 @@ const ProductPage = () => {
                   )}
                 </AnimatePresence>
 
-                <div className="absolute top-6 right-6 z-10 flex flex-col gap-3">
-                  <Button size="icon" variant="ghost" className="w-12 h-12 rounded-2xl glass-dark border-white/10 text-white">
-                    <Share2 className="w-5 h-5" />
+                <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 flex flex-col gap-2 sm:gap-3">
+                  <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-dark border-white/10 text-white">
+                    <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
-                  <Button size="icon" variant="ghost" className="w-12 h-12 rounded-2xl glass-light border-slate-200 text-slate-800 bg-white/70">
-                    <Heart className="w-5 h-5" />
+                  <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-light border-slate-200 text-slate-800 bg-white/70">
+                    <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </div>
               </div>
 
-              <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-none justify-center">
+              <div className="flex gap-3 sm:gap-5 overflow-x-auto pb-4 scrollbar-none justify-start sm:justify-center px-4 sm:px-0">
                 {product.media.edges.map((media: ProductMedia, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-24 h-24 rounded-[1.25rem] overflow-hidden border-2 transition-all duration-500 hover:scale-105 relative ${selectedImage === index
-                      ? "border-primary ring-[6px] ring-primary/10 shadow-xl"
+                    className={`flex-shrink-0 w-16 h-16 sm:w-24 sm:h-24 rounded-xl sm:rounded-[1.25rem] overflow-hidden border-2 transition-all duration-500 hover:scale-105 relative ${selectedImage === index
+                      ? "border-primary ring-[4px] sm:ring-[6px] ring-primary/10 shadow-xl"
                       : "border-transparent opacity-60 hover:opacity-100"
                       }`}
                   >
@@ -497,8 +497,8 @@ const ProductPage = () => {
                 className="space-y-8"
               >
                 {/* 1. Heading */}
-                <div className="space-y-4">
-                  <h1 className="text-base md:text-lg lg:text-xl font-bold text-foreground tracking-tight leading-tight">
+                <div className="space-y-2 sm:space-y-4 pt-4 sm:pt-0">
+                  <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-foreground tracking-tight leading-tight">
                     <span className="block opacity-90">{product.title}</span>
                   </h1>
                   <span className="inline-block px-5 py-2 bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-widest border border-slate-200 rounded-lg">

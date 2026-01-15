@@ -126,7 +126,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       {/* Product Info */}
       <div className="p-4 flex flex-col flex-1">
         <Link to={`/product/${node.handle}`} className="flex-1">
-          <h3 className="text-xs font-medium text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+          <h3 className="text-sm md:text-base font-bold text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
             {node.title}
           </h3>
         </Link>

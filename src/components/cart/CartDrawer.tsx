@@ -92,7 +92,7 @@ export const CartDrawer = () => {
                       Add <span className="font-bold text-primary">{currencyCode} {remainingForFreeShipping.toLocaleString('en-PK')}</span> for free shipping
                     </p>
                     <div className="mt-1.5 sm:mt-2 h-1.5 sm:h-2 bg-white/10 rounded-full overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min((totalPrice / freeShippingThreshold) * 100, 100)}%` }}
@@ -112,7 +112,7 @@ export const CartDrawer = () => {
         <div className="flex flex-col flex-1 min-h-0">
           {items.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-8 space-y-4 sm:space-y-6">
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/5 flex items-center justify-center border border-white/10"
@@ -146,9 +146,9 @@ export const CartDrawer = () => {
                     >
                       {/* Product Image */}
                       <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-slate-800 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                        {item.product.node.images?.edges?.[0]?.node ? (
+                        {item.product.node.media?.edges?.[0]?.node ? (
                           <img
-                            src={item.product.node.images.edges[0].node.url}
+                            src={item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url}
                             alt={item.product.node.title}
                             className="w-full h-full object-cover transition-transform group-hover:scale-105"
                           />
@@ -167,7 +167,7 @@ export const CartDrawer = () => {
                             <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-primary/80 mt-0.5">{item.variantTitle}</p>
                           )}
                         </div>
-                        
+
                         <div className="flex items-center justify-between mt-2 sm:mt-3">
                           {/* Quantity Controls */}
                           <div className="flex items-center gap-1 bg-black/30 rounded-lg p-0.5 border border-white/10">
@@ -256,8 +256,8 @@ export const CartDrawer = () => {
                 </Button>
 
                 {/* View Cart Link */}
-                <Link 
-                  to="/cart" 
+                <Link
+                  to="/cart"
                   onClick={() => setIsOpen(false)}
                   className="block text-center text-xs sm:text-sm text-white/50 hover:text-white transition-colors underline-offset-4 hover:underline"
                 >

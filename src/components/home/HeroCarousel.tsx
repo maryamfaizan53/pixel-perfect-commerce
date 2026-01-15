@@ -462,7 +462,7 @@ export const HeroCarousel = () => {
                     {/* Product Image */}
                     <img
                       src={(() => {
-                        const url = product.node.images.edges[0]?.node?.url || "/placeholder.svg";
+                        const url = product.node.media?.edges[0]?.node?.previewImage?.url || product.node.media?.edges[0]?.node?.image?.url || "/placeholder.svg";
                         const separator = url.includes('?') ? '&' : '?';
                         return `${url}${separator}width=400&quality=80`;
                       })()}

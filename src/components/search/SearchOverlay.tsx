@@ -483,8 +483,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                         onClick={() => handleSelectProduct(p.node.handle)}
                                                         className="group relative aspect-square rounded-3xl overflow-hidden bg-slate-50 border border-slate-100"
                                                     >
-                                                        {p.node.images.edges[0] && (
-                                                            <img src={p.node.images.edges[0].node.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                        {p.node.media?.edges[0] && (
+                                                            <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
                                                         )}
                                                         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
                                                             <span className="text-[8px] font-bold text-white uppercase truncate block">{p.node.title}</span>
@@ -565,8 +565,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                         <div className="absolute top-4 left-4 z-10 px-4 py-2 bg-primary/95 backdrop-blur-md rounded-xl text-[8px] font-black text-white uppercase tracking-[0.3em] flex items-center gap-2 shadow-gold">
                                                             <Trophy className="w-3 h-3" /> Masterpiece Selection
                                                         </div>
-                                                        {spotlightProduct.node.images.edges[0] && (
-                                                            <img src={spotlightProduct.node.images.edges[0].node.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="" />
+                                                        {spotlightProduct.node.media?.edges[0] && (
+                                                            <img src={spotlightProduct.node.media.edges[0].node.previewImage?.url || spotlightProduct.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="" />
                                                         )}
                                                     </div>
                                                     <div className="w-full md:w-1/2 flex flex-col justify-center space-y-6">
@@ -619,8 +619,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                             </div>
 
                                                             <div className="aspect-square rounded-[2rem] overflow-hidden bg-white shadow-sm">
-                                                                {p.node.images.edges[0] && (
-                                                                    <img src={p.node.images.edges[0].node.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                                {p.node.media?.edges[0] && (
+                                                                    <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
                                                                 )}
                                                             </div>
                                                             <div className="flex flex-col gap-3 px-2">

@@ -17,7 +17,7 @@ export const ProductQuickView = ({ product, index }: ProductQuickViewProps) => {
 
     const price = parseFloat(product.node.priceRange.minVariantPrice.amount);
     const currencyCode = product.node.priceRange.minVariantPrice.currencyCode;
-    const image = product.node.images.edges[0]?.node.url || "/placeholder.svg";
+    const image = product.node.media?.edges[0]?.node?.previewImage?.url || product.node.media?.edges[0]?.node?.image?.url || "/placeholder.svg";
     const variant = product.node.variants.edges[0]?.node;
 
     const handleAddToCart = (e: React.MouseEvent) => {

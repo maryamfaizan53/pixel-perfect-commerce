@@ -17,7 +17,7 @@ const CartPage = () => {
     removeItem,
     createCheckout
   } = useCartStore();
-  
+
   const [promoCode, setPromoCode] = useState("");
   const [applyingPromo, setApplyingPromo] = useState(false);
 
@@ -84,7 +84,7 @@ const CartPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/30">
       <Header />
-      
+
       <main className="flex-1 py-4 sm:py-6 md:py-8">
         <div className="container-custom px-3 sm:px-4 md:px-6">
           {/* Page Header */}
@@ -100,7 +100,7 @@ const CartPage = () => {
           </div>
 
           {/* Free Shipping Banner */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20"
@@ -116,7 +116,7 @@ const CartPage = () => {
                       Add <span className="font-bold text-primary">{currencyCode} {remainingForFreeShipping.toLocaleString('en-PK')}</span> more for <span className="font-bold">FREE shipping!</span>
                     </p>
                     <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min((totalPrice / freeShippingThreshold) * 100, 100)}%` }}
@@ -157,9 +157,9 @@ const CartPage = () => {
                       <div className="flex gap-3 sm:gap-4">
                         {/* Image */}
                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-muted rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
-                          {item.product.node.images?.edges?.[0]?.node ? (
+                          {item.product.node.media?.edges?.[0]?.node ? (
                             <img
-                              src={item.product.node.images.edges[0].node.url}
+                              src={item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url}
                               alt={item.product.node.title}
                               className="w-full h-full object-cover"
                             />
@@ -225,9 +225,9 @@ const CartPage = () => {
                       {/* Product */}
                       <div className="col-span-6 flex gap-4">
                         <div className="w-20 h-20 bg-muted rounded-xl overflow-hidden flex-shrink-0">
-                          {item.product.node.images?.edges?.[0]?.node ? (
+                          {item.product.node.media?.edges?.[0]?.node ? (
                             <img
-                              src={item.product.node.images.edges[0].node.url}
+                              src={item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url}
                               alt={item.product.node.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             />
@@ -310,8 +310,8 @@ const CartPage = () => {
                       onChange={(e) => setPromoCode(e.target.value)}
                       className="text-sm"
                     />
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={handleApplyPromo}
                       disabled={applyingPromo}
                       className="flex-shrink-0"

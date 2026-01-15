@@ -117,7 +117,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
         {/* Product Image */}
         <OptimizedImage
-          src={node.images.edges[0]?.node?.url || "/placeholder.svg"}
+          src={node.media?.edges[0]?.node?.previewImage?.url || node.media?.edges[0]?.node?.image?.url || "/placeholder.svg"}
           alt={node.title}
           width={400}
           quality={80}

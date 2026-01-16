@@ -116,8 +116,8 @@ const CategoryPage = () => {
     // Search filter
     const searchLower = searchQuery.toLowerCase().trim();
     const matchesSearch = !searchLower ||
-      product.node.title.toLowerCase().includes(searchLower) ||
-      product.node.description.toLowerCase().includes(searchLower);
+      product.node.title?.toLowerCase().includes(searchLower) ||
+      product.node.description?.toLowerCase().includes(searchLower);
 
     return matchesPrice && matchesStock && matchesSearch;
   });

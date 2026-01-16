@@ -349,15 +349,20 @@ const ProductPage = () => {
           >
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <ChevronRight className="w-3 h-3 opacity-30" />
-            {collection && (
+            <Link to="/" className="hover:text-primary transition-colors">HOMEPAGE</Link>
+            <ChevronRight className="w-3 h-3 opacity-30" />
+            {collection || product.productType ? (
               <>
-                <Link to={`/collections/${collection.handle}`} className="hover:text-primary transition-colors">
-                  {collection.title}
+                <Link
+                  to={collection ? `/collections/${collection.handle}` : "#"}
+                  className="hover:text-primary transition-colors uppercase"
+                >
+                  {collection?.title || product.productType}
                 </Link>
                 <ChevronRight className="w-3 h-3 opacity-30" />
               </>
-            )}
-            <span className="text-slate-900 truncate">{product.title}</span>
+            ) : null}
+            <span className="text-slate-900 truncate uppercase">{product.title}</span>
           </motion.nav>
 
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 xl:gap-32 items-start">

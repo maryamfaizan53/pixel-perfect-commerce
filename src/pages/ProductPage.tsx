@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag, CreditCard, Play } from "lucide-react";
+import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag, CreditCard, Play, RotateCcw, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout } from "@/lib/shopify";
@@ -14,7 +14,7 @@ import { StarRating } from "@/components/reviews/StarRating";
 import { useReviews } from "@/hooks/useReviews";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { Sparkles } from "lucide-react";
+
 
 interface ProductMedia {
   node: {
@@ -390,7 +390,7 @@ const ProductPage = () => {
             <span className="text-slate-900 truncate uppercase">{product.title}</span>
           </motion.nav>
 
-          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 xl:gap-16 items-start">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 xl:gap-28 items-start">
             {/* Gallery Section */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -536,48 +536,55 @@ const ProductPage = () => {
                 className="space-y-8 px-4 sm:px-0"
               >
                 {/* 1. Heading */}
-                <div className="space-y-2 sm:space-y-4 pt-4 sm:pt-0">
-                  <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-foreground tracking-tight leading-tight">
-                    <span className="block opacity-90">{product.title}</span>
+                <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-0">
+                  <div className="flex items-center gap-3">
+                    <span className="w-10 h-[2px] bg-primary/30" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/60">Boutique Exclusive</span>
+                  </div>
+                  <h1 className="text-2xl md:text-3xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] lg:max-w-[90%]">
+                    {product.title}
                   </h1>
-                  <span className="inline-block px-5 py-2 bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-widest border border-slate-200 rounded-lg">
-                    {product.vendor || 'Boutique'} Exclusive
-                  </span>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <Tag className="w-3 h-3" />
+                    {product.vendor} Collection
+                  </p>
                 </div>
 
                 {/* 2. Rates (Price) & Stock */}
-                <div ref={priceRef} className="space-y-6 py-8 border-y border-slate-200/60 transition-all duration-700">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-xl font-bold text-slate-900">{currencyCode}</span>
-                      <span className="text-5xl font-black text-foreground tracking-tight">
+                <div ref={priceRef} className="space-y-8 py-10 border-y border-slate-200/60">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div className="flex items-baseline gap-4">
+                      <span className="text-2xl font-bold text-slate-400">{currencyCode}</span>
+                      <span className="text-5xl lg:text-7xl font-black text-slate-950 tracking-tighter">
                         {price.toLocaleString()}
                       </span>
                     </div>
                     <motion.div
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 rounded-full border border-primary/20"
+                      className="flex items-center gap-2 px-4 py-2 bg-slate-950 rounded-2xl shadow-xl shadow-slate-950/10"
                     >
-                      <Sparkles className="w-3 h-3 text-primary" />
-                      <span className="text-[9px] font-black text-primary uppercase tracking-widest">Highly Coveted</span>
+                      <Sparkles className="w-4 h-4 text-primary fill-primary" />
+                      <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">High Demand</span>
                     </motion.div>
                   </div>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-4">
                     {product.availableForSale ? (
-                      <div className="flex items-center gap-3 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100/50">
+                      <div className="flex items-center gap-3 px-5 py-2.5 bg-emerald-50 rounded-full border border-emerald-100/50 shadow-sm shadow-emerald-500/5">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">In Stock</span>
-                        <div className="w-[1px] h-3 bg-emerald-200 mx-1" />
-                        <span className="text-[10px] font-bold text-emerald-600/70 uppercase">Reserved Boutique Selection</span>
+                        <span className="text-[11px] font-black text-emerald-700 uppercase tracking-[0.15em]">Ready for Dispatch</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-3 px-4 py-2 bg-slate-100 rounded-2xl border border-slate-200/50">
+                      <div className="flex items-center gap-3 px-5 py-2.5 bg-slate-100 rounded-full border border-slate-200/50">
                         <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
-                        <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Reserved</span>
+                        <span className="text-[11px] font-black text-slate-500 uppercase tracking-[0.15em]">Currently Reserved</span>
                       </div>
                     )}
+                    <div className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-full border border-slate-100 shadow-sm">
+                      <Truck className="w-3.5 h-3.5 text-primary" />
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Free Express Shipping</span>
+                    </div>
                   </div>
                 </div>
 
@@ -700,47 +707,54 @@ const ProductPage = () => {
                 </div>
 
                 {/* Trust Signatures (Trust Badges) */}
-                <div className="pt-10 border-t border-slate-100">
-                  <div className="grid grid-cols-2 gap-4 mb-10">
-                    <div className="flex items-center gap-3 p-5 rounded-3xl bg-white border border-slate-100 shadow-sm group hover:border-primary/20 transition-all duration-500">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Truck className="w-6 h-6 text-primary" />
+                <div className="pt-12 border-t border-slate-100">
+                  <div className="grid grid-cols-2 gap-6 mb-12">
+                    <div className="flex items-center gap-4 p-6 rounded-[2rem] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] group hover:border-primary/20 transition-all duration-700">
+                      <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 group-hover:scale-110 transition-all duration-500">
+                        <Shield className="w-7 h-7 text-slate-900 group-hover:text-primary transition-colors" />
                       </div>
                       <div>
-                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-900">Express Delivery</p>
-                        <p className="text-[10px] text-slate-400">Fast courier service</p>
+                        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-950 mb-1">Authentic</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Certified Source</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-5 rounded-3xl bg-white border border-slate-100 shadow-sm group hover:border-primary/20 transition-all duration-500">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Shield className="w-6 h-6 text-primary" />
+                    <div className="flex items-center gap-4 p-6 rounded-[2rem] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] group hover:border-primary/20 transition-all duration-700">
+                      <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 group-hover:scale-110 transition-all duration-500">
+                        <RotateCcw className="w-7 h-7 text-slate-900 group-hover:text-primary transition-colors" />
                       </div>
                       <div>
-                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-900">Secure Checkout</p>
-                        <p className="text-[10px] text-slate-400">Encrypted protection</p>
+                        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-950 mb-1">Exchange</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">7-Day Return</p>
                       </div>
                     </div>
                   </div>
 
                   {/* 4. Description (Moved after Trust Badges) */}
-                  <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Product Details</label>
-                    <p className="text-base text-slate-600 leading-relaxed font-medium">
+                  <div className="space-y-6 bg-slate-50/50 p-8 rounded-[2.5rem] border border-slate-100/50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-1 rounded-full bg-primary" />
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">The Narrative</label>
+                    </div>
+                    <p className="text-lg text-slate-600 leading-relaxed font-medium">
                       {product.description}
                     </p>
                   </div>
 
                   {/* Artisan Signature Block (Subtle below description) */}
-                  <div className="mt-8 sm:mt-12 relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-slate-950 text-white overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] group-hover:w-48 transition-all duration-1000" />
-                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
-                      <div className="space-y-1">
-                        <p className="text-[8px] font-black uppercase tracking-widest text-white/40">Artisan Integrity</p>
-                        <h4 className="text-lg font-bold tracking-tight">Verified Boutique Selection</h4>
+                  <div className="mt-12 relative p-10 rounded-[3rem] bg-slate-950 text-white overflow-hidden group shadow-2xl shadow-slate-950/20">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] opacity-0 group-hover:opacity-100 transition-all duration-1000" />
+                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-0">
+                      <div className="space-y-2">
+                        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-primary/60">Quality Assurance</p>
+                        <h4 className="text-xl font-black tracking-tight flex items-center gap-3">
+                          Verified Boutique Item
+                          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        </h4>
+                        <p className="text-xs text-white/40 font-medium">Hand-curated for the AI Bazar collection</p>
                       </div>
-                      <div className="text-left sm:text-right">
-                        <p className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">Registry No.</p>
-                        <p className="text-xs font-mono tracking-tighter text-primary">AQ-{Math.floor(Math.random() * 90000) + 10000}</p>
+                      <div className="text-left md:text-right px-6 py-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <p className="text-[8px] font-black uppercase tracking-[0.5em] text-white/30 mb-2 whitespace-nowrap">Registry Entry</p>
+                        <p className="text-lg font-mono tracking-tighter text-primary font-black">#AB-{Math.floor(Math.random() * 90000) + 10000}</p>
                       </div>
                     </div>
                   </div>

@@ -365,7 +365,7 @@ const ProductPage = () => {
       <Header />
 
       <main className="flex-1 py-8 sm:py-12 lg:py-24">
-        <div className="container-custom px-0 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-0 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <motion.nav
             initial={{ opacity: 0, x: -20 }}
@@ -390,7 +390,7 @@ const ProductPage = () => {
             <span className="text-slate-900 truncate uppercase">{product.title}</span>
           </motion.nav>
 
-          <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 xl:gap-24 items-start">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 xl:gap-16 items-start">
             {/* Gallery Section */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -402,7 +402,7 @@ const ProductPage = () => {
                 className="px-6 sm:px-0 max-w-[420px] sm:max-w-none mx-auto w-full"
               >
                 <div
-                  className="aspect-square rounded-none sm:rounded-[2rem] overflow-hidden bg-white shadow-xl group relative border-b sm:border border-slate-100 cursor-zoom-in max-w-2xl mx-auto"
+                  className="aspect-square rounded-none sm:rounded-[2rem] overflow-hidden bg-white shadow-xl group relative border-b sm:border border-slate-100 cursor-zoom-in max-w-3xl mx-auto"
                   onMouseMove={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const x = ((e.clientX - rect.left) / rect.width) * 100;

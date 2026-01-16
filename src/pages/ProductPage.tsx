@@ -295,6 +295,31 @@ const ProductPage = () => {
     window.open(url, "_blank");
   };
 
+  const handleShare = async () => {
+    if (!product) return;
+
+    const shareData = {
+      title: product.title,
+      text: `Check out this ${product.title} at Artisan Boutique!`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Link copied to clipboard", {
+          description: "You can now share this masterpiece with others.",
+        });
+      }
+    } catch (error) {
+      if ((error as any).name !== 'AbortError') {
+        console.error('Share failed:', error);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
@@ -460,7 +485,12 @@ const ProductPage = () => {
                   </AnimatePresence>
 
                   <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 flex flex-col gap-2 sm:gap-3">
-                    <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-dark border-white/10 text-white">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={handleShare}
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-dark border-white/10 text-white"
+                    >
                       <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </Button>
                     <Button size="icon" variant="ghost" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl glass-light border-slate-200 text-slate-800 bg-white/70">

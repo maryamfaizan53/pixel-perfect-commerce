@@ -339,13 +339,13 @@ const ProductPage = () => {
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Header />
 
-      <main className="flex-1 py-12 lg:py-24">
-        <div className="container-custom">
+      <main className="flex-1 py-8 sm:py-12 lg:py-24">
+        <div className="container-custom px-0 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <motion.nav
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 text-[10px] mb-8 text-slate-500 font-bold uppercase tracking-widest"
+            className="flex items-center gap-2 text-[10px] mb-6 sm:mb-8 text-slate-500 font-bold uppercase tracking-widest px-4 sm:px-0"
           >
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <ChevronRight className="w-3 h-3 opacity-30" />
@@ -360,7 +360,7 @@ const ProductPage = () => {
             <span className="text-slate-900 truncate">{product.title}</span>
           </motion.nav>
 
-          <div className="grid lg:grid-cols-2 gap-20 xl:gap-32 items-start">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 xl:gap-32 items-start">
             {/* Gallery Section */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -369,10 +369,10 @@ const ProductPage = () => {
               className="space-y-4 sm:space-y-8 lg:sticky lg:top-32"
             >
               <div
-                className="px-4 sm:px-0"
+                className="px-0 sm:px-0"
               >
                 <div
-                  className="aspect-[4/5] rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border border-slate-100 cursor-zoom-in"
+                  className="aspect-square sm:aspect-[4/5] rounded-none sm:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl group relative border-b sm:border border-slate-100 cursor-zoom-in"
                   onMouseMove={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -399,11 +399,11 @@ const ProductPage = () => {
                           return (
                             <video
                               src={mediaNode.sources[0].url}
-                              controls
                               autoPlay
                               muted
                               loop
-                              className="w-full h-full object-cover"
+                              playsInline
+                              className="w-full h-full object-contain bg-slate-900"
                               poster={mediaNode.previewImage?.url}
                             />
                           );
@@ -413,7 +413,7 @@ const ProductPage = () => {
                           return (
                             <iframe
                               src={mediaNode.embeddedUrl}
-                              className="w-full h-full"
+                              className="w-full h-full bg-slate-900"
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                               allowFullScreen
                             />
@@ -498,7 +498,7 @@ const ProductPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="space-y-8"
+                className="space-y-8 px-4 sm:px-0"
               >
                 {/* 1. Heading */}
                 <div className="space-y-2 sm:space-y-4 pt-4 sm:pt-0">

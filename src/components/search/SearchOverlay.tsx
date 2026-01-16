@@ -31,8 +31,8 @@ const priceRanges = [
 ];
 
 const getAILabel = (product: ShopifyProduct) => {
-    const handle = product.node.handle.toLowerCase();
-    const title = product.node.title.toLowerCase();
+    const handle = product.node.handle?.toLowerCase() || "";
+    const title = product.node.title?.toLowerCase() || "";
     const price = parseFloat(product.node.priceRange.minVariantPrice.amount);
 
     if (price > 40000) return { text: "Investment Grade", icon: Trophy, color: "text-amber-500 bg-amber-50" };
@@ -118,8 +118,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
         if (search.trim()) {
             const lowerQuery = search.toLowerCase();
             results = results.filter(p =>
-                p.node.title.toLowerCase().includes(lowerQuery) ||
-                p.node.description.toLowerCase().includes(lowerQuery)
+                p.node.title?.toLowerCase().includes(lowerQuery) ||
+                p.node.description?.toLowerCase().includes(lowerQuery)
             );
         } else if (!selectedCategory && !selectedPriceRange && !inStockOnly) {
             return [];
@@ -128,7 +128,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
         // Category Filter
         if (selectedCategory) {
             results = results.filter(p =>
-                p.node.handle.toLowerCase().includes(selectedCategory.toLowerCase())
+                p.node.handle?.toLowerCase().includes(selectedCategory.toLowerCase())
             );
         }
 

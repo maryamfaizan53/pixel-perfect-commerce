@@ -390,7 +390,7 @@ const ProductPage = () => {
             <span className="text-slate-900 truncate uppercase">{product.title}</span>
           </motion.nav>
 
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 xl:gap-16 items-start">
+          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 xl:gap-16 items-start">
             {/* Gallery Section */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -402,7 +402,7 @@ const ProductPage = () => {
                 className="px-6 sm:px-0 max-w-[420px] sm:max-w-none mx-auto w-full"
               >
                 <div
-                  className="aspect-square rounded-none sm:rounded-[2rem] overflow-hidden bg-white shadow-xl group relative border-b sm:border border-slate-100 cursor-zoom-in max-w-3xl mx-auto"
+                  className="aspect-square rounded-none sm:rounded-[2rem] overflow-hidden bg-white shadow-xl group relative border-b sm:border border-slate-100 cursor-zoom-in max-w-3xl lg:max-w-xl mx-auto"
                   onMouseMove={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const x = ((e.clientX - rect.left) / rect.width) * 100;

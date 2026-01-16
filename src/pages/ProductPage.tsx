@@ -390,7 +390,7 @@ const ProductPage = () => {
             <span className="text-slate-900 truncate uppercase">{product.title}</span>
           </motion.nav>
 
-          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-10 lg:gap-16 xl:gap-24 items-start">
+          <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 xl:gap-24 items-start">
             {/* Gallery Section */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -399,7 +399,7 @@ const ProductPage = () => {
               className="space-y-4 sm:space-y-8 lg:sticky lg:top-32"
             >
               <div
-                className="px-8 sm:px-0 max-w-[400px] mx-auto w-full"
+                className="px-6 sm:px-0 max-w-[420px] sm:max-w-none mx-auto w-full"
               >
                 <div
                   className="aspect-square rounded-none sm:rounded-[2rem] overflow-hidden bg-white shadow-xl group relative border-b sm:border border-slate-100 cursor-zoom-in max-w-2xl mx-auto"
@@ -500,12 +500,12 @@ const ProductPage = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-4 scrollbar-none justify-start sm:justify-center px-8 sm:px-0">
+              <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-4 scrollbar-none justify-start sm:justify-center px-6 sm:px-0">
                 {product.media.edges.map((media: ProductMedia, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-12 h-12 sm:w-20 sm:h-20 rounded-lg sm:rounded-2xl overflow-hidden border-2 transition-all duration-500 hover:scale-105 relative ${selectedImage === index
+                    className={`flex-shrink-0 w-12 h-12 sm:w-24 sm:h-24 rounded-lg sm:rounded-2xl overflow-hidden border-2 transition-all duration-500 hover:scale-105 relative ${selectedImage === index
                       ? "border-primary ring-[3px] sm:ring-[4px] ring-primary/10 shadow-lg"
                       : "border-transparent opacity-60 hover:opacity-100"
                       }`}

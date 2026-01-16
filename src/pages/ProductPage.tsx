@@ -345,7 +345,7 @@ const ProductPage = () => {
           <div className="text-center max-w-md mx-auto px-4">
             <h1 className="text-5xl font-black mb-6 tracking-tighter">Lost in Space</h1>
             <p className="text-muted-foreground mb-10 text-lg">The product you're looking for has vanished into another dimension.</p>
-            <Button asChild size="lg" className="h-16 px-10 rounded-2xl btn-premium">
+            <Button asChild size="lg" className="h-16 px-10 rounded-2xl bg-primary text-white">
               <Link to="/"><ArrowLeft className="mr-2 w-5 h-5" /> Return Home</Link>
             </Button>
           </div>

@@ -43,7 +43,7 @@ const Index = () => {
               </h2>
               <div className="w-24 h-1.5 bg-primary rounded-full mb-6" />
               <p className="text-slate-600 max-w-2xl font-medium">
-                Browse our entire collection of premium products across all categories.
+                Browse our entire collection of affordable products at the lowest prices across all categories.
               </p>
             </div>
             <FeaturedProducts />

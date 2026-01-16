@@ -11,7 +11,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
 
   const product = {
-    name: "Premium Stainless Steel Cookware Set",
+    name: "Affordable Stainless Steel Cookware Set",
     price: 129.99,
     originalPrice: 199.99,
     rating: 4.5,
@@ -22,7 +22,7 @@ const ProductDetail = () => {
       "https://images.unsplash.com/photo-1585515320310-259814833379?w=800&h=800&fit=crop",
       "https://images.unsplash.com/photo-1584990347449-c8f12e82fa77?w=800&h=800&fit=crop",
     ],
-    description: "Transform your cooking experience with our premium stainless steel cookware set. Featuring professional-grade construction, even heat distribution, and elegant design that will elevate any kitchen.",
+    description: "Transform your cooking experience with our affordable stainless steel cookware set. Featuring professional-grade construction, even heat distribution, and elegant design that will elevate any kitchen at the lowest price.",
     features: [
       "Professional-grade 18/10 stainless steel construction",
       "Triple-layer aluminum core for even heat distribution",

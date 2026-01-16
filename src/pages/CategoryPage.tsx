@@ -189,7 +189,7 @@ const CategoryPage = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Curation</span>
-                  <span className="text-2xl sm:text-3xl font-black text-white">Top Tier</span>
+                  <span className="text-2xl sm:text-3xl font-black text-white">Lowest Prices</span>
                 </div>
               </div>
             </motion.div>

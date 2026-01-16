@@ -68,7 +68,7 @@ export const Footer = () => {
               </div>
             </Link>
             <p className="text-secondary-foreground/70 text-sm leading-relaxed max-w-sm">
-              Your trusted destination for premium products at the best prices. Quality guaranteed with fast delivery across Pakistan.
+              Your trusted destination for affordable products at the lowest prices. Quality guaranteed with fast delivery across Pakistan.
             </p>
 
             {/* Contact Info */}

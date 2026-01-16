@@ -11,8 +11,8 @@ export const Footer = () => {
       {/* Trust Badges Section */}
       <div className="border-b border-white/10">
         <div className="container-custom py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div className="flex items-center gap-4 group">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 justify-items-center sm:justify-items-start">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 group max-w-[240px] sm:max-w-none">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
                 <Truck className="w-6 h-6 text-primary" />
               </div>
@@ -21,7 +21,7 @@ export const Footer = () => {
                 <p className="text-xs text-secondary-foreground/60 leading-tight">On orders above PKR 5,000</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 group">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 group max-w-[240px] sm:max-w-none">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
                 <Shield className="w-6 h-6 text-primary" />
               </div>
@@ -30,7 +30,7 @@ export const Footer = () => {
                 <p className="text-xs text-secondary-foreground/60 leading-tight">100% secure checkout</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 group">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 group max-w-[240px] sm:max-w-none">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
                 <CreditCard className="w-6 h-6 text-primary" />
               </div>
@@ -39,7 +39,7 @@ export const Footer = () => {
                 <p className="text-xs text-secondary-foreground/60 leading-tight">7-day return policy</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 group">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 group max-w-[240px] sm:max-w-none">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/20">
                 <Phone className="w-6 h-6 text-primary" />
               </div>
@@ -54,9 +54,9 @@ export const Footer = () => {
 
       {/* Main Footer Content */}
       <div className="container-custom py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 text-center md:text-left justify-items-center md:justify-items-start">
           {/* Brand Column */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-4 space-y-6 flex flex-col items-center md:items-start">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-11 h-11 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
                 <ShoppingBag className="w-5 h-5 text-primary-foreground" />
@@ -92,7 +92,7 @@ export const Footer = () => {
             </div>
 
             {/* Social Links */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-2 justify-center md:justify-start">
               <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-300">
                 <Facebook className="w-4 h-4" />
               </a>
@@ -159,10 +159,10 @@ export const Footer = () => {
           {/* Newsletter */}
           <div className="lg:col-span-4">
             <h3 className="font-semibold text-white mb-4">Stay Updated</h3>
-            <p className="text-sm text-secondary-foreground/70 mb-4">
+            <p className="text-sm text-secondary-foreground/70 mb-4 max-w-xs mx-auto md:mx-0">
               Subscribe for exclusive offers and new arrivals.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3 w-full max-w-sm mx-auto md:mx-0">
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -176,7 +176,7 @@ export const Footer = () => {
             {/* Payment Methods */}
             <div className="mt-8">
               <p className="text-xs text-secondary-foreground/50 mb-3">Accepted Payments</p>
-              <div className="flex items-center gap-4 text-xs font-medium text-secondary-foreground/60">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs font-medium text-secondary-foreground/60">
                 <span>Visa</span>
                 <span>Mastercard</span>
                 <span>JazzCash</span>

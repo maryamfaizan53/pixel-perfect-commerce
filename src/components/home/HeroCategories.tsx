@@ -94,6 +94,7 @@ export const HeroCategories = () => {
                                         alt={col.node.title}
                                         width={600}
                                         quality={75}
+                                        priority={index < 2}
                                         containerClassName="absolute inset-0"
                                         className="group-hover:scale-110 transition-all duration-700"
                                     />

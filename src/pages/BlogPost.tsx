@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { getBlogPostBySlug, blogPosts } from "@/data/blogData";
 import { Calendar, Clock, User, ArrowLeft, Share2, Tag, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
-import ReactMarkdown from "react-markdown";
+import { lazy, Suspense } from "react";
+const ReactMarkdownLazy = lazy(() => import("react-markdown"));
 
 const BlogPost = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -112,7 +113,9 @@ const BlogPost = () => {
                     <div className="max-w-4xl mx-auto">
                         <article className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16">
                             <div className="prose prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-h1:text-4xl prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-slate-700 prose-p:leading-relaxed prose-p:mb-6 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-strong:font-bold prose-ul:my-6 prose-li:my-2 prose-li:text-slate-700">
-                                <ReactMarkdown>{post.content}</ReactMarkdown>
+                                <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+                                    <ReactMarkdownLazy>{post.content}</ReactMarkdownLazy>
+                                </Suspense>
                             </div>
 
                             {/* Tags */}

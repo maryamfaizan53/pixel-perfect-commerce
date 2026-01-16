@@ -1,13 +1,12 @@
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { HeroCategories } from "@/components/home/HeroCategories";
 import { CategoryProductRow } from "@/components/home/CategoryProductRow";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { SEOContent } from "@/components/home/SEOContent";
-
 import { fetchCollections } from "@/lib/shopify";
 import { useQuery } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
+const SEOContentLazy = lazy(() => import("@/components/home/SEOContent").then(m => ({ default: m.SEOContent })));
+const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ default: m.Footer })));
 
 const Index = () => {
   const { data: collections = [] } = useQuery({
@@ -50,8 +49,10 @@ const Index = () => {
           </div>
         </section>
       </main>
-      <SEOContent />
-      <Footer />
+      <Suspense fallback={null}>
+        <SEOContentLazy />
+        <FooterLazy />
+      </Suspense>
     </div>
   );
 };

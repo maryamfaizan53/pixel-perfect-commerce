@@ -48,6 +48,18 @@
   <link rel="dns-prefetch" href="https://cdn.shopify.com">
   <link rel="dns-prefetch" href="https://images.unsplash.com">
 
+  <!-- Critical Font Preloading -->
+  <link rel="preload" href="https://fonts.gstatic.com/s/outfit/v11/QGYsz_OBy1qX_p_VwBvX.v0" as="font" type="font/woff2"
+    crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrX2bDkgZ9mqAD.v0" as="font" type="font/woff2"
+    crossorigin>
+
+  <!-- LCP Image Preloading (Hero Categories) -->
+  <link rel="preload" as="image" href="/household.png" imagesrcset="/household.png 400w, /household.png 800w"
+    imagesizes="50vw">
+  <link rel="preload" as="image" href="/home-living.png" imagesrcset="/home-living.png 400w, /home-living.png 800w"
+    imagesizes="50vw">
+
   <!-- Preloads migrated to proper resource hints or removed if unused immediately -->
 
   <!-- Font Loading Optimization -->

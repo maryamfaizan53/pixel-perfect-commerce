@@ -36,7 +36,7 @@ export const HeroCategories = () => {
 
     if (isLoading) {
         return (
-            <section className="pt-24 pb-12 bg-secondary">
+            <section className="pt-32 pb-12 bg-secondary">
                 <div className="container-custom">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                         {[...Array(6)].map((_, i) => (
@@ -49,7 +49,7 @@ export const HeroCategories = () => {
     }
 
     return (
-        <section className="relative pt-24 pb-16 overflow-hidden bg-secondary">
+        <section className="relative pt-32 pb-16 overflow-hidden bg-secondary">
             {/* Background decoration */}
             <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.2),transparent_70%)]" />

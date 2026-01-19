@@ -149,7 +149,7 @@ const CategoryPage = () => {
 
       <main className="flex-1">
         {/* Dynamic Category Header */}
-        <section className="relative pt-24 pb-32 overflow-hidden bg-slate-900 border-b border-white/5">
+        <section className="relative pt-32 pb-32 overflow-hidden bg-slate-900 border-b border-white/5">
           {/* Collection Background Image */}
           {collectionData?.image?.url && (
             <div className="absolute inset-0 z-0">

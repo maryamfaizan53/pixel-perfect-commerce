@@ -364,7 +364,7 @@ const ProductPage = () => {
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-12 lg:py-24">
+      <main className="flex-1 pt-32 sm:pt-36 lg:pt-40 pb-8 sm:pb-12 lg:pb-24">
         <div className="max-w-[1400px] mx-auto px-0 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <motion.nav

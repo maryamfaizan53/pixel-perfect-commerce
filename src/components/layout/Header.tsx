@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/stores/cartStore";
+import { AnnouncementBar } from "./AnnouncementBar";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -51,6 +52,7 @@ export const Header = () => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-shadow duration-300 ${scrolled ? 'shadow-lg' : ''}`}>
+      <AnnouncementBar />
       {/* Top Bar - Dark themed */}
       <div className="bg-secondary text-secondary-foreground">
         <div className="container-custom">

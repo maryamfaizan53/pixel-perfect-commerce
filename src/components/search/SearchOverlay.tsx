@@ -101,9 +101,35 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
         if (isOpen) loadRecent();
     }, [isOpen]);
 
+    // Debounced Search Handler
+    useEffect(() => {
+        const performSearch = async () => {
+            setLoading(true);
+            try {
+                // If search is empty, fetch general discovery products (no query)
+                // If search has text, fetch matches from Shopify (query provided)
+                const query = search.trim() ? search : undefined;
+                const limit = query ? 50 : 20; // 50 results for search, 20 for discovery (faster load)
+
+                const data = await fetchProducts(limit, query);
+                setProducts(data);
+            } catch (e) {
+                console.error("Search failed", e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const timeoutId = setTimeout(performSearch, 300); // 300ms debounce
+        return () => clearTimeout(timeoutId);
+    }, [search]);
+
     // Extract unique categories from products
     const categories = useMemo(() => {
         const cats = new Set<string>();
+        // Only generate categories from the initial discovery set if possible, 
+        // but since we refresh products on search, we might want to keep a separate "discoveryProducts" state if we want persistent categories.
+        // For now, dynamic categories based on results are also fine.
         products.forEach(p => {
             const handlePart = p.node.handle.split('-')[0];
             if (handlePart) cats.add(handlePart.charAt(0).toUpperCase() + handlePart.slice(1));
@@ -114,7 +140,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
     const filteredResults = useMemo(() => {
         let results = products;
 
-        // Text Search with Weighted Scoring
+        // Apply Client-Side Ranking to Server-Side Results
+        // Shopify returns matches, but we want to ensure "Best Match" logic is applied visually
         if (search.trim()) {
             const lowerQuery = search.toLowerCase();
             const terms = lowerQuery.split(" ").filter(t => t.length > 0);
@@ -126,6 +153,9 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                     const description = p.node.description?.toLowerCase() || "";
                     const handle = p.node.handle?.toLowerCase() || "";
                     const category = handle.split('-')[0] || "";
+
+                    // Base score for being returned by Shopify (it matched something)
+                    score += 1;
 
                     // Exact match bonus
                     if (title === lowerQuery) score += 100;
@@ -140,14 +170,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
 
                     return { product: p, score };
                 })
-                .filter(item => item.score > 0)
                 .sort((a, b) => b.score - a.score)
                 .map(item => item.product);
-
-        } else if (!selectedCategory && !selectedPriceRange && !inStockOnly) {
-            // If no search and no filters, return everything for "Discovery" browse capability
-            // We will handle the "Search Mode" vs "Discovery Mode" in the render
-            return results;
         }
 
         // Category Filter
@@ -170,7 +194,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
             results = results.filter(p => p.node.availableForSale);
         }
 
-        // Sorting (only apply if not searching by text, or if user explicitly sorted)
+        // Sorting
         if (sortBy !== 'featured' || !search.trim()) {
             results = [...results].sort((a, b) => {
                 const priceA = parseFloat(a.node.priceRange.minVariantPrice.amount);
@@ -183,7 +207,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
             });
         }
 
-        return results.slice(0, 50); // Increased limit for better scroll
+        return results;
     }, [search, products, selectedCategory, sortBy, selectedPriceRange, inStockOnly]);
 
     const spotlightProduct = useMemo(() => {
@@ -226,18 +250,6 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
             recognitionRef.current.onerror = () => setIsListening(false);
             recognitionRef.current.onend = () => setIsListening(false);
         }
-    }, []);
-
-    useEffect(() => {
-        const loadProducts = async () => {
-            try {
-                const data = await fetchProducts(100); // Increased fetch limit
-                setProducts(data);
-            } catch (e) {
-                console.error('Search preload failed', e);
-            }
-        };
-        loadProducts();
     }, []);
 
     const handleSelectProduct = (handle: string) => {

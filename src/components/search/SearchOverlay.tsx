@@ -114,15 +114,40 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
     const filteredResults = useMemo(() => {
         let results = products;
 
-        // Text Search
+        // Text Search with Weighted Scoring
         if (search.trim()) {
             const lowerQuery = search.toLowerCase();
-            results = results.filter(p =>
-                p.node.title?.toLowerCase().includes(lowerQuery) ||
-                p.node.description?.toLowerCase().includes(lowerQuery)
-            );
+            const terms = lowerQuery.split(" ").filter(t => t.length > 0);
+
+            results = results
+                .map(p => {
+                    let score = 0;
+                    const title = p.node.title?.toLowerCase() || "";
+                    const description = p.node.description?.toLowerCase() || "";
+                    const handle = p.node.handle?.toLowerCase() || "";
+                    const category = handle.split('-')[0] || "";
+
+                    // Exact match bonus
+                    if (title === lowerQuery) score += 100;
+
+                    terms.forEach(term => {
+                        if (title.includes(term)) score += 10;
+                        if (title.startsWith(term)) score += 5;
+                        if (category.includes(term)) score += 8;
+                        if (handle.includes(term)) score += 5;
+                        if (description.includes(term)) score += 2;
+                    });
+
+                    return { product: p, score };
+                })
+                .filter(item => item.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .map(item => item.product);
+
         } else if (!selectedCategory && !selectedPriceRange && !inStockOnly) {
-            return [];
+            // If no search and no filters, return everything for "Discovery" browse capability
+            // We will handle the "Search Mode" vs "Discovery Mode" in the render
+            return results;
         }
 
         // Category Filter
@@ -145,18 +170,20 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
             results = results.filter(p => p.node.availableForSale);
         }
 
-        // Sorting
-        results = [...results].sort((a, b) => {
-            const priceA = parseFloat(a.node.priceRange.minVariantPrice.amount);
-            const priceB = parseFloat(b.node.priceRange.minVariantPrice.amount);
+        // Sorting (only apply if not searching by text, or if user explicitly sorted)
+        if (sortBy !== 'featured' || !search.trim()) {
+            results = [...results].sort((a, b) => {
+                const priceA = parseFloat(a.node.priceRange.minVariantPrice.amount);
+                const priceB = parseFloat(b.node.priceRange.minVariantPrice.amount);
 
-            if (sortBy === "price-asc") return priceA - priceB;
-            if (sortBy === "price-desc") return priceB - priceA;
-            if (sortBy === "newest") return b.node.handle.includes('new') ? 1 : -1;
-            return 0;
-        });
+                if (sortBy === "price-asc") return priceA - priceB;
+                if (sortBy === "price-desc") return priceB - priceA;
+                if (sortBy === "newest") return b.node.handle.includes('new') ? 1 : -1;
+                return 0;
+            });
+        }
 
-        return results.slice(0, 16);
+        return results.slice(0, 50); // Increased limit for better scroll
     }, [search, products, selectedCategory, sortBy, selectedPriceRange, inStockOnly]);
 
     const spotlightProduct = useMemo(() => {
@@ -204,7 +231,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
     useEffect(() => {
         const loadProducts = async () => {
             try {
-                const data = await fetchProducts(250);
+                const data = await fetchProducts(100); // Increased fetch limit
                 setProducts(data);
             } catch (e) {
                 console.error('Search preload failed', e);
@@ -281,6 +308,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
         }
     };
 
+    const isDiscovery = !search.trim() && !selectedCategory && !selectedPriceRange && !inStockOnly;
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -289,12 +318,12 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     onKeyDown={handleKeyDown}
-                    className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-2xl flex flex-col font-inter"
+                    className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-3xl flex flex-col font-inter scrollbar-hide"
                 >
                     {/* Header */}
-                    <div className="container-custom h-24 flex items-center justify-between border-b border-slate-100 bg-white/50 sticky top-0 z-10">
+                    <div className="container-custom h-24 flex items-center justify-between border-b border-slate-100/50 bg-white/50 backdrop-blur-md sticky top-0 z-20">
                         <div className="flex items-center gap-6">
-                            <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-gold">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-gold hover:shadow-gold-hover transition-shadow duration-500">
                                 <Sparkles className="w-6 h-6 text-white" />
                             </div>
                             <div className="flex flex-col">
@@ -307,7 +336,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`rounded-2xl px-6 h-12 text-[10px] font-black uppercase tracking-widest transition-all ${showFilters ? 'bg-primary text-white shadow-gold' : 'bg-slate-50 border border-slate-100'}`}
+                                className={`rounded-2xl px-6 h-12 text-[10px] font-black uppercase tracking-widest transition-all ${showFilters ? 'bg-primary text-white shadow-gold' : 'bg-slate-50 border border-slate-100/50 hover:bg-slate-100'}`}
                             >
                                 <SlidersHorizontal className="w-3.5 h-3.5 mr-2" />
                                 {showFilters ? 'Hide Advanced' : 'Tailor Results'}
@@ -318,17 +347,17 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto pt-16 pb-32">
-                        <div className="container-custom max-w-7xl">
+                    <div className="flex-1 overflow-y-auto overflow-x-hidden pt-12 pb-32">
+                        <div className="container-custom max-w-[1600px]">
                             {/* Cinematic Input Area */}
-                            <div className="relative mb-16 group">
-                                <div className="absolute -left-4 top-1/2 -translate-y-1/2 p-4">
-                                    <Search className="w-10 h-10 text-primary transition-transform group-focus-within:scale-110" />
+                            <div className="relative mb-16 group max-w-5xl mx-auto px-4">
+                                <div className="absolute -left-8 top-1/2 -translate-y-1/2 p-4">
+                                    <Search className="w-10 h-10 text-primary transition-transform group-focus-within:scale-110 duration-500" />
                                 </div>
 
                                 <div className="relative">
                                     {/* Typeahead Suggestion Background */}
-                                    <div className="absolute left-16 top-1/2 -translate-y-1/2 text-4xl md:text-7xl font-black text-slate-100 pointer-events-none select-none tracking-tighter truncate w-full">
+                                    <div className="absolute left-16 top-1/2 -translate-y-1/2 text-4xl md:text-6xl font-black text-slate-200 pointer-events-none select-none tracking-tighter truncate w-full opacity-50">
                                         {suggestion && search && suggestion.toLowerCase().startsWith(search.toLowerCase()) && (
                                             <>
                                                 <span className="opacity-0">{search}</span>
@@ -340,10 +369,10 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                     <input
                                         ref={inputRef}
                                         type="text"
-                                        placeholder="What are you seeking?"
+                                        placeholder={isDiscovery ? "Discover Excellence..." : "Search..."}
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
-                                        className="w-full bg-transparent border-none text-4xl md:text-7xl font-black pl-16 pr-24 outline-none placeholder:text-slate-100 tracking-tighter text-slate-900 caret-primary"
+                                        className="w-full bg-transparent border-none text-4xl md:text-6xl font-black pl-16 pr-24 outline-none placeholder:text-slate-200/50 tracking-tighter text-slate-900 caret-primary"
                                     />
                                 </div>
 
@@ -382,7 +411,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                         initial={{ height: 0, opacity: 0, y: -20 }}
                                         animate={{ height: "auto", opacity: 1, y: 0 }}
                                         exit={{ height: 0, opacity: 0, y: -20 }}
-                                        className="overflow-hidden mb-20"
+                                        className="overflow-hidden mb-20 max-w-7xl mx-auto"
                                     >
                                         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 p-10 bg-slate-50/50 backdrop-blur-md rounded-[3rem] border border-slate-100 shadow-inner">
                                             <div className="space-y-6">
@@ -468,43 +497,20 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                 )}
                             </AnimatePresence>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-                                {/* Left side: History & Trending */}
-                                <div className="lg:col-span-4 space-y-16">
-                                    {recentlyViewed.length > 0 && (
-                                        <div className="space-y-6 pt-4">
-                                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 flex items-center gap-3">
-                                                <Eye className="w-4 h-4 text-primary" /> Recently Admired
-                                            </h3>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                {recentlyViewed.map((p, i) => (
-                                                    <button
-                                                        key={p.node.id}
-                                                        onClick={() => handleSelectProduct(p.node.handle)}
-                                                        className="group relative aspect-square rounded-3xl overflow-hidden bg-slate-50 border border-slate-100"
-                                                    >
-                                                        {p.node.media?.edges[0] && (
-                                                            <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
-                                                        )}
-                                                        <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                                                            <span className="text-[8px] font-bold text-white uppercase truncate block">{p.node.title}</span>
-                                                        </div>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="space-y-8">
+                            {/* Main Layout Area */}
+                            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
+                                {/* Left Sidebar - Categories & History */}
+                                <div className="lg:w-64 space-y-12 shrink-0">
+                                    <div className="space-y-6">
                                         <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 flex items-center gap-3">
-                                            <TrendingUp className="w-4 h-4 text-primary" /> Curated Discoveries
+                                            <TrendingUp className="w-4 h-4 text-primary" /> Collections
                                         </h3>
-                                        <div className="flex flex-wrap gap-3">
+                                        <div className="flex flex-wrap lg:flex-col gap-2">
                                             {categories.map(cat => (
                                                 <button
                                                     key={cat}
                                                     onClick={() => setSelectedCategory(cat === selectedCategory ? null : cat)}
-                                                    className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedCategory === cat ? 'bg-primary text-white shadow-gold border-primary' : 'bg-slate-50 border border-slate-100 text-slate-500 hover:bg-white hover:border-primary/20'}`}
+                                                    className={`px-5 py-3 lg:w-full text-left rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${selectedCategory === cat ? 'bg-primary text-white shadow-gold scale-105' : 'bg-white border border-slate-100 text-slate-500 hover:bg-slate-50 hover:border-slate-300'}`}
                                                 >
                                                     {cat}
                                                 </button>
@@ -516,15 +522,14 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                         <div className="space-y-6">
                                             <div className="flex items-center justify-between">
                                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 flex items-center gap-3">
-                                                    <Clock className="w-4 h-4 text-primary" /> Recent Enquiries
+                                                    <Clock className="w-4 h-4 text-primary" /> Recent
                                                 </h3>
                                                 <button onClick={clearHistory} className="text-[8px] font-black uppercase tracking-widest text-primary hover:underline">Flush</button>
                                             </div>
-                                            <div className="space-y-2">
+                                            <div className="flex flex-wrap gap-2">
                                                 {searchHistory.map((term, i) => (
-                                                    <button key={i} onClick={() => setSearch(term)} className="w-full flex items-center justify-between p-5 rounded-[2rem] bg-slate-50 hover:bg-white hover:shadow-premium group transition-all text-left">
-                                                        <span className="text-sm font-bold text-slate-600 group-hover:text-primary transition-colors">{term}</span>
-                                                        <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all text-primary" />
+                                                    <button key={i} onClick={() => setSearch(term)} className="px-4 py-2 rounded-xl bg-slate-50 hover:bg-white hover:shadow-premium border border-transparent hover:border-slate-100 text-xs font-bold text-slate-600 transition-all">
+                                                        {term}
                                                     </button>
                                                 ))}
                                             </div>
@@ -532,145 +537,170 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                     )}
                                 </div>
 
-                                {/* Right side: Cinematic Dynamic Results */}
-                                <div className="lg:col-span-8">
-                                    <div className="space-y-12">
-                                        <div className="flex items-center justify-between pb-6 border-b border-slate-100">
-                                            <div className="flex flex-col gap-1">
-                                                <h2 className="text-xl font-black text-slate-900 tracking-tight">
-                                                    {search || selectedCategory || selectedPriceRange || inStockOnly ? (
-                                                        <span>Discovery results <span className="text-primary">({filteredResults.length})</span></span>
-                                                    ) : (
-                                                        "Elite Curations"
-                                                    )}
-                                                </h2>
-                                                <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-slate-400">
-                                                    <Info className="w-3 h-3 text-primary" />
-                                                    <span>Proprietary Search Algorithm Active</span>
+                                {/* Right Content Area */}
+                                <div className="flex-1 min-w-0">
+                                    {/* Discovery Header */}
+                                    <div className="flex items-end justify-between mb-8 pb-4 border-b border-slate-100">
+                                        <div>
+                                            <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">
+                                                {isDiscovery ? "Trending Now" : `Search Results (${filteredResults.length})`}
+                                            </h2>
+                                            <p className="text-slate-400 text-sm font-medium">
+                                                {isDiscovery ? "Curated selections based on global trends" : `Showing results for "${search}"`}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {isDiscovery ? (
+                                        <div className="space-y-16">
+                                            {/* Trending Carousel Scroller */}
+                                            <div className="relative -mx-4 lg:-mx-0">
+                                                <div className="flex overflow-x-auto gap-6 px-4 lg:px-0 pb-8 snap-x scrollbar-hide">
+                                                    {filteredResults.slice(0, 5).map((p, i) => (
+                                                        <motion.div
+                                                            key={p.node.id}
+                                                            initial={{ opacity: 0, x: 20 }}
+                                                            animate={{ opacity: 1, x: 0 }}
+                                                            transition={{ delay: i * 0.1 }}
+                                                            onClick={() => handleSelectProduct(p.node.handle)}
+                                                            className="snap-start shrink-0 w-[280px] group cursor-pointer"
+                                                        >
+                                                            <div className="aspect-[4/5] rounded-[2rem] overflow-hidden bg-white mb-4 shadow-sm relative">
+                                                                <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest shadow-sm">
+                                                                    Trend #{i + 1}
+                                                                </div>
+                                                                {p.node.media?.edges[0] && (
+                                                                    <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                                )}
+                                                            </div>
+                                                            <h4 className="text-sm font-black text-slate-900 line-clamp-1">{p.node.title}</h4>
+                                                            <p className="text-slate-500 text-xs font-medium">
+                                                                <span className="text-primary font-bold mr-1">{p.node.priceRange.minVariantPrice.currencyCode}</span>
+                                                                {parseFloat(p.node.priceRange.minVariantPrice.amount).toLocaleString()}
+                                                            </p>
+                                                        </motion.div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Remaining Grid */}
+                                            <div className="space-y-8">
+                                                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Fresh Arrivals</h3>
+                                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                                                    {filteredResults.slice(5).map((p, i) => {
+                                                        const aiLabel = getAILabel(p);
+                                                        return (
+                                                            <motion.div
+                                                                key={p.node.id}
+                                                                initial={{ opacity: 0, y: 20 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ delay: i * 0.05 }}
+                                                                onClick={() => handleSelectProduct(p.node.handle)}
+                                                                className="group cursor-pointer"
+                                                            >
+                                                                <div className="aspect-square rounded-[2rem] overflow-hidden bg-white mb-4 shadow-sm relative border border-transparent group-hover:border-primary/20 transition-all">
+                                                                    <div className={`absolute top-3 right-3 z-10 px-2 py-1 rounded-full ${aiLabel.color} opacity-0 group-hover:opacity-100 transition-all duration-300`}>
+                                                                        <aiLabel.icon className="w-3 h-3" />
+                                                                    </div>
+                                                                    {p.node.media?.edges[0] && (
+                                                                        <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                                    )}
+                                                                    <div className="absolute bottom-3 right-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                                                                        <button
+                                                                            onClick={(e) => handleQuickAdd(e, p)}
+                                                                            className="w-8 h-8 rounded-full bg-white text-primary shadow-lg flex items-center justify-center hover:bg-primary hover:text-white"
+                                                                        >
+                                                                            <ShoppingBag className="w-4 h-4" />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <h4 className="text-sm font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors">{p.node.title}</h4>
+                                                                <p className="text-slate-500 text-xs font-medium mt-1">
+                                                                    {parseFloat(p.node.priceRange.minVariantPrice.amount).toLocaleString()} {p.node.priceRange.minVariantPrice.currencyCode}
+                                                                </p>
+                                                            </motion.div>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div className="space-y-12">
-                                            {/* Spotlight Card */}
+                                    ) : (
+                                        <div className="space-y-8">
                                             {spotlightProduct && (
                                                 <motion.div
                                                     layoutId="spotlight"
-                                                    initial={{ opacity: 0, scale: 0.95 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    className="group relative bg-slate-950 rounded-[3rem] overflow-hidden p-8 flex flex-col md:flex-row gap-8 shadow-2xl cursor-pointer"
+                                                    className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden cursor-pointer group shadow-2xl"
                                                     onClick={() => handleSelectProduct(spotlightProduct.node.handle)}
                                                 >
-                                                    <div className="w-full md:w-1/2 aspect-square rounded-[2rem] overflow-hidden relative">
-                                                        <div className="absolute top-4 left-4 z-10 px-4 py-2 bg-primary/95 backdrop-blur-md rounded-xl text-[8px] font-black text-white uppercase tracking-[0.3em] flex items-center gap-2 shadow-gold">
-                                                            <Trophy className="w-3 h-3" /> Masterpiece Selection
+                                                    <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                                                    <div className="flex flex-col md:flex-row gap-8 relative z-10">
+                                                        <div className="w-full md:w-72 aspect-square rounded-2xl bg-white/5 overflow-hidden">
+                                                            {spotlightProduct.node.media?.edges[0] && (
+                                                                <img src={spotlightProduct.node.media.edges[0].node.previewImage?.url || spotlightProduct.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                            )}
                                                         </div>
-                                                        {spotlightProduct.node.media?.edges[0] && (
-                                                            <img src={spotlightProduct.node.media.edges[0].node.previewImage?.url || spotlightProduct.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="" />
-                                                        )}
-                                                    </div>
-                                                    <div className="w-full md:w-1/2 flex flex-col justify-center space-y-6">
-                                                        <div className="space-y-2">
-                                                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Primary Match</span>
-                                                            <h3 className="text-3xl md:text-4xl font-black text-white leading-none tracking-tighter">
-                                                                {spotlightProduct.node.title}
-                                                            </h3>
-                                                            <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed font-medium">
-                                                                {spotlightProduct.node.description}
-                                                            </p>
-                                                        </div>
-                                                        <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">Acquisition Vault</span>
-                                                                <span className="text-2xl font-black text-white tracking-tight">
-                                                                    <span className="text-xs mr-1 text-primary">{spotlightProduct.node.priceRange.minVariantPrice.currencyCode}</span>
-                                                                    {parseFloat(spotlightProduct.node.priceRange.minVariantPrice.amount).toLocaleString()}
-                                                                </span>
+                                                        <div className="flex-1 flex flex-col justify-center">
+                                                            <div className="flex items-center gap-2 mb-4">
+                                                                <div className="px-3 py-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-full">Top Match</div>
                                                             </div>
-                                                            <Button
-                                                                className="h-14 w-14 rounded-2xl bg-white text-slate-900 hover:bg-primary hover:text-white transition-all shadow-xl"
-                                                                onClick={(e) => handleQuickAdd(e, spotlightProduct)}
-                                                            >
-                                                                <ShoppingBag className="w-6 h-6" />
-                                                            </Button>
+                                                            <h3 className="text-3xl font-black mb-2">{spotlightProduct.node.title}</h3>
+                                                            <p className="text-slate-400 text-sm mb-6 line-clamp-2 max-w-lg">{spotlightProduct.node.description}</p>
+                                                            <div className="flex items-center gap-4">
+                                                                <span className="text-2xl font-black">{parseFloat(spotlightProduct.node.priceRange.minVariantPrice.amount).toLocaleString()} <span className="text-sm font-bold text-slate-500">{spotlightProduct.node.priceRange.minVariantPrice.currencyCode}</span></span>
+                                                                <Button
+                                                                    onClick={(e) => handleQuickAdd(e, spotlightProduct)}
+                                                                    className="bg-white text-slate-900 hover:bg-gray-100 rounded-xl px-6"
+                                                                >
+                                                                    Quick Add
+                                                                </Button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </motion.div>
                                             )}
 
-                                            {/* Results Grid */}
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                                {otherResults.map((p, i) => {
-                                                    const aiLabel = getAILabel(p);
-                                                    const Icon = aiLabel.icon;
-
-                                                    return (
-                                                        <motion.div
-                                                            key={p.node.id}
-                                                            initial={{ opacity: 0, y: 20 }}
-                                                            animate={{ opacity: 1, y: 0 }}
-                                                            transition={{ delay: i * 0.05 }}
-                                                            onClick={() => handleSelectProduct(p.node.handle)}
-                                                            className={`group relative flex flex-col gap-4 cursor-pointer p-6 rounded-[2.5rem] transition-all border-2 ${activeIndex === i + (spotlightProduct ? 1 : 0) ? 'border-primary shadow-premium bg-white' : 'border-transparent bg-slate-50/50 hover:bg-white hover:shadow-premium hover:border-slate-100'}`}
-                                                        >
-                                                            <div className={`absolute top-4 right-4 z-10 px-3 py-1.5 rounded-full ${aiLabel.color} flex items-center gap-2 scale-90 opacity-0 group-hover:opacity-100 transition-all duration-300`}>
-                                                                <Icon className="w-3 h-3" />
-                                                                <span className="text-[8px] font-black uppercase tracking-widest">{aiLabel.text}</span>
-                                                            </div>
-
-                                                            <div className="aspect-square rounded-[2rem] overflow-hidden bg-white shadow-sm">
-                                                                {p.node.media?.edges[0] && (
-                                                                    <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
-                                                                )}
-                                                            </div>
-                                                            <div className="flex flex-col gap-3 px-2">
-                                                                <div className="space-y-1">
-                                                                    <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">
-                                                                        {p.node.handle.split('-')[0]} Boutique
-                                                                    </span>
-                                                                    <h4 className="text-lg font-black text-slate-900 group-hover:text-primary transition-colors tracking-tight line-clamp-1">{p.node.title}</h4>
-                                                                </div>
-                                                                <div className="flex items-center justify-between pt-3 border-t border-slate-100/10">
-                                                                    <p className="text-xl font-black text-slate-950 tracking-tight">
-                                                                        <span className="text-[10px] font-bold mr-1 text-slate-400">{p.node.priceRange.minVariantPrice.currencyCode}</span>
-                                                                        {parseFloat(p.node.priceRange.minVariantPrice.amount).toLocaleString()}
-                                                                    </p>
-                                                                    <button
-                                                                        onClick={(e) => handleQuickAdd(e, p)}
-                                                                        className="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all hover:bg-primary hover:text-white hover:shadow-gold"
-                                                                        title="Quick Add"
-                                                                    >
-                                                                        <ShoppingBag className="w-4 h-4" />
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </motion.div>
-                                                    );
-                                                })}
-
-                                                {(search || selectedCategory || selectedPriceRange || inStockOnly) && filteredResults.length === 0 && (
-                                                    <div className="col-span-full py-24 text-center">
-                                                        <div className="w-24 h-24 rounded-[2rem] bg-slate-50 flex items-center justify-center mx-auto mb-8 shadow-inner">
-                                                            <Search className="w-10 h-10 text-slate-200" />
+                                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                                                {otherResults.map((p, i) => (
+                                                    <motion.div
+                                                        key={p.node.id}
+                                                        initial={{ opacity: 0, scale: 0.9 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        transition={{ delay: i * 0.05 }}
+                                                        onClick={() => handleSelectProduct(p.node.handle)}
+                                                        className="group cursor-pointer bg-white p-4 rounded-[2rem] border border-slate-100 hover:shadow-premium transition-all hover:-translate-y-1"
+                                                    >
+                                                        <div className="aspect-square rounded-2xl overflow-hidden bg-slate-50 mb-4 relative">
+                                                            {p.node.media?.edges[0] && (
+                                                                <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="" />
+                                                            )}
                                                         </div>
-                                                        <h3 className="text-3xl font-black text-slate-900 mb-3 tracking-tighter">No masterpieces match your criteria</h3>
-                                                        <p className="text-slate-400 text-sm mb-12 max-w-md mx-auto font-medium">The archive is vast, but currently elusive. Try broadening your parameters for better acquisition paths.</p>
-                                                        <button
-                                                            onClick={() => {
-                                                                setSearch("");
-                                                                setSelectedCategory(null);
-                                                                setSelectedPriceRange(null);
-                                                                setInStockOnly(false);
-                                                            }}
-                                                            className="px-10 py-4 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-premium hover:bg-primary hover:shadow-gold transition-all"
-                                                        >
-                                                            Reset Matrix
-                                                        </button>
-                                                    </div>
-                                                )}
+                                                        <h4 className="font-bold text-slate-900 text-sm line-clamp-1">{p.node.title}</h4>
+                                                        <div className="flex items-center justify-between mt-2">
+                                                            <p className="text-xs font-medium text-slate-500">
+                                                                {parseFloat(p.node.priceRange.minVariantPrice.amount).toLocaleString()} {p.node.priceRange.minVariantPrice.currencyCode}
+                                                            </p>
+                                                            <button
+                                                                onClick={(e) => handleQuickAdd(e, p)}
+                                                                className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                                                            >
+                                                                <ShoppingBag className="w-3 h-3" />
+                                                            </button>
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
                                             </div>
+
+                                            {filteredResults.length === 0 && (
+                                                <div className="text-center py-20">
+                                                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                        <Search className="w-6 h-6 text-slate-300" />
+                                                    </div>
+                                                    <h3 className="text-lg font-bold text-slate-900">No matches found</h3>
+                                                    <p className="text-slate-400 text-sm">Try adjusting your terms or filters</p>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

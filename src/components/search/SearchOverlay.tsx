@@ -543,7 +543,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                     <div className="flex items-end justify-between mb-8 pb-4 border-b border-slate-100">
                                         <div>
                                             <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">
-                                                {isDiscovery ? "Trending Now" : `Search Results (${filteredResults.length})`}
+                                                {isDiscovery ? "Trending Now" : `Found ${filteredResults.length} Matches`}
                                             </h2>
                                             <p className="text-slate-400 text-sm font-medium">
                                                 {isDiscovery ? "Curated selections based on global trends" : `Showing results for "${search}"`}
@@ -555,7 +555,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                         <div className="space-y-16">
                                             {/* Trending Carousel Scroller */}
                                             <div className="relative -mx-4 lg:-mx-0">
-                                                <div className="flex overflow-x-auto gap-6 px-4 lg:px-0 pb-8 snap-x scrollbar-hide">
+                                                <div className="flex overflow-x-auto gap-6 px-4 lg:px-0 pb-8 snap-x">
                                                     {filteredResults.slice(0, 5).map((p, i) => (
                                                         <motion.div
                                                             key={p.node.id}
@@ -569,7 +569,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                                 <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest shadow-sm">
                                                                     Trend #{i + 1}
                                                                 </div>
-                                                                {p.node.media?.edges[0] && (
+                                                                {p.node.media?.edges?.[0] && (
                                                                     <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
                                                                 )}
                                                             </div>
@@ -602,7 +602,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                                     <div className={`absolute top-3 right-3 z-10 px-2 py-1 rounded-full ${aiLabel.color} opacity-0 group-hover:opacity-100 transition-all duration-300`}>
                                                                         <aiLabel.icon className="w-3 h-3" />
                                                                     </div>
-                                                                    {p.node.media?.edges[0] && (
+                                                                    {p.node.media?.edges?.[0] && (
                                                                         <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
                                                                     )}
                                                                     <div className="absolute bottom-3 right-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
@@ -635,7 +635,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                     <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                                                     <div className="flex flex-col md:flex-row gap-8 relative z-10">
                                                         <div className="w-full md:w-72 aspect-square rounded-2xl bg-white/5 overflow-hidden">
-                                                            {spotlightProduct.node.media?.edges[0] && (
+                                                            {spotlightProduct.node.media?.edges?.[0] && (
                                                                 <img src={spotlightProduct.node.media.edges[0].node.previewImage?.url || spotlightProduct.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
                                                             )}
                                                         </div>
@@ -670,7 +670,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                         className="group cursor-pointer bg-white p-4 rounded-[2rem] border border-slate-100 hover:shadow-premium transition-all hover:-translate-y-1"
                                                     >
                                                         <div className="aspect-square rounded-2xl overflow-hidden bg-slate-50 mb-4 relative">
-                                                            {p.node.media?.edges[0] && (
+                                                            {p.node.media?.edges?.[0] && (
                                                                 <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="" />
                                                             )}
                                                         </div>

@@ -362,7 +362,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto overflow-x-hidden pt-12 pb-32">
+                    <div className="flex-1 overflow-y-scroll overflow-x-hidden pt-12 pb-32 search-overlay-scroll">
                         <div className="container-custom max-w-[1600px]">
                             {/* Cinematic Input Area */}
                             {/* Cinematic Input Area */}

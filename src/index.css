@@ -246,4 +246,27 @@ All colors MUST be HSL.
     scrollbar-width: none;
     /* Firefox */
   }
+
+  /* Search Overlay Scrollbar Force */
+  .search-overlay-scroll {
+    scrollbar-gutter: stable;
+  }
+
+  .search-overlay-scroll::-webkit-scrollbar {
+    display: block !important;
+    width: 6px;
+    background: transparent;
+  }
+
+  .search-overlay-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .search-overlay-scroll::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full;
+  }
+
+  .search-overlay-scroll::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-400;
+  }
 }

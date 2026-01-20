@@ -362,56 +362,50 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                     <div className="flex-1 overflow-y-auto overflow-x-hidden pt-12 pb-32">
                         <div className="container-custom max-w-[1600px]">
                             {/* Cinematic Input Area */}
-                            <div className="relative mb-16 group max-w-5xl mx-auto px-4">
-                                <div className="absolute -left-8 top-1/2 -translate-y-1/2 p-4">
-                                    <Search className="w-10 h-10 text-primary transition-transform group-focus-within:scale-110 duration-500" />
-                                </div>
-
+                            {/* Cinematic Input Area */}
+                            <div className="relative mb-12 group max-w-4xl mx-auto px-4">
                                 <div className="relative">
-                                    {/* Typeahead Suggestion Background */}
-                                    <div className="absolute left-16 top-1/2 -translate-y-1/2 text-4xl md:text-6xl font-black text-slate-200 pointer-events-none select-none tracking-tighter truncate w-full opacity-50">
-                                        {suggestion && search && suggestion.toLowerCase().startsWith(search.toLowerCase()) && (
-                                            <>
-                                                <span className="opacity-0">{search}</span>
-                                                <span className="opacity-100">{suggestion.slice(search.length)}</span>
-                                            </>
-                                        )}
+                                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/50">
+                                        <Search className="w-6 h-6" />
                                     </div>
 
                                     <input
                                         ref={inputRef}
                                         type="text"
-                                        placeholder={isDiscovery ? "Discover Excellence..." : "Search..."}
+                                        className="flex w-full border-input ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-14 pr-16 h-16 rounded-2xl border-none bg-slate-100/50 focus:bg-slate-100/80 font-bold text-lg placeholder:text-slate-400/50 transition-all text-slate-900"
+                                        placeholder={isDiscovery ? "Search collection..." : "Search..."}
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
-                                        className="w-full bg-transparent border-none text-4xl md:text-6xl font-black pl-16 pr-24 outline-none placeholder:text-slate-200/50 tracking-tighter text-slate-900 caret-primary"
                                     />
-                                </div>
 
-                                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
-                                    {isListening && (
-                                        <div className="flex gap-1.5 items-end h-8">
-                                            {[1, 2, 3, 4, 5].map(i => (
-                                                <motion.div
-                                                    key={i}
-                                                    animate={{ height: ["20%", "100%", "20%"] }}
-                                                    transition={{ repeat: Infinity, duration: 0.4, delay: i * 0.08 }}
-                                                    className="w-2 bg-primary rounded-full shadow-gold"
-                                                />
-                                            ))}
-                                        </div>
-                                    )}
-                                    <button
-                                        onClick={toggleVoice}
-                                        className={`w-14 h-14 rounded-3xl flex items-center justify-center transition-all ${isListening ? 'bg-primary text-white shadow-gold scale-110' : 'bg-slate-50 text-slate-400 hover:text-primary hover:bg-white hover:shadow-premium'}`}
-                                    >
-                                        <Mic className="w-6 h-6" />
-                                    </button>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                        {isListening && (
+                                            <div className="flex gap-1 items-end h-4 mr-2">
+                                                {[1, 2, 3].map(i => (
+                                                    <motion.div
+                                                        key={i}
+                                                        animate={{ height: ["20%", "100%", "20%"] }}
+                                                        transition={{ repeat: Infinity, duration: 0.4, delay: i * 0.08 }}
+                                                        className="w-1 bg-primary rounded-full"
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
+                                        <button
+                                            onClick={toggleVoice}
+                                            className={`p-2 rounded-xl transition-all ${isListening ? 'text-primary' : 'text-slate-400 hover:text-primary hover:bg-slate-200/50'}`}
+                                        >
+                                            <Mic className="w-5 h-5" />
+                                        </button>
+                                    </div>
                                 </div>
-                                {suggestion && (
-                                    <div className="absolute -bottom-8 left-16 flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                                        <Zap className="w-3 h-3 text-primary animate-pulse" />
-                                        <span>Press <kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200">Tab</kbd> to autocomplete</span>
+                                {suggestion && search && suggestion.toLowerCase().startsWith(search.toLowerCase()) && (
+                                    <div className="absolute -bottom-6 left-16 flex items-center gap-2 text-[10px] font-bold text-slate-400 ml-4">
+                                        <span className="opacity-50">Suggestion:</span>
+                                        <span className="text-primary cursor-pointer hover:underline" onClick={() => setSearch(suggestion)}>
+                                            {suggestion}
+                                        </span>
+                                        <span className="ml-2 text-[8px] opacity-40">Press Tab</span>
                                     </div>
                                 )}
                             </div>

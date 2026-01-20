@@ -13,37 +13,37 @@ const categoryImages: Record<string, string> = {
   "home": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=1000&fit=crop",
   "home-decor": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=1000&fit=crop",
   "household": "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=1000&fit=crop",
-  
+
   // Beauty & Personal Care
   "beauty": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=1000&fit=crop",
   "skincare": "https://images.unsplash.com/photo-1570194065650-d99fb4b38b17?w=800&h=1000&fit=crop",
   "cosmetics": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800&h=1000&fit=crop",
   "personal-care": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800&h=1000&fit=crop",
-  
+
   // Stationery & Office
   "stationery": "https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?w=800&h=1000&fit=crop",
   "office": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=1000&fit=crop",
   "office-supplies": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop",
-  
+
   // Electronics & Tech
   "electronics": "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&h=1000&fit=crop",
   "gadgets": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=1000&fit=crop",
   "tech": "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&h=1000&fit=crop",
-  
+
   // Fashion & Accessories
   "fashion": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=1000&fit=crop",
   "clothing": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800&h=1000&fit=crop",
   "accessories": "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&h=1000&fit=crop",
   "jewelry": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&h=1000&fit=crop",
-  
+
   // Sports & Fitness
   "sports": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=1000&fit=crop",
   "fitness": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=1000&fit=crop",
-  
+
   // Toys & Games
   "toys": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=800&h=1000&fit=crop",
   "games": "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=800&h=1000&fit=crop",
-  
+
   // Default fallbacks
   "default": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=1000&fit=crop",
 };
@@ -74,17 +74,17 @@ const categoryBadges = [
 
 const getCategoryImage = (handle: string, fallbackUrl?: string): string => {
   const normalizedHandle = handle.toLowerCase().replace(/\s+/g, '-');
-  
+
   if (categoryImages[normalizedHandle]) {
     return categoryImages[normalizedHandle];
   }
-  
+
   for (const key of Object.keys(categoryImages)) {
     if (normalizedHandle.includes(key) || key.includes(normalizedHandle)) {
       return categoryImages[key];
     }
   }
-  
+
   return fallbackUrl || categoryImages.default;
 };
 
@@ -114,23 +114,30 @@ const itemVariants = {
   },
 };
 
-export const CategoryGrid = () => {
+interface CategoryGridProps {
+  limit?: number;
+  showHeading?: boolean;
+}
+
+export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProps) => {
   const { data: collections = [], isLoading } = useQuery({
-    queryKey: ['collections'],
-    queryFn: () => fetchCollections(8),
+    queryKey: ['collections', limit],
+    queryFn: () => fetchCollections(limit),
   });
 
   if (isLoading) {
     return (
       <section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-background via-muted/20 to-background">
         <div className="container-custom px-4 sm:px-6">
-          <div className="text-center mb-10 sm:mb-14">
-            <Skeleton className="h-6 w-40 mx-auto mb-4 rounded-full" />
-            <Skeleton className="h-10 sm:h-12 w-64 sm:w-80 mx-auto mb-4" />
-            <Skeleton className="h-4 w-56 sm:w-72 mx-auto" />
-          </div>
+          {showHeading && (
+            <div className="text-center mb-10 sm:mb-14">
+              <Skeleton className="h-6 w-40 mx-auto mb-4 rounded-full" />
+              <Skeleton className="h-10 sm:h-12 w-64 sm:w-80 mx-auto mb-4" />
+              <Skeleton className="h-4 w-56 sm:w-72 mx-auto" />
+            </div>
+          )}
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-            {[...Array(8)].map((_, i) => (
+            {[...Array(limit)].map((_, i) => (
               <Skeleton key={i} className="aspect-[3/4] rounded-2xl sm:rounded-3xl" />
             ))}
           </div>
@@ -152,32 +159,34 @@ export const CategoryGrid = () => {
 
       <div className="container-custom px-4 sm:px-6 relative z-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10 sm:mb-14 md:mb-16"
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+        {showHeading && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-primary/5 text-primary text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20 backdrop-blur-sm"
+            transition={{ duration: 0.6 }}
+            className="text-center mb-10 sm:mb-14 md:mb-16"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Explore Categories</span>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-primary/5 text-primary text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20 backdrop-blur-sm"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Explore Categories</span>
+            </motion.div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 sm:mb-4 tracking-tight">
+              Shop by{" "}
+              <span className="bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
+                Category
+              </span>
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base">
+              Discover our carefully curated collections designed for you
+            </p>
           </motion.div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 sm:mb-4 tracking-tight">
-            Shop by{" "}
-            <span className="bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
-              Category
-            </span>
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base">
-            Discover our carefully curated collections designed for you
-          </p>
-        </motion.div>
+        )}
 
         {/* Category Cards Grid */}
         <motion.div
@@ -187,11 +196,11 @@ export const CategoryGrid = () => {
           viewport={{ once: true, margin: "-50px" }}
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6"
         >
-          {collections.slice(0, 8).map((col, index) => {
+          {collections.slice(0, limit).map((col, index) => {
             const theme = cardThemes[index % cardThemes.length];
             const badge = categoryBadges[index % categoryBadges.length];
             const BadgeIcon = badge.icon;
-            
+
             return (
               <motion.div
                 key={col.node.id}
@@ -215,9 +224,9 @@ export const CategoryGrid = () => {
 
                   {/* Gradient Overlay */}
                   <div className={`absolute inset-0 bg-gradient-to-t ${theme.bg} opacity-70 group-hover:opacity-80 transition-opacity duration-500`} />
-                  
+
                   {/* Mesh Pattern Overlay */}
-                  <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500" 
+                  <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500"
                     style={{
                       backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
                       backgroundSize: "20px 20px"
@@ -229,7 +238,7 @@ export const CategoryGrid = () => {
 
                   {/* Category Badge */}
                   <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4">
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 + 0.2 }}
@@ -244,12 +253,12 @@ export const CategoryGrid = () => {
                   <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 md:p-5">
                     {/* Decorative Line */}
                     <div className={`w-8 sm:w-10 md:w-12 h-0.5 sm:h-1 ${theme.accent} rounded-full mb-2 sm:mb-3 group-hover:w-12 sm:group-hover:w-16 md:group-hover:w-20 transition-all duration-500`} />
-                    
+
                     {/* Title */}
                     <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white leading-tight mb-1 sm:mb-2 group-hover:translate-x-1 transition-transform duration-300 line-clamp-2">
                       {col.node.title}
                     </h3>
-                    
+
                     {/* Description - Hidden on small mobile */}
                     <p className="text-white/70 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-3 hidden sm:block">
                       {col.node.description || "Explore our amazing collection"}
@@ -268,7 +277,7 @@ export const CategoryGrid = () => {
 
                   {/* Hover Border Glow */}
                   <div className="absolute inset-0 rounded-2xl sm:rounded-3xl ring-1 ring-white/20 group-hover:ring-2 group-hover:ring-white/40 transition-all duration-300" />
-                  
+
                   {/* Corner Accent */}
                   <div className="absolute top-0 right-0 w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 overflow-hidden rounded-bl-full opacity-30 group-hover:opacity-50 transition-opacity">
                     <div className={`w-full h-full ${theme.accent} blur-xl`} />

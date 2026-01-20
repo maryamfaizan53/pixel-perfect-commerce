@@ -15,6 +15,7 @@ const Index = lazy(() => import("./pages/Index"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const ProductPage = lazy(() => import("./pages/ProductPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
+const AllCategories = lazy(() => import("./pages/AllCategories"));
 const CartPage = lazy(() => import("./pages/CartPage"));
 const Account = lazy(() => import("./pages/Account"));
 const OrderDetails = lazy(() => import("./pages/OrderDetails"));
@@ -59,6 +60,7 @@ const AnimatedRoutes = () => {
           <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
           <Route path="/products/:id" element={<PageTransition><ProductDetail /></PageTransition>} />
           <Route path="/product/:handle" element={<PageTransition><ProductPage /></PageTransition>} />
+          <Route path="/category" element={<PageTransition><AllCategories /></PageTransition>} />
           <Route path="/category/:category" element={<PageTransition><CategoryPage /></PageTransition>} />
           <Route path="/collections/:category" element={<PageTransition><CategoryPage /></PageTransition>} />
           <Route path="/cart" element={<PageTransition><CartPage /></PageTransition>} />

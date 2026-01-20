@@ -12,6 +12,7 @@ import { SlidersHorizontal, Loader2, Search, X, Grid, List, Sparkles, Filter, La
 import { Input } from "@/components/ui/input";
 import { fetchProducts, fetchProductsByCollection, ShopifyProduct, CollectionData } from "@/lib/shopify";
 import { motion, AnimatePresence } from "framer-motion";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
 
 const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
 
@@ -205,6 +206,11 @@ const CategoryPage = () => {
             className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 blur-[150px] rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none"
           />
         </section>
+
+        {/* Categories Navigation (Requested by User) */}
+        <div className="bg-white border-b border-slate-100">
+          <CategoryGrid limit={4} showHeading={false} />
+        </div>
 
         <div className="container-custom -mt-12 sm:-mt-16 relative z-20 pb-24">
           {/* Action Bar */}

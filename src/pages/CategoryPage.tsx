@@ -47,6 +47,16 @@ const CategoryPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
+  // Debounce search query to avoid excessive API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Trigger reload when search changes (handled in loadProducts via dependency or separate effect)
+      // Actually, better to separate the load logic or include searchQuery in dependency of loadProducts 
+      // But since loadProducts is big, let's just make it depend on searchQuery
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
@@ -54,14 +64,23 @@ const CategoryPage = () => {
       try {
         let list: ShopifyProduct[] = [];
 
-        if (category && category !== "all") {
+        // If we have a search query, prioritize that (Server-Side Search)
+        if (searchQuery.trim()) {
+          // We pass the raw query, fetchProducts handles the smart query building now
+          list = await fetchProducts(50, searchQuery.trim());
+          // If we are also in a category, we might ideally want to filter by category AND search
+          // But Shopify Storefront API 'query' arg is powerful. 
+          // If we want to restrict search to a collection, we'd need a more complex query like `product_type:X AND title:Y` 
+          // or post-filter. For now, matching the SearchOverlay behavior (global search) is usually expected 
+          // unless "Search within category" is explicitly desired. 
+          // Given the user wants "29 matches" (global), we'll do global search here.
+        }
+        else if (category && category !== "all") {
           const collection = await fetchProductsByCollection(category, 50);
           if (collection && collection.products && collection.products.length > 0) {
             setCollectionData(collection);
             list = collection.products;
           } else {
-            // If collection not found or empty, fallback to all products
-            // but keep the title as the handle for context if it was "frontpage"
             if (collection) {
               setCollectionData(collection);
             }
@@ -80,7 +99,10 @@ const CategoryPage = () => {
         const roundedMax = computedMax ? Math.ceil(computedMax / 100) * 100 : 0;
 
         setMaxPrice(roundedMax);
-        setPriceRange([0, roundedMax]);
+        // Only reset price range if it's 0-0 or we loaded a new category/search context
+        if (priceRange[1] === 0) {
+          setPriceRange([0, roundedMax]);
+        }
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -88,8 +110,9 @@ const CategoryPage = () => {
       }
     };
 
-    loadProducts();
-  }, [category]);
+    const timeoutId = setTimeout(loadProducts, 300); // Debounce the effect execution
+    return () => clearTimeout(timeoutId);
+  }, [category, searchQuery]); // Re-run when category or search changes
 
   const toggleColor = (color: string) => {
     setSelectedColors(prev =>
@@ -114,13 +137,9 @@ const CategoryPage = () => {
     const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
     const matchesStock = !inStockOnly || product.node.variants.edges.some(v => v.node.availableForSale);
 
-    // Search filter
-    const searchLower = searchQuery.toLowerCase().trim();
-    const matchesSearch = !searchLower ||
-      product.node.title?.toLowerCase().includes(searchLower) ||
-      product.node.description?.toLowerCase().includes(searchLower);
+    // Note: Search filtering is now done Server-Side in loadProducts
 
-    return matchesPrice && matchesStock && matchesSearch;
+    return matchesPrice && matchesStock;
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -133,13 +152,14 @@ const CategoryPage = () => {
       case "price-desc":
         return priceB - priceA;
       case "newest":
-        return b.node.id.localeCompare(a.node.id);
+        return b.node.id.localeCompare(a.node.id); // Approximation for newest if IDs are sequential/time-based, or use createdAt if available
       case "title-asc":
         return a.node.title.localeCompare(b.node.title);
       case "title-desc":
         return b.node.title.localeCompare(a.node.title);
       case "featured":
       default:
+        // If searching, Score is best, but here we just keep default order returned by API (relevance)
         return 0;
     }
   });

@@ -109,10 +109,10 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
             try {
                 // If search is empty, fetch general discovery products (no query)
                 // If search has text, fetch matches from Shopify (query provided)
-                // Append wildcard * to query to ensure partial matches (e.g. "hair" matches "hair-care")
+                // We pass the raw trimmed term to fetchProducts, which now handles query construction (singular/plural, multi-field)
                 const trimmed = search.trim();
-                const query = trimmed ? `${trimmed}*` : undefined;
-                const limit = query ? 250 : 20; // 250 results for full search visibility
+                const query = trimmed ? trimmed : undefined;
+                const limit = query ? 50 : 20; // 50 results for full search visibility to match category page size
 
                 const data = await fetchProducts(limit, query);
                 setProducts(data);
@@ -604,43 +604,21 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                         </div>
                                     ) : (
                                         <div className="space-y-8">
-                                            {spotlightProduct && (
-                                                <motion.div
-                                                    layoutId="spotlight"
-                                                    className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden cursor-pointer group shadow-2xl"
-                                                    onClick={() => handleSelectProduct(spotlightProduct.node.handle)}
-                                                >
-                                                    <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                                                    <div className="flex flex-col md:flex-row gap-8 relative z-10">
-                                                        <div className="w-full md:w-72 aspect-square rounded-2xl bg-white/5 overflow-hidden">
-                                                            {spotlightProduct.node.media?.edges?.[0] && (
-                                                                <img src={spotlightProduct.node.media.edges[0].node.previewImage?.url || spotlightProduct.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
-                                                            )}
-                                                        </div>
-                                                        <div className="flex-1 flex flex-col justify-center">
-                                                            <div className="flex items-center gap-2 mb-4">
-                                                                <div className="px-3 py-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-full">Top Match</div>
-                                                            </div>
-                                                            <h3 className="text-3xl font-black mb-2">{spotlightProduct.node.title}</h3>
-                                                            <p className="text-slate-400 text-sm mb-6 line-clamp-2 max-w-lg">{spotlightProduct.node.description}</p>
-                                                            <div className="flex items-center gap-4">
-                                                                <span className="text-2xl font-black">{parseFloat(spotlightProduct.node.priceRange.minVariantPrice.amount).toLocaleString()} <span className="text-sm font-bold text-slate-500">{spotlightProduct.node.priceRange.minVariantPrice.currencyCode}</span></span>
-                                                                <Button
-                                                                    onClick={(e) => handleQuickAdd(e, spotlightProduct)}
-                                                                    className="bg-white text-slate-900 hover:bg-gray-100 rounded-xl px-6"
-                                                                >
-                                                                    Quick Add
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-
-                                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                                                {otherResults.map((p, i) => (
-                                                    <ProductCard key={p.node.id} product={p} index={i} />
-                                                ))}
+                                            {/* Full Results Grid - Replaces Spotlight */}
+                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
+                                                <AnimatePresence>
+                                                    {filteredResults.map((p, i) => (
+                                                        <motion.div
+                                                            key={p.node.id}
+                                                            initial={{ opacity: 0, scale: 0.9 }}
+                                                            animate={{ opacity: 1, scale: 1 }}
+                                                            exit={{ opacity: 0, scale: 0.9 }}
+                                                            transition={{ duration: 0.3, delay: i * 0.05 }}
+                                                        >
+                                                            <ProductCard product={p} index={i} />
+                                                        </motion.div>
+                                                    ))}
+                                                </AnimatePresence>
                                             </div>
 
                                             {filteredResults.length === 0 && (

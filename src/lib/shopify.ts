@@ -423,8 +423,49 @@ export async function storefrontApiRequest(query: string, variables: any = {}) {
   return data;
 }
 
+// Helper to build a robust search query for Shopify Storefront API
+export function buildSearchQuery(term: string): string {
+  const cleanTerm = term.trim().replace(/[^\w\s]/g, ""); // Remove special chars
+  if (!cleanTerm) return "";
+
+  const terms = cleanTerm.split(/\s+/).filter(t => t.length > 0);
+
+  // Construct a query that looks for the term in multiple fields
+  // and handles basic singular/plural stems
+  const parts = terms.map(t => {
+    const variations = [t];
+    // Simple stemming for plurals
+    if (t.endsWith('s') && t.length > 3) {
+      variations.push(t.slice(0, -1));
+    }
+
+    // Create query part for this term: (title:term* OR title:singular* OR tag:term* ...)
+    const subQueries = variations.flatMap(v => [
+      `title:${v}*`,
+      `tag:${v}*`,
+      `product_type:${v}*`,
+      `vendor:${v}*`
+    ]);
+
+    return `(${subQueries.join(' OR ')})`;
+  });
+
+  return parts.join(' AND ');
+}
+
 export async function fetchProducts(first: number = 20, query?: string, full: boolean = false): Promise<ShopifyProduct[]> {
-  const data = await storefrontApiRequest(full ? STOREFRONT_PRODUCTS_QUERY : STOREFRONT_PRODUCTS_SUMMARY_QUERY, { first, query });
+  // If query is provided, use the smart builder, otherwise undefined
+  const finalQuery = query ? buildSearchQuery(query) : undefined;
+  // If explicitly undefined (no search), it fetches general products. 
+  // If finalQuery is string (even empty), Shopify might filter strict. 
+  // Logic: if query arg exists but builds to empty string (e.g. only special chars), pass undefined to safe fallback? 
+  // Better: if query was passed but is empty after clean, stick to query provided to avoid accidental full listing if not desired.
+  // Actually, standard behavior: if user searches "!!!", it should probably show nothing or handle gracefully. 
+  // But let's stick to: if original query was provided, use constructed query.
+
+  const searchArg = query ? finalQuery : undefined;
+
+  const data = await storefrontApiRequest(full ? STOREFRONT_PRODUCTS_QUERY : STOREFRONT_PRODUCTS_SUMMARY_QUERY, { first, query: searchArg });
   return data.data.products.edges;
 }
 

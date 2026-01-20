@@ -297,7 +297,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
           className="text-center mt-10 sm:mt-12 md:mt-16"
         >
           <Link
-            to="/category/all"
+            to="/category"
             className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground rounded-full font-semibold text-sm sm:text-base hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 hover:-translate-y-1"
           >
             <span>View All Categories</span>

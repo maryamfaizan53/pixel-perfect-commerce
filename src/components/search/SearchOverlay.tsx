@@ -333,7 +333,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     onKeyDown={handleKeyDown}
-                    className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-3xl flex flex-col font-inter scrollbar-hide"
+                    className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-3xl flex flex-col font-inter"
                 >
                     {/* Header */}
                     <div className="container-custom h-24 flex items-center justify-between border-b border-slate-100/50 bg-white/50 backdrop-blur-md sticky top-0 z-20">
@@ -596,40 +596,9 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                             <div className="space-y-8">
                                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Fresh Arrivals</h3>
                                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                                                    {filteredResults.slice(5).map((p, i) => {
-                                                        const aiLabel = getAILabel(p);
-                                                        return (
-                                                            <motion.div
-                                                                key={p.node.id}
-                                                                initial={{ opacity: 0, y: 20 }}
-                                                                animate={{ opacity: 1, y: 0 }}
-                                                                transition={{ delay: i * 0.05 }}
-                                                                onClick={() => handleSelectProduct(p.node.handle)}
-                                                                className="group cursor-pointer"
-                                                            >
-                                                                <div className="aspect-square rounded-[2rem] overflow-hidden bg-white mb-4 shadow-sm relative border border-transparent group-hover:border-primary/20 transition-all">
-                                                                    <div className={`absolute top-3 right-3 z-10 px-2 py-1 rounded-full ${aiLabel.color} opacity-0 group-hover:opacity-100 transition-all duration-300`}>
-                                                                        <aiLabel.icon className="w-3 h-3" />
-                                                                    </div>
-                                                                    {p.node.media?.edges?.[0] && (
-                                                                        <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
-                                                                    )}
-                                                                    <div className="absolute bottom-3 right-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                                                        <button
-                                                                            onClick={(e) => handleQuickAdd(e, p)}
-                                                                            className="w-8 h-8 rounded-full bg-white text-primary shadow-lg flex items-center justify-center hover:bg-primary hover:text-white"
-                                                                        >
-                                                                            <ShoppingBag className="w-4 h-4" />
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                                <h4 className="text-sm font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors">{p.node.title}</h4>
-                                                                <p className="text-slate-500 text-xs font-medium mt-1">
-                                                                    {parseFloat(p.node.priceRange.minVariantPrice.amount).toLocaleString()} {p.node.priceRange.minVariantPrice.currencyCode}
-                                                                </p>
-                                                            </motion.div>
-                                                        );
-                                                    })}
+                                                    {filteredResults.slice(5).map((p, i) => (
+                                                        <ProductCard key={p.node.id} product={p} index={i} />
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>

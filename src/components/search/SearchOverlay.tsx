@@ -665,35 +665,46 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                 </motion.div>
                                             )}
 
-                                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                                                {otherResults.map((p, i) => (
-                                                    <motion.div
-                                                        key={p.node.id}
-                                                        initial={{ opacity: 0, scale: 0.9 }}
-                                                        animate={{ opacity: 1, scale: 1 }}
-                                                        transition={{ delay: i * 0.05 }}
-                                                        onClick={() => handleSelectProduct(p.node.handle)}
-                                                        className="group cursor-pointer bg-white p-4 rounded-[2rem] border border-slate-100 hover:shadow-premium transition-all hover:-translate-y-1"
-                                                    >
-                                                        <div className="aspect-square rounded-2xl overflow-hidden bg-slate-50 mb-4 relative">
-                                                            {p.node.media?.edges?.[0] && (
-                                                                <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="" />
-                                                            )}
-                                                        </div>
-                                                        <h4 className="font-bold text-slate-900 text-sm line-clamp-1">{p.node.title}</h4>
-                                                        <div className="flex items-center justify-between mt-2">
-                                                            <p className="text-xs font-medium text-slate-500">
+                                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                                                {otherResults.map((p, i) => {
+                                                    const aiLabel = getAILabel(p);
+                                                    return (
+                                                        <motion.div
+                                                            key={p.node.id}
+                                                            initial={{ opacity: 0, scale: 0.9 }}
+                                                            animate={{ opacity: 1, scale: 1 }}
+                                                            transition={{ delay: i * 0.05 }}
+                                                            onClick={() => handleSelectProduct(p.node.handle)}
+                                                            className="group cursor-pointer"
+                                                        >
+                                                            <div className="aspect-square rounded-[2rem] overflow-hidden bg-white mb-4 shadow-sm relative border border-transparent group-hover:border-primary/20 transition-all">
+                                                                {/* AI Label Badge */}
+                                                                <div className={`absolute top-3 right-3 z-10 px-2 py-1 rounded-full ${aiLabel.color} opacity-0 group-hover:opacity-100 transition-all duration-300`}>
+                                                                    <aiLabel.icon className="w-3 h-3" />
+                                                                </div>
+
+                                                                {p.node.media?.edges?.[0] && (
+                                                                    <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="" />
+                                                                )}
+
+                                                                {/* Quick Add Button */}
+                                                                <div className="absolute bottom-3 right-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                                                                    <button
+                                                                        onClick={(e) => handleQuickAdd(e, p)}
+                                                                        className="w-8 h-8 rounded-full bg-white text-primary shadow-lg flex items-center justify-center hover:bg-primary hover:text-white"
+                                                                    >
+                                                                        <ShoppingBag className="w-4 h-4" />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <h4 className="text-sm font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors">{p.node.title}</h4>
+                                                            <p className="text-slate-500 text-xs font-medium mt-1">
                                                                 {parseFloat(p.node.priceRange.minVariantPrice.amount).toLocaleString()} {p.node.priceRange.minVariantPrice.currencyCode}
                                                             </p>
-                                                            <button
-                                                                onClick={(e) => handleQuickAdd(e, p)}
-                                                                className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
-                                                            >
-                                                                <ShoppingBag className="w-3 h-3" />
-                                                            </button>
-                                                        </div>
-                                                    </motion.div>
-                                                ))}
+                                                        </motion.div>
+                                                    );
+                                                })}
                                             </div>
 
                                             {filteredResults.length === 0 && (

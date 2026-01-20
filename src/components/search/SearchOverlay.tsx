@@ -109,7 +109,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                 // If search is empty, fetch general discovery products (no query)
                 // If search has text, fetch matches from Shopify (query provided)
                 const query = search.trim() ? search : undefined;
-                const limit = query ? 50 : 20; // 50 results for search, 20 for discovery (faster load)
+                const limit = query ? 250 : 20; // 250 results for full search visibility
 
                 const data = await fetchProducts(limit, query);
                 setProducts(data);

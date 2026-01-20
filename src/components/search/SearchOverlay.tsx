@@ -108,7 +108,9 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
             try {
                 // If search is empty, fetch general discovery products (no query)
                 // If search has text, fetch matches from Shopify (query provided)
-                const query = search.trim() ? search : undefined;
+                // Append wildcard * to query to ensure partial matches (e.g. "hair" matches "hair-care")
+                const trimmed = search.trim();
+                const query = trimmed ? `${trimmed}*` : undefined;
                 const limit = query ? 250 : 20; // 250 results for full search visibility
 
                 const data = await fetchProducts(limit, query);

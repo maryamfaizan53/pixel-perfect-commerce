@@ -9,6 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
+import { usePageTracking } from "@/hooks/usePageTracking";
 
 // Lazy load pages for code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -51,6 +52,9 @@ const PageLoader = () => (
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+
+  // Track page views on route changes
+  usePageTracking();
 
   return (
     <AnimatePresence mode="wait">

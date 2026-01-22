@@ -23,13 +23,17 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
     });
 
     useEffect(() => {
+        console.log(`CategoryProductRow [${handle}]: inView=${inView}`);
         if (!inView) return;
 
         const loadProducts = async () => {
             try {
+                console.log(`CategoryProductRow [${handle}]: fetching products...`);
                 const data = await fetchProductsByCollection(handle, 12);
+                console.log(`CategoryProductRow [${handle}]: received data:`, data);
                 if (data) {
                     setProducts(data.products);
+                    console.log(`CategoryProductRow [${handle}]: set ${data.products.length} products`);
                 }
             } catch (error) {
                 console.error(`Failed to fetch products for collection ${handle}:`, error);

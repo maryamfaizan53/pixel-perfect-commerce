@@ -11,40 +11,39 @@ const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ 
 const Index = () => {
   const { data: collections = [] } = useQuery({
     queryKey: ['all-collections-rows'],
-    queryFn: () => fetchCollections(8), // Fetch 8 categories for better balancing of speed and content
+    queryFn: () => fetchCollections(10), // Fetch more for safety
   });
+
+  const specificHandles = ['top-selling-products', 'heaters', 'health-and-beauty'];
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
+        {/* specific Rows at the top as requested */}
+        <CategoryProductRow
+          title="TOP SELLING PRODUCTS"
+          handle="top-selling-products"
+        />
+
+        <CategoryProductRow
+          title="Home and Living"
+          handle="heaters"
+        />
+
+        <CategoryProductRow
+          title="Health and Beauty"
+          handle="health-and-beauty"
+        />
+
         {/* Hero Section - Display Categories */}
         <HeroCategories />
 
-        {/* Dynamic Category sections */}
+        {/* 4. Other Dynamic collections */}
         <div className="space-y-4">
-          {/* 1. Featured Top Selling Section */}
-          <CategoryProductRow
-            title="TOP SELLING PRODUCTS"
-            handle="top-selling-products"
-          />
-
-          {/* 2. Home and Living Section */}
-          <CategoryProductRow
-            title="Home and Living"
-            handle="heaters"
-          />
-
-          {/* 3. Health and Beauty Section */}
-          <CategoryProductRow
-            title="Health and Beauty"
-            handle="health-and-beauty"
-          />
-
-          {/* 4. Other Dynamic Collections */}
           {collections
-            .filter(col => !['top-selling-products', 'heaters', 'health-and-beauty', 'home-living', 'health-beauty'].includes(col.node.handle))
+            .filter(col => !specificHandles.includes(col.node.handle))
             .map((col) => (
               <CategoryProductRow
                 key={col.node.id}

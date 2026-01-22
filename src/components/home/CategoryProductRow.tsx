@@ -11,9 +11,10 @@ import { useInView } from "react-intersection-observer";
 interface CategoryProductRowProps {
     title: string;
     handle: string;
+    forceLoad?: boolean;
 }
 
-export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) => {
+export const CategoryProductRow = ({ title, handle, forceLoad = false }: CategoryProductRowProps) => {
     const [products, setProducts] = useState<ShopifyProduct[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -23,8 +24,8 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
     });
 
     useEffect(() => {
-        console.log(`CategoryProductRow [${handle}]: inView=${inView}`);
-        if (!inView) return;
+        console.log(`CategoryProductRow [${handle}]: inView=${inView}, forceLoad=${forceLoad}`);
+        if (!inView && !forceLoad) return;
 
         const loadProducts = async () => {
             try {
@@ -43,7 +44,7 @@ export const CategoryProductRow = ({ title, handle }: CategoryProductRowProps) =
         };
 
         loadProducts();
-    }, [handle, inView]);
+    }, [handle, inView, forceLoad]);
 
     if (loading) {
         return (

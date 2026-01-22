@@ -14,7 +14,7 @@ const Index = () => {
     queryFn: () => fetchCollections(10), // Fetch more for safety
   });
 
-  const specificHandles = ['top-selling-products', 'heaters', 'health-and-beauty'];
+  const specificHandles = ['top-selling-products', 'heaters', 'health-and-beauty', 'home-page'];
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
@@ -26,16 +26,19 @@ const Index = () => {
           <CategoryProductRow
             title="TOP SELLING PRODUCTS"
             handle="top-selling-products"
+            forceLoad={true}
           />
 
           <CategoryProductRow
             title="Home and Living"
             handle="heaters"
+            forceLoad={true}
           />
 
           <CategoryProductRow
             title="Health and Beauty"
             handle="health-and-beauty"
+            forceLoad={true}
           />
         </div>
 

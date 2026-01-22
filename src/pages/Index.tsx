@@ -21,21 +21,23 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* specific Rows at the top as requested */}
-        <CategoryProductRow
-          title="TOP SELLING PRODUCTS"
-          handle="top-selling-products"
-        />
+        {/* specific Rows at the top as requested - Added pt-28 to clear fixed header */}
+        <div className="pt-28 sm:pt-32">
+          <CategoryProductRow
+            title="TOP SELLING PRODUCTS"
+            handle="top-selling-products"
+          />
 
-        <CategoryProductRow
-          title="Home and Living"
-          handle="heaters"
-        />
+          <CategoryProductRow
+            title="Home and Living"
+            handle="heaters"
+          />
 
-        <CategoryProductRow
-          title="Health and Beauty"
-          handle="health-and-beauty"
-        />
+          <CategoryProductRow
+            title="Health and Beauty"
+            handle="health-and-beauty"
+          />
+        </div>
 
         {/* Hero Section - Display Categories */}
         <HeroCategories />

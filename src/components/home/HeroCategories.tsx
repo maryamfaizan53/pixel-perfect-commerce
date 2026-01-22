@@ -49,7 +49,7 @@ export const HeroCategories = () => {
     }
 
     return (
-        <section className="relative pt-32 pb-16 overflow-hidden bg-secondary">
+        <section className="relative py-12 overflow-hidden bg-secondary">
             {/* Background decoration */}
             <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.2),transparent_70%)]" />

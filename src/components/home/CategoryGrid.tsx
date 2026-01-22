@@ -194,7 +194,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6"
+          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4"
         >
           {collections.slice(0, limit).map((col, index) => {
             const theme = cardThemes[index % cardThemes.length];
@@ -210,7 +210,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
               >
                 <Link
                   to={`/category/${col.node.handle}`}
-                  className={`relative block aspect-[3/4] sm:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl ${theme.glow} transition-all duration-500`}
+                  className={`relative block aspect-[2/3] sm:aspect-[3/4] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl ${theme.glow} transition-all duration-500`}
                 >
                   {/* Background Image */}
                   <div className="absolute inset-0">
@@ -242,7 +242,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 + 0.2 }}
-                      className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 ${badge.color} rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-lg`}
+                      className={`inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 ${badge.color} rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider shadow-lg`}
                     >
                       <BadgeIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                       <span className="hidden xs:inline sm:inline">{badge.label}</span>
@@ -250,17 +250,17 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
                   </div>
 
                   {/* Content */}
-                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 md:p-5">
+                  <div className="absolute inset-x-0 bottom-0 p-2 sm:p-3 md:p-4">
                     {/* Decorative Line */}
-                    <div className={`w-8 sm:w-10 md:w-12 h-0.5 sm:h-1 ${theme.accent} rounded-full mb-2 sm:mb-3 group-hover:w-12 sm:group-hover:w-16 md:group-hover:w-20 transition-all duration-500`} />
+                    <div className={`w-6 sm:w-8 h-0.5 ${theme.accent} rounded-full mb-2 sm:mb-3 group-hover:w-10 sm:group-hover:w-12 transition-all duration-500`} />
 
                     {/* Title */}
-                    <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white leading-tight mb-1 sm:mb-2 group-hover:translate-x-1 transition-transform duration-300 line-clamp-2">
+                    <h3 className="text-sm sm:text-base md:text-lg font-bold text-white leading-tight mb-1 sm:mb-2 group-hover:translate-x-1 transition-transform duration-300 line-clamp-2">
                       {col.node.title}
                     </h3>
 
                     {/* Description - Hidden on small mobile */}
-                    <p className="text-white/70 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-3 hidden sm:block">
+                    <p className="text-white/70 text-[10px] sm:text-xs line-clamp-2 mb-2 sm:mb-3 hidden sm:block">
                       {col.node.description || "Explore our amazing collection"}
                     </p>
 
@@ -269,7 +269,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
                       <span className="text-xs sm:text-sm font-semibold group-hover/btn:text-white/90 transition-colors">
                         Shop Now
                       </span>
-                      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
                         <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-0.5 transition-transform duration-300" />
                       </div>
                     </div>

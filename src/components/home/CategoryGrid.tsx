@@ -194,7 +194,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 sm:gap-2 md:gap-2.5"
+          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1 sm:gap-1.5 md:gap-2"
         >
           {collections.slice(0, limit).map((col, index) => {
             const theme = cardThemes[index % cardThemes.length];
@@ -210,7 +210,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
               >
                 <Link
                   to={`/category/${col.node.handle}`}
-                  className={`relative block aspect-[1/1.8] rounded-lg sm:rounded-xl overflow-hidden shadow-sm hover:shadow-lg ${theme.glow} transition-all duration-500`}
+                  className={`relative block aspect-[1/2] rounded-md sm:rounded-lg overflow-hidden shadow-sm hover:shadow-md ${theme.glow} transition-all duration-500`}
                 >
                   {/* Background Image */}
                   <div className="absolute inset-0">
@@ -237,40 +237,40 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-tr from-transparent via-white/20 to-transparent translate-x-full group-hover:translate-x-0 transition-transform duration-1000" />
 
                   {/* Category Badge */}
-                  <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-3">
+                  <div className="absolute top-1 sm:top-1.5 left-1 sm:left-2 right-1 sm:right-2">
                     <motion.div
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 + 0.2 }}
-                      className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 ${badge.color} rounded-full text-white text-[8px] sm:text-[9px] font-bold uppercase tracking-wider shadow-lg`}
+                      className={`inline-flex items-center gap-0.5 px-1 sm:px-1.5 py-0.5 ${badge.color} rounded-full text-white text-[7px] sm:text-[8px] font-bold uppercase tracking-wider shadow-md`}
                     >
-                      <BadgeIcon className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
-                      <span className="hidden xs:inline sm:inline">{badge.label}</span>
+                      <BadgeIcon className="w-1.5 h-1.5 sm:w-2 sm:h-2" />
+                      <span className="hidden sm:inline text-[7px] sm:text-[8px]">{badge.label}</span>
                     </motion.div>
                   </div>
 
                   {/* Content */}
-                  <div className="absolute inset-x-0 bottom-0 p-1 sm:p-1.5 md:p-2">
+                  <div className="absolute inset-x-0 bottom-0 p-0.5 sm:p-1 md:p-1.5">
                     {/* Decorative Line */}
-                    <div className={`w-3 sm:w-4 h-0.5 ${theme.accent} rounded-full mb-0.5 sm:mb-1 group-hover:w-5 sm:group-hover:w-6 transition-all duration-500`} />
+                    <div className={`w-2 sm:w-3 h-0.5 ${theme.accent} rounded-full mb-0.5 group-hover:w-3 sm:group-hover:w-4 transition-all duration-500`} />
 
                     {/* Title */}
-                    <h3 className="text-[10px] sm:text-xs md:text-sm font-bold text-white leading-tight mb-0.5 sm:mb-1 group-hover:translate-x-1 transition-transform duration-300 line-clamp-2">
+                    <h3 className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-white leading-tight mb-0.5 group-hover:translate-x-0.5 transition-transform duration-300 line-clamp-2">
                       {col.node.title}
                     </h3>
 
                     {/* Description - Hidden on small mobile */}
-                    <p className="text-white/70 text-[8px] sm:text-[9px] line-clamp-1 mb-0.5 sm:mb-1 hidden lg:block">
+                    <p className="text-white/70 text-[7px] line-clamp-1 mb-0.5 hidden xl:block">
                       {col.node.description || "Explore our amazing collection"}
                     </p>
 
                     {/* Shop Now Button */}
-                    <div className="flex items-center gap-1 text-white group/btn">
-                      <span className="text-[9px] sm:text-[10px] font-semibold group-hover/btn:text-white/90 transition-colors">
+                    <div className="flex items-center gap-0.5 text-white group/btn">
+                      <span className="text-[7px] sm:text-[8px] font-semibold group-hover/btn:text-white/90 transition-colors">
                         Shop Now
                       </span>
-                      <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
-                        <ArrowRight className="w-2 h-2 sm:w-2.5 sm:h-2.5 group-hover:translate-x-0.5 transition-transform duration-300" />
+                      <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
+                        <ArrowRight className="w-1.5 h-1.5 sm:w-2 sm:h-2 group-hover:translate-x-0.5 transition-transform duration-300" />
                       </div>
                     </div>
                   </div>

@@ -24,14 +24,27 @@ const Index = () => {
 
         {/* Dynamic Category sections */}
         <div className="space-y-4">
-          {/* Featured Top Selling Section */}
+          {/* 1. Featured Top Selling Section */}
           <CategoryProductRow
             title="TOP SELLING PRODUCTS"
-            handle="top-selling"
+            handle="top-selling-products"
           />
 
+          {/* 2. Home and Living Section */}
+          <CategoryProductRow
+            title="Home and Living"
+            handle="home-living"
+          />
+
+          {/* 3. Health and Beauty Section */}
+          <CategoryProductRow
+            title="Health and Beauty"
+            handle="health-beauty"
+          />
+
+          {/* 4. Other Dynamic Collections */}
           {collections
-            .filter(col => col.node.handle !== 'top-selling')
+            .filter(col => !['top-selling-products', 'home-living', 'health-beauty'].includes(col.node.handle))
             .map((col) => (
               <CategoryProductRow
                 key={col.node.id}

@@ -586,7 +586,7 @@ export const HeroCarousel = () => {
             desc: "Top rated items",
             gradient: "from-pink-500 to-rose-500",
             delay: 0.4,
-            link: "/category/top-selling"
+            link: "/category/top-selling-products"
           },
         ].map((card, index) => (
           <motion.div

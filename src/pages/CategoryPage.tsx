@@ -228,8 +228,8 @@ const CategoryPage = () => {
         </section>
 
         {/* Categories Navigation (Requested by User) */}
-        <div className="bg-white border-b border-slate-100">
-          <CategoryGrid limit={4} showHeading={false} />
+        <div className="bg-white border-b border-slate-100 pb-12">
+          <CategoryGrid limit={12} showHeading={false} />
         </div>
 
         <div className="container-custom -mt-12 sm:-mt-16 relative z-20 pb-24">

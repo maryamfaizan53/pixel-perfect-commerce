@@ -194,7 +194,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1 sm:gap-1.5 md:gap-2"
+          className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10 gap-1 sm:gap-1.5 md:gap-2"
         >
           {collections.slice(0, limit).map((col, index) => {
             const theme = cardThemes[index % cardThemes.length];
@@ -250,7 +250,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
                   </div>
 
                   {/* Content */}
-                  <div className="absolute inset-x-0 bottom-0 p-0.5 sm:p-1 md:p-1.5">
+                  <div className="absolute inset-x-0 bottom-0 p-0.5 sm:p-1">
                     {/* Decorative Line */}
                     <div className={`w-2 sm:w-3 h-0.5 ${theme.accent} rounded-full mb-0.5 group-hover:w-3 sm:group-hover:w-4 transition-all duration-500`} />
 

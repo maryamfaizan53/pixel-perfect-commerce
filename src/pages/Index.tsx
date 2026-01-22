@@ -24,13 +24,21 @@ const Index = () => {
 
         {/* Dynamic Category sections */}
         <div className="space-y-4">
-          {collections.map((col) => (
-            <CategoryProductRow
-              key={col.node.id}
-              title={col.node.title}
-              handle={col.node.handle}
-            />
-          ))}
+          {/* Featured Top Selling Section */}
+          <CategoryProductRow
+            title="TOP SELLING PRODUCTS"
+            handle="top-selling"
+          />
+
+          {collections
+            .filter(col => col.node.handle !== 'top-selling')
+            .map((col) => (
+              <CategoryProductRow
+                key={col.node.id}
+                title={col.node.title}
+                handle={col.node.handle}
+              />
+            ))}
         </div>
 
         {/* All Products Section */}

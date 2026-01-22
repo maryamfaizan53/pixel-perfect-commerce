@@ -586,6 +586,7 @@ export const HeroCarousel = () => {
             desc: "Top rated items",
             gradient: "from-pink-500 to-rose-500",
             delay: 0.4,
+            link: "/category/top-selling"
           },
         ].map((card, index) => (
           <motion.div
@@ -595,7 +596,7 @@ export const HeroCarousel = () => {
             transition={{ delay: card.delay }}
           >
             <Link
-              to="/category/all"
+              to={card.link || "/category/all"}
               className={`group relative block h-28 rounded-2xl overflow-hidden bg-gradient-to-br ${card.gradient} p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500" />

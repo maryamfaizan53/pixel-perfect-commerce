@@ -33,18 +33,18 @@ const Index = () => {
           {/* 2. Home and Living Section */}
           <CategoryProductRow
             title="Home and Living"
-            handle="home-living"
+            handle="heaters"
           />
 
           {/* 3. Health and Beauty Section */}
           <CategoryProductRow
             title="Health and Beauty"
-            handle="health-beauty"
+            handle="health-and-beauty"
           />
 
           {/* 4. Other Dynamic Collections */}
           {collections
-            .filter(col => !['top-selling-products', 'home-living', 'health-beauty'].includes(col.node.handle))
+            .filter(col => !['top-selling-products', 'heaters', 'health-and-beauty', 'home-living', 'health-beauty'].includes(col.node.handle))
             .map((col) => (
               <CategoryProductRow
                 key={col.node.id}

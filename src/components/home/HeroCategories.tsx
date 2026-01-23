@@ -75,7 +75,7 @@ export const HeroCategories = () => {
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-4">
                         <Sparkles className="w-4 h-4" />
-                        Featured Collections
+                        Featured Collections - DEBUG_SYNC_TEST
                     </div>
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight mb-4">
                         Shop by <span className="text-primary">Category</span>

@@ -9,10 +9,18 @@ const SEOContentLazy = lazy(() => import("@/components/home/SEOContent").then(m 
 const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ default: m.Footer })));
 
 const Index = () => {
-  const { data: collections = [] } = useQuery({
+  console.log("Index component rendering...");
+  const { data: collections = [], isLoading, error } = useQuery({
     queryKey: ['all-collections-rows'],
-    queryFn: () => fetchCollections(15), // Fetch more for safety
+    queryFn: () => {
+      console.log("Fetching collections...");
+      return fetchCollections(15);
+    },
   });
+
+  if (isLoading) console.log("Collections are loading...");
+  if (error) console.error("Error fetching collections:", error);
+  if (collections.length > 0) console.log(`Fetched ${collections.length} collections`);
 
   const specificHandles = ['top-selling-products', 'frontpage', 'household', 'heaters', 'health-and-beauty'];
 
@@ -25,7 +33,7 @@ const Index = () => {
         <div className="pt-36 sm:pt-40">
           <CategoryProductRow
             title="TOP SELLING PRODUCTS"
-            handle="top-selling-products" 
+            handle="top-selling-products"
             forceLoad={true}
           />
 

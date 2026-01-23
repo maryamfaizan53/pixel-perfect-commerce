@@ -11,7 +11,7 @@ fetch(SHOPIFY_STOREFRONT_URL, {
     body: JSON.stringify({ query })
 }).then(r => r.json()).then(d => {
     d.data.collections.edges.forEach(e => {
-        if (['Top Selling Products', 'Home and Living', 'Health And Beauty'].includes(e.node.title)) {
+        if (['Top Selling Products', 'Home page', 'Household', 'Home and Living', 'Health And Beauty'].includes(e.node.title)) {
             console.log(`${e.node.title} === ${e.node.handle}`);
         }
     });

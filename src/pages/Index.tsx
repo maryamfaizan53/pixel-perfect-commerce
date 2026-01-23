@@ -11,21 +11,33 @@ const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ 
 const Index = () => {
   const { data: collections = [] } = useQuery({
     queryKey: ['all-collections-rows'],
-    queryFn: () => fetchCollections(10), // Fetch more for safety
+    queryFn: () => fetchCollections(12), // Fetch more for safety
   });
 
-  const specificHandles = ['top-selling-products', 'heaters', 'health-and-beauty', 'home-page'];
+  const specificHandles = ['top-selling-products', 'frontpage', 'household', 'heaters', 'health-and-beauty'];
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* specific Rows at the top as requested - Added pt-28 to clear fixed header */}
+        {/* Specific Rows at the top as requested - Added pt-28 to clear fixed header */}
         <div className="pt-28 sm:pt-32">
           <CategoryProductRow
             title="TOP SELLING PRODUCTS"
             handle="top-selling-products"
+            forceLoad={true}
+          />
+
+          <CategoryProductRow
+            title="Home page"
+            handle="frontpage"
+            forceLoad={true}
+          />
+
+          <CategoryProductRow
+            title="Household"
+            handle="household"
             forceLoad={true}
           />
 
@@ -36,7 +48,7 @@ const Index = () => {
           />
 
           <CategoryProductRow
-            title="Health and Beauty"
+            title="Health And Beauty"
             handle="health-and-beauty"
             forceLoad={true}
           />

@@ -11,7 +11,7 @@ const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ 
 const Index = () => {
   const { data: collections = [] } = useQuery({
     queryKey: ['all-collections-rows'],
-    queryFn: () => fetchCollections(12), // Fetch more for safety
+    queryFn: () => fetchCollections(15), // Fetch more for safety
   });
 
   const specificHandles = ['top-selling-products', 'frontpage', 'household', 'heaters', 'health-and-beauty'];
@@ -21,8 +21,8 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* Specific Rows at the top as requested - Added pt-28 to clear fixed header */}
-        <div className="pt-28 sm:pt-32">
+        {/* Specific Rows at the top as requested - Increased padding to clear fixed header completely */}
+        <div className="pt-36 sm:pt-40">
           <CategoryProductRow
             title="TOP SELLING PRODUCTS"
             handle="top-selling-products"
@@ -54,7 +54,7 @@ const Index = () => {
           />
         </div>
 
-        {/* Hero Section - Display Categories */}
+        {/* Hero Section - Display Categories Grid */}
         <HeroCategories />
 
         {/* 4. Other Dynamic collections */}

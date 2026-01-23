@@ -48,6 +48,18 @@ export const HeroCategories = () => {
         );
     }
 
+    const orderedHandles = ['top-selling-products', 'frontpage', 'household', 'heaters', 'health-and-beauty'];
+
+    const sortedCollections = [...collections].sort((a, b) => {
+        const indexA = orderedHandles.indexOf(a.node.handle);
+        const indexB = orderedHandles.indexOf(b.node.handle);
+
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return 0;
+    });
+
     return (
         <section className="relative py-12 overflow-hidden bg-secondary">
             {/* Background decoration */}
@@ -74,7 +86,7 @@ export const HeroCategories = () => {
                 </motion.div>
 
                 <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                    {collections.slice(0, 6).map((col, index) => (
+                    {sortedCollections.slice(0, 9).map((col, index) => (
                         <motion.div
                             key={col.node.id}
                             initial={{ opacity: 0, scale: 0.9 }}

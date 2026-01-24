@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Loader2, Eye, EyeOff, Mail, Lock, User as UserIcon, Sparkles, ArrowRight, ShieldCheck, Github } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 import { z } from "zod";
 import { motion } from "framer-motion";
 
@@ -70,6 +71,13 @@ const Auth = () => {
         }
       });
       if (error) throw error;
+
+      // Meta Pixel: Track CompleteRegistration
+      trackMetaEvent('CompleteRegistration', {
+        content_name: validatedData.fullName,
+        status: 'success'
+      });
+
       toast.success("Account created successfully!", { description: "Explore the collection now." });
     } catch (error: any) {
       toast.error(error instanceof z.ZodError ? error.errors[0].message : error.message);
@@ -88,6 +96,13 @@ const Auth = () => {
         password: validatedData.password,
       });
       if (error) throw error;
+
+      // Meta Pixel: Track Login
+      trackMetaEvent('Contact', {
+        method: 'direct',
+        email: validatedData.email
+      });
+
       toast.success("Welcome back to ShopHub!");
     } catch (error: any) {
       toast.error(error instanceof z.ZodError ? error.errors[0].message : error.message);

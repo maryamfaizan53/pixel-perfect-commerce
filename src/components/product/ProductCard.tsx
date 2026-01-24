@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { OptimizedImage } from "@/components/common/OptimizedImage";
+import { formatProductId, trackMetaEvent } from "@/lib/meta-pixel";
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -58,6 +59,16 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
     };
 
     addItem(cartItem);
+
+    // Meta Pixel: Track AddToCart
+    trackMetaEvent('AddToCart', {
+      content_ids: [formatProductId(node.id)],
+      content_name: node.title,
+      content_type: 'product',
+      value: price,
+      currency: currencyCode || 'PKR'
+    });
+
     toast.success("Added to cart", {
       description: node.title,
     });

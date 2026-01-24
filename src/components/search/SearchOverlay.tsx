@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/stores/cartStore";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 const SEARCH_HISTORY_KEY = "product-search-history";
 const RECENTLY_VIEWED_KEY = "recently-viewed-products";
@@ -116,6 +117,14 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
 
                 const data = await fetchProducts(limit, query);
                 setProducts(data);
+
+                // Meta Pixel: Track Search
+                if (query) {
+                    trackMetaEvent('Search', {
+                        search_string: query,
+                        content_category: selectedCategory || undefined
+                    });
+                }
             } catch (e) {
                 console.error("Search failed", e);
             } finally {

@@ -5,6 +5,7 @@ import { ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { useState } from "react";
+import { formatProductId, trackMetaEvent } from "@/lib/meta-pixel";
 
 interface ProductQuickViewProps {
     product: ShopifyProduct;
@@ -38,16 +39,13 @@ export const ProductQuickView = ({ product, index }: ProductQuickViewProps) => {
         addItem(cartItem);
 
         // Meta Pixel: Track AddToCart
-        if (typeof window.fbq === 'function') {
-            const productId = product.node.id.split('/').pop() || '';
-            window.fbq('track', 'AddToCart', {
-                content_ids: [productId],
-                content_name: product.node.title,
-                content_type: 'product',
-                value: price,
-                currency: currencyCode || 'PKR'
-            });
-        }
+        trackMetaEvent('AddToCart', {
+            content_ids: [formatProductId(product.node.id)],
+            content_name: product.node.title,
+            content_type: 'product',
+            value: price,
+            currency: currencyCode || 'PKR'
+        });
 
         toast.success("Added to cart", {
             description: product.node.title,

@@ -36,6 +36,19 @@ export const ProductQuickView = ({ product, index }: ProductQuickViewProps) => {
         };
 
         addItem(cartItem);
+
+        // Meta Pixel: Track AddToCart
+        if (typeof window.fbq === 'function') {
+            const productId = product.node.id.split('/').pop() || '';
+            window.fbq('track', 'AddToCart', {
+                content_ids: [productId],
+                content_name: product.node.title,
+                content_type: 'product',
+                value: price,
+                currency: currencyCode || 'PKR'
+            });
+        }
+
         toast.success("Added to cart", {
             description: product.node.title,
         });

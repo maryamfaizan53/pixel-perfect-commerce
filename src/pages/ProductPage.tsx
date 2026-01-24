@@ -212,6 +212,20 @@ const ProductPage = () => {
     }
   }, [handle]);
 
+  // Meta Pixel: Track ViewContent
+  useEffect(() => {
+    if (product && typeof window.fbq === 'function') {
+      window.fbq('track', 'ViewContent', {
+        content_ids: [product.id.split('/').pop() || ''],
+        content_name: product.title,
+        content_type: 'product',
+        value: parseFloat(product.priceRange.minVariantPrice.amount),
+        currency: product.priceRange.minVariantPrice.currencyCode || 'PKR'
+      });
+      console.log('Meta Pixel: ViewContent tracked for', product.title);
+    }
+  }, [product]);
+
   useEffect(() => {
     if (product) {
       const RECENTLY_VIEWED_KEY = "recently-viewed-products";
@@ -250,6 +264,18 @@ const ProductPage = () => {
     };
 
     addItem(cartItem);
+
+    // Meta Pixel: Track AddToCart
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', 'AddToCart', {
+        content_ids: [product.id.split('/').pop() || ''],
+        content_name: product.title,
+        content_type: 'product',
+        value: parseFloat(selectedVariant.price.amount) * quantity,
+        currency: selectedVariant.price.currencyCode || 'PKR'
+      });
+    }
+
     toast.success("Added to cart", {
       description: `${quantity}x ${product.title}`,
     });
@@ -270,6 +296,18 @@ const ProductPage = () => {
       };
 
       const checkoutUrl = await createStorefrontCheckout([cartItem]);
+
+      // Meta Pixel: Track AddToCart (for Buy Now)
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'AddToCart', {
+          content_ids: [product.id.split('/').pop() || ''],
+          content_name: product.title,
+          content_type: 'product',
+          value: parseFloat(selectedVariant.price.amount) * quantity,
+          currency: selectedVariant.price.currencyCode || 'PKR'
+        });
+      }
+
       window.location.href = checkoutUrl;
     } catch (error) {
       console.error('Checkout failed:', error);

@@ -8,6 +8,7 @@ import { useCartStore } from "@/stores/cartStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useState } from "react";
+import { trackMetaEvent, formatProductId } from "@/lib/meta-pixel";
 
 const CartPage = () => {
   const {
@@ -31,6 +32,15 @@ const CartPage = () => {
 
   const handleCheckout = async () => {
     try {
+      // Meta Pixel: Track InitiateCheckout
+      trackMetaEvent('InitiateCheckout', {
+        content_ids: items.map(item => formatProductId(item.product.node.id)),
+        content_type: 'product',
+        value: total,
+        currency: currencyCode,
+        num_items: totalItems
+      });
+
       await createCheckout();
       const checkoutUrl = useCartStore.getState().checkoutUrl;
       if (checkoutUrl) {

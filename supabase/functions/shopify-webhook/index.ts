@@ -11,12 +11,12 @@ function verifyWebhookSignature(payload: string, signature: string, secret: stri
   const hmac = createHmac("sha256", secret);
   hmac.update(payload, "utf8");
   const computedSignature = hmac.digest("base64");
-  
+
   // Compare signatures securely
   if (signature.length !== computedSignature.length) {
     return false;
   }
-  
+
   return signature === computedSignature;
 }
 
@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
       total_tax: parseFloat(orderData.total_tax || "0"),
       total_shipping: parseFloat(orderData.total_shipping_price_set?.shop_money?.amount || "0"),
       currency_code: orderData.currency || "USD",
-      customer_name: orderData.customer?.first_name 
+      customer_name: orderData.customer?.first_name
         ? `${orderData.customer.first_name} ${orderData.customer.last_name || ""}`.trim()
         : null,
       shipping_address: orderData.shipping_address || null,
@@ -188,6 +188,47 @@ Deno.serve(async (req) => {
       }
     } catch (emailError) {
       console.error("Error sending confirmation email:", emailError);
+    }
+
+    // Meta Pixel CAPI: Track Purchase
+    try {
+      const metaPayload = {
+        event_name: 'Purchase',
+        event_id: String(orderData.id),
+        event_source_url: `https://${orderData.domain || 'www.aibazar.pk'}/checkout`,
+        user_data: {
+          email: orderData.email,
+          phone: orderData.phone || orderData.customer?.phone,
+          firstName: orderData.customer?.first_name,
+          lastName: orderData.customer?.last_name,
+        },
+        custom_data: {
+          content_ids: orderData.line_items?.map((item: any) =>
+            `gid://shopify/Product/${item.product_id}`
+          ) || [],
+          content_type: 'product',
+          value: parseFloat(orderData.total_price || "0"),
+          currency: orderData.currency || "PKR",
+          num_items: orderData.line_items?.length || 0,
+        }
+      };
+
+      const metaResponse = await fetch(`${supabaseUrl}/functions/v1/meta-conversions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseServiceKey}`,
+        },
+        body: JSON.stringify(metaPayload),
+      });
+
+      if (!metaResponse.ok) {
+        console.error("Failed to send Meta CAPI event:", await metaResponse.text());
+      } else {
+        console.log("Meta CAPI Purchase event sent successfully");
+      }
+    } catch (metaError) {
+      console.error("Error sending Meta CAPI Purchase event:", metaError);
     }
 
     return new Response(JSON.stringify({ success: true, orderId: newOrder.id }), {

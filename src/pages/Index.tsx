@@ -29,8 +29,11 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* Specific Rows at the top as requested - Increased padding to clear fixed header completely */}
-        <div className="pt-36 sm:pt-40">
+        {/* Hero Section - Display Categories Grid - Move to top */}
+        <HeroCategories />
+
+        {/* Specific Rows BELOW hero as requested */}
+        <div className="space-y-0">
           <CategoryProductRow
             title="Top Selling Products"
             handle="top-selling-products"
@@ -62,9 +65,6 @@ const Index = () => {
             forceLoad={true}
           />
         </div>
-
-        {/* Hero Section - Display Categories Grid */}
-        <HeroCategories />
 
         {/* 4. Other Dynamic collections */}
         <div className="space-y-4">

@@ -35,7 +35,9 @@ export const CategoryProductRow = ({ title, handle, description, forceLoad = fal
                 console.log(`CategoryProductRow [${handle}]: received data:`, data);
                 if (data) {
                     setProducts(data.products);
-                    console.log(`CategoryProductRow [${handle}]: set ${data.products.length} products`);
+                    console.log(`[DEBUG] CategoryProductRow [${handle}]: fetched ${data.products.length} products`);
+                } else {
+                    console.log(`[DEBUG] CategoryProductRow [${handle}]: no data returned`);
                 }
             } catch (error) {
                 console.error(`Failed to fetch products for collection ${handle}:`, error);

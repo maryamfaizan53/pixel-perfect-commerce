@@ -27,6 +27,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Header />
+      <div className="bg-red-500 text-white text-center py-2 z-[100] relative">DEBUG: Index.tsx is rendering</div>
 
       <main className="flex-1 overflow-x-hidden">
         {/* Specific Rows at the top as requested - Increased padding to clear fixed header completely */}

@@ -29,17 +29,22 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
+        <div className="bg-yellow-200 text-black text-center py-2 font-bold">START OF MAIN SECTION</div>
         {/* Hero Section - Display Categories Grid - Move to top */}
         <HeroCategories />
 
+        <div className="bg-green-200 text-black text-center py-2 font-bold">BELOW CARDS / ABOVE TOP SELLING</div>
+
         {/* Specific Rows BELOW hero as requested */}
         <div className="space-y-0">
+          <div className="container-custom py-2 bg-blue-100 text-xs">Attempting to render: Top Selling Products (top-selling-products)</div>
           <CategoryProductRow
             title="Top Selling Products"
             handle="top-selling-products"
             forceLoad={true}
           />
 
+          <div className="container-custom py-2 bg-blue-100 text-xs">Attempting to render: Home page (frontpage)</div>
           <CategoryProductRow
             title="Home page"
             handle="frontpage"

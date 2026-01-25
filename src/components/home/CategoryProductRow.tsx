@@ -65,7 +65,11 @@ export const CategoryProductRow = ({ title, handle, description, forceLoad = fal
     }
 
     if (products.length === 0) {
-        return null;
+        return (
+            <div className="container-custom py-4 text-slate-400 text-xs italic">
+                Row "{title}" (handle: {handle}) skipped because it has 0 products.
+            </div>
+        );
     }
 
     return (

@@ -29,49 +29,45 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        <div className="bg-yellow-200 text-black text-center py-2 font-bold">START OF MAIN SECTION</div>
-        {/* Hero Section - Display Categories Grid - Move to top */}
+        {/* Hero Section - Display Categories Grid */}
         <HeroCategories />
 
-        <div className="bg-green-200 text-black text-center py-2 font-bold">BELOW CARDS / ABOVE TOP SELLING</div>
-
-        {/* Specific Rows BELOW hero as requested */}
+        {/* Home Page Collections */}
         <div className="space-y-0">
-          <div className="container-custom py-2 bg-blue-100 text-xs">Attempting to render: Top Selling Products (top-selling-products)</div>
           <CategoryProductRow
             title="Top Selling Products"
             handle="top-selling-products"
+            description="Our most popular picks voted by the community"
             forceLoad={true}
           />
 
-          <div className="container-custom py-2 bg-blue-100 text-xs">Attempting to render: Home page (frontpage)</div>
           <CategoryProductRow
             title="Home page"
             handle="frontpage"
-            description="Explore our home page collection"
+            description="Explore our curated home page collection"
             forceLoad={true}
           />
 
           <CategoryProductRow
-            title="Household"
+            title="Household Essentials"
             handle="household"
             forceLoad={true}
           />
 
           <CategoryProductRow
-            title="Home and Living"
+            title="Modern Home & Living"
             handle="heaters"
             forceLoad={true}
           />
 
           <CategoryProductRow
-            title="Health And Beauty"
+            title="Premium Health & Beauty"
             handle="health-and-beauty"
             forceLoad={true}
           />
         </div>
 
-        {/* 4. Other Dynamic collections */}
+        {/* Other Dynamic collections */}
         <div className="space-y-4">
           {collections
             .filter(col => !specificHandles.includes(col.node.handle))

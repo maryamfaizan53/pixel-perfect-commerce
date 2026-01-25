@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 // Toggle this to true if your Meta Catalogue uses full Shopify GIDs (e.g., gid://shopify/Product/123456789)
 // Toggle to false if your catalogue uses only numeric IDs (e.g., 123456789)
-const USE_FULL_GID = true;
+const USE_FULL_GID = false;
 
 /**
  * Formats a Shopify ID for Meta Pixel catalogue matching.

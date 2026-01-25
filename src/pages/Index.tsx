@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Header } from "@/components/layout/Header";
 import { HeroCategories } from "@/components/home/HeroCategories";
 import { CategoryProductRow } from "@/components/home/CategoryProductRow";
@@ -5,10 +6,18 @@ import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { fetchCollections } from "@/lib/shopify";
 import { useQuery } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
+import { useSEO } from "@/hooks/useSEO";
+
 const SEOContentLazy = lazy(() => import("@/components/home/SEOContent").then(m => ({ default: m.SEOContent })));
 const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ default: m.Footer })));
 
 const Index = () => {
+  useSEO({
+    title: "Lowest Prices & Affordable Online Shopping in Pakistan",
+    description: "Shop at AI Bazar, Pakistan's most affordable AI-powered marketplace. Discover high-quality household, beauty, and fashion items at the lowest prices. Cash on delivery nationwide.",
+    keywords: "lowest prices pakistan, affordable online shopping, ai bazar, buy cheap products, household items sale, kitchen gadgets, beauty products pakistan"
+  });
+
   console.log("Index component rendering...");
   const { data: collections = [], isLoading, error } = useQuery({
     queryKey: ['all-collections-rows'],

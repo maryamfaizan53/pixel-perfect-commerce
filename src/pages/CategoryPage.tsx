@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { fetchProducts, fetchProductsByCollection, ShopifyProduct, CollectionData } from "@/lib/shopify";
 import { motion, AnimatePresence } from "framer-motion";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { useSEO } from "@/hooks/useSEO";
 
 const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
 
@@ -162,6 +163,12 @@ const CategoryPage = () => {
         // If searching, Score is best, but here we just keep default order returned by API (relevance)
         return 0;
     }
+  });
+
+  useSEO({
+    title: collectionData ? `${collectionData.title} Collection` : "All Categories",
+    description: collectionData?.description || "Browse our curated collections of affordable products in Pakistan. Highest quality, lowest prices.",
+    keywords: collectionData ? `${collectionData.title.toLowerCase()}, aibazar collection, buy ${collectionData.title.toLowerCase()} online pakistan` : "aibazar categories"
   });
 
   return (

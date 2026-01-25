@@ -15,6 +15,7 @@ import { useReviews } from "@/hooks/useReviews";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { formatProductId, trackMetaEvent } from "@/lib/meta-pixel";
+import { useSEO } from "@/hooks/useSEO";
 
 
 interface ProductMedia {
@@ -192,7 +193,6 @@ const ProductPage = () => {
 
   const productId = product?.id?.replace("gid://shopify/Product/", "") || "";
   const { stats: reviewStats } = useReviews(productId, handle || "");
-
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -213,9 +213,10 @@ const ProductPage = () => {
     }
   }, [handle]);
 
-  // Meta Pixel: Track ViewContent
+  // Meta Pixel & Browser SEO: Track ViewContent and set Dynamic Title
   useEffect(() => {
     if (product) {
+      // 1. Meta Pixel
       trackMetaEvent('ViewContent', {
         content_ids: [formatProductId(product.id)],
         content_name: product.title,
@@ -223,6 +224,62 @@ const ProductPage = () => {
         value: parseFloat(product.priceRange.minVariantPrice.amount),
         currency: product.priceRange.minVariantPrice.currencyCode || 'PKR'
       });
+    }
+  }, [product]);
+
+  // Expert Level SEO: Set Dynamic Metadata and JSON-LD
+  useSEO({
+    title: product ? `${product.title} - Lowest Price in Pakistan` : "Loading Product...",
+    description: product ? `${product.description.substring(0, 155)}... Shop at AI Bazar for the lowest prices in Pakistan.` : "High quality products at AI Bazar.",
+    keywords: product ? `${product.title.toLowerCase()}, aibazar, affordable ${product.productType.toLowerCase()}, buy ${product.title.toLowerCase()} online pakistan` : "aibazar shopping"
+  });
+
+  // Inject JSON-LD for Search Rich Results
+  useEffect(() => {
+    if (product) {
+      const price = product.priceRange.minVariantPrice.amount;
+      const currency = product.priceRange.minVariantPrice.currencyCode || 'PKR';
+      const imageUrl = product.media.edges[0]?.node.previewImage?.url || product.media.edges[0]?.node.image?.url;
+
+      const ldJson = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.title,
+        "image": imageUrl ? [imageUrl] : [],
+        "description": product.description,
+        "sku": formatProductId(product.id),
+        "brand": {
+          "@type": "Brand",
+          "name": product.vendor
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": window.location.href,
+          "priceCurrency": currency,
+          "price": price,
+          "availability": product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "AI Bazar"
+          }
+        }
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(ldJson);
+      script.id = 'product-json-ld';
+
+      // Remove existing script if any
+      const existing = document.getElementById('product-json-ld');
+      if (existing) existing.remove();
+
+      document.head.appendChild(script);
+
+      return () => {
+        const scriptToRemove = document.getElementById('product-json-ld');
+        if (scriptToRemove) scriptToRemove.remove();
+      };
     }
   }, [product]);
 

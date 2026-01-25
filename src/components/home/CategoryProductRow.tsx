@@ -11,10 +11,11 @@ import { useInView } from "react-intersection-observer";
 interface CategoryProductRowProps {
     title: string;
     handle: string;
+    description?: string;
     forceLoad?: boolean;
 }
 
-export const CategoryProductRow = ({ title, handle, forceLoad = false }: CategoryProductRowProps) => {
+export const CategoryProductRow = ({ title, handle, description, forceLoad = false }: CategoryProductRowProps) => {
     const [products, setProducts] = useState<ShopifyProduct[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -70,11 +71,11 @@ export const CategoryProductRow = ({ title, handle, forceLoad = false }: Categor
             <div className="container-custom">
                 <div className="flex items-center justify-between mb-8 border-l-4 border-primary pl-4">
                     <div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight uppercase">
+                        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                             {title}
                         </h2>
                         <p className="text-muted-foreground text-sm font-medium">
-                            Explore our {title.toLowerCase()} collection
+                            {description || `Explore our ${title.toLowerCase()} collection`}
                         </p>
                     </div>
                     <Link to={`/category/${handle}`}>

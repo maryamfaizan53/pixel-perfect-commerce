@@ -32,7 +32,7 @@ const Index = () => {
         {/* Specific Rows at the top as requested - Increased padding to clear fixed header completely */}
         <div className="pt-36 sm:pt-40">
           <CategoryProductRow
-            title="TOP SELLING PRODUCTS"
+            title="Top Selling Products"
             handle="top-selling-products"
             forceLoad={true}
           />
@@ -40,6 +40,7 @@ const Index = () => {
           <CategoryProductRow
             title="Home page"
             handle="frontpage"
+            description="Explore our home page collection"
             forceLoad={true}
           />
 

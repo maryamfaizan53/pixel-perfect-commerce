@@ -9,11 +9,14 @@ import { OptimizedImage } from "@/components/common/OptimizedImage";
 export const HeroCategories = () => {
     const { data: collections = [], isLoading } = useQuery({
         queryKey: ['collections'],
-        queryFn: () => fetchCollections(12),
+        queryFn: () => fetchCollections(50),
     });
 
     const getCategoryImage = (title: string) => {
         const normalized = title.toLowerCase().trim();
+
+        if (/top selling|popular/i.test(normalized))
+            return { local: '/top-selling.png', fallback: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=800&q=80&auto=format' };
 
         // Use regex for broad matching to ensure variations like "Home and Living" or "HomeDecor" are caught
         if (/home|living|decor|furniture/i.test(normalized))

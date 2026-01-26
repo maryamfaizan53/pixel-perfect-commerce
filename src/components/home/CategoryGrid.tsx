@@ -45,6 +45,7 @@ const categoryImages: Record<string, string> = {
   "games": "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=800&h=1000&fit=crop",
 
   // Default fallbacks
+  "top-selling-products": "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=800&h=1000&fit=crop",
   "default": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=1000&fit=crop",
 };
 
@@ -121,8 +122,8 @@ interface CategoryGridProps {
 
 export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProps) => {
   const { data: collections = [], isLoading } = useQuery({
-    queryKey: ['collections', limit],
-    queryFn: () => fetchCollections(limit),
+    queryKey: ['collections', 50],
+    queryFn: () => fetchCollections(50),
   });
 
   if (isLoading) {
@@ -147,6 +148,20 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
   }
 
   if (collections.length === 0) return null;
+
+  const orderedHandles = ['top-selling-products', 'frontpage', 'household', 'heaters', 'health-and-beauty'];
+
+  const sortedCollections = [...collections].sort((a, b) => {
+    const indexA = orderedHandles.indexOf(a.node.handle);
+    const indexB = orderedHandles.indexOf(b.node.handle);
+
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+    return 0;
+  });
+
+  const displayCollections = sortedCollections.slice(0, limit);
 
   return (
     <section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
@@ -196,7 +211,7 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
           viewport={{ once: true, margin: "-50px" }}
           className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10 gap-1 sm:gap-1.5 md:gap-2"
         >
-          {collections.slice(0, limit).map((col, index) => {
+          {displayCollections.map((col, index) => {
             const theme = cardThemes[index % cardThemes.length];
             const badge = categoryBadges[index % categoryBadges.length];
             const BadgeIcon = badge.icon;

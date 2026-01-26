@@ -31,7 +31,7 @@ const Index = () => {
   if (error) console.error("Error fetching collections:", error);
   if (collections.length > 0) console.log(`Fetched ${collections.length} collections`);
 
-  const specificHandles = ['top-selling-products', 'frontpage', 'household', 'heaters', 'health-and-beauty'];
+  const specificHandles = ['top-selling-products', 'household', 'heaters', 'health-and-beauty'];
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
@@ -50,12 +50,7 @@ const Index = () => {
             forceLoad={true}
           />
 
-          <CategoryProductRow
-            title="Home page"
-            handle="frontpage"
-            description="Explore our curated home page collection"
-            forceLoad={true}
-          />
+
 
           <CategoryProductRow
             title="Household Essentials"

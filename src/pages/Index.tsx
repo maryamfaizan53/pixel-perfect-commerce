@@ -31,7 +31,7 @@ const Index = () => {
   if (error) console.error("Error fetching collections:", error);
   if (collections.length > 0) console.log(`Fetched ${collections.length} collections`);
 
-  const specificHandles = ['top-selling-products', 'household', 'heaters', 'health-and-beauty'];
+  const specificHandles = ['top-selling-products', 'household', 'heaters', 'health-and-beauty', 'hair-straightener-1', 'kitchen'];
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
@@ -69,6 +69,19 @@ const Index = () => {
             handle="health-and-beauty"
             forceLoad={true}
           />
+
+          <CategoryProductRow
+            title="Professional Hair Straighteners"
+            handle="hair-straightener-1"
+            forceLoad={true}
+          />
+
+          <CategoryProductRow
+            title="Modern Kitchen Appliances"
+            handle="kitchen"
+            forceLoad={true}
+          />
+
         </div>
 
         {/* Other Dynamic collections */}

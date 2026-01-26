@@ -51,7 +51,7 @@ export const HeroCategories = () => {
         );
     }
 
-    const orderedHandles = ['top-selling-products', 'household', 'heaters', 'health-and-beauty'];
+    const orderedHandles = ['top-selling-products', 'household', 'heaters', 'health-and-beauty', 'hair-straightener-1', 'kitchen'];
 
     const sortedCollections = [...collections].sort((a, b) => {
         const indexA = orderedHandles.indexOf(a.node.handle);

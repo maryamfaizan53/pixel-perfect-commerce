@@ -8,7 +8,7 @@ const SHOPIFY_STOREFRONT_TOKEN = 'afc3b50fa1a47d2ca42338230468d047';
 
 const query = `
 {
-  products(first: 100) {
+  products(first: 250) {
     edges {
       node {
         id

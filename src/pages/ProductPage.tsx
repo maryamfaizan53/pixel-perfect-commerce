@@ -229,9 +229,13 @@ const ProductPage = () => {
 
   // Expert Level SEO: Set Dynamic Metadata and JSON-LD
   useSEO({
-    title: product ? `${product.title} - Lowest Price in Pakistan` : "Loading Product...",
-    description: product ? `${product.description.substring(0, 155)}... Shop at AI Bazar for the lowest prices in Pakistan.` : "High quality products at AI Bazar.",
-    keywords: product ? `${product.title.toLowerCase()}, aibazar, affordable ${product.productType.toLowerCase()}, buy ${product.title.toLowerCase()} online pakistan` : "aibazar shopping"
+    title: product ? `${product.title} - Lowest Price in Pakistan - Free Shipping` : "Loading Product...",
+    description: product ? `Shop ${product.title} at AI Bazar. ${product.description.substring(0, 120)}... Lowest prices in Pakistan with free express shipping and original quality guaranteed.` : "High quality products at AI Bazar.",
+    keywords: product ? `${product.title.toLowerCase()}, aibazar, affordable ${product.productType.toLowerCase()}, buy ${product.title.toLowerCase()} online pakistan, ${product.vendor} pakistan` : "aibazar shopping",
+    ogImage: product?.media.edges[0]?.node.previewImage?.url || product?.media.edges[0]?.node.image?.url,
+    ogType: 'product',
+    priceAmount: product?.priceRange.minVariantPrice.amount,
+    priceCurrency: product?.priceRange.minVariantPrice.currencyCode || 'PKR'
   });
 
   // Inject JSON-LD for Search Rich Results
@@ -239,15 +243,17 @@ const ProductPage = () => {
     if (product) {
       const price = product.priceRange.minVariantPrice.amount;
       const currency = product.priceRange.minVariantPrice.currencyCode || 'PKR';
-      const imageUrl = product.media.edges[0]?.node.previewImage?.url || product.media.edges[0]?.node.image?.url;
+      const imageUrl = product.media.edges.map(edge => edge.node.previewImage?.url || edge.node.image?.url).filter(Boolean);
+      const collection = product.collections.edges[0]?.node;
 
-      const ldJson = {
+      const productSchema = {
         "@context": "https://schema.org/",
         "@type": "Product",
         "name": product.title,
-        "image": imageUrl ? [imageUrl] : [],
+        "image": imageUrl,
         "description": product.description,
         "sku": formatProductId(product.id),
+        "mpn": formatProductId(product.id),
         "brand": {
           "@type": "Brand",
           "name": product.vendor
@@ -257,31 +263,106 @@ const ProductPage = () => {
           "url": window.location.href,
           "priceCurrency": currency,
           "price": price,
+          "priceValidUntil": "2026-12-31",
+          "itemCondition": "https://schema.org/NewCondition",
           "availability": product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           "seller": {
             "@type": "Organization",
-            "name": "AI Bazar"
+            "name": "AI Bazar Pakistan"
+          },
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "applicableCountry": "PK",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 30,
+            "returnMethod": "https://schema.org/ReturnByMail",
+            "returnFees": "https://schema.org/FreeReturn"
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "PKR"
+            },
+            "shippingDestination": {
+              "@type": "DefinedRegion",
+              "addressCountry": "PK"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 1,
+                "unitCode": "d"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 1,
+                "maxValue": 3,
+                "unitCode": "d"
+              }
+            }
           }
         }
+      } as any;
+
+      // Add actual review data to schema if available
+      if (reviewStats && reviewStats.totalReviews > 0) {
+        productSchema.aggregateRating = {
+          "@type": "AggregateRating",
+          "ratingValue": reviewStats.averageRating.toFixed(1),
+          "reviewCount": reviewStats.totalReviews
+        };
+      }
+
+      const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": window.location.origin
+          }
+        ]
       };
+
+      if (collection) {
+        breadcrumbSchema.itemListElement.push({
+          "@type": "ListItem",
+          "position": 2,
+          "name": collection.title,
+          "item": `${window.location.origin}/collections/${collection.handle}`
+        });
+      }
+
+      breadcrumbSchema.itemListElement.push({
+        "@type": "ListItem",
+        "position": collection ? 3 : 2,
+        "name": product.title,
+        "item": window.location.href
+      });
 
       const script = document.createElement('script');
       script.type = 'application/ld+json';
-      script.text = JSON.stringify(ldJson);
-      script.id = 'product-json-ld';
+      script.text = JSON.stringify([productSchema, breadcrumbSchema]);
+      script.id = 'product-seo-json-ld';
 
       // Remove existing script if any
-      const existing = document.getElementById('product-json-ld');
+      const existing = document.getElementById('product-seo-json-ld');
       if (existing) existing.remove();
 
       document.head.appendChild(script);
 
       return () => {
-        const scriptToRemove = document.getElementById('product-json-ld');
+        const scriptToRemove = document.getElementById('product-seo-json-ld');
         if (scriptToRemove) scriptToRemove.remove();
       };
     }
-  }, [product]);
+  }, [product, reviewStats]);
 
   useEffect(() => {
     if (product) {
@@ -456,7 +537,7 @@ const ProductPage = () => {
       <Header />
 
       <main className="flex-1 pt-32 sm:pt-36 lg:pt-40 pb-8 sm:pb-12 lg:pb-24">
-        <div className="max-w-[1400px] mx-auto px-0 sm:px-6 lg:px-8">
+        <article className="max-w-[1400px] mx-auto px-0 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <motion.nav
             initial={{ opacity: 0, x: -20 }}
@@ -941,7 +1022,7 @@ const ProductPage = () => {
               </div>
             </Tabs>
           </motion.div>
-        </div>
+        </article>
       </main>
 
       <Footer />

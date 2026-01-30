@@ -4,5 +4,7 @@ Disallow: /checkout
 Disallow: /cart
 Disallow: /account
 Disallow: /orders
+Disallow: /auth
 
+# Sitemap link
 Sitemap: https://www.aibazar.pk/sitemap.xml

@@ -6,13 +6,16 @@ interface SEOProps {
     keywords?: string;
     ogImage?: string;
     canonical?: string;
+    ogType?: 'website' | 'product' | 'article';
+    priceAmount?: string;
+    priceCurrency?: string;
 }
 
 /**
  * Hook to dynamically update SEO meta tags in a React application.
  * This is a lightweight alternative to react-helmet.
  */
-export const useSEO = ({ title, description, keywords, ogImage, canonical }: SEOProps) => {
+export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency }: SEOProps) => {
     useEffect(() => {
         // 1. Update Title
         if (title) {
@@ -53,7 +56,30 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical }: SEO
             if (twitterImg) twitterImg.setAttribute('content', ogImage);
         }
 
-        // 5. Update Canonical
+        // 5. Update OG Type
+        const ogTypeTag = document.querySelector('meta[property="og:type"]');
+        if (ogTypeTag) ogTypeTag.setAttribute('content', ogType);
+
+        // 6. Update Product Meta (if applicable)
+        if (ogType === 'product' && priceAmount) {
+            let ogPriceAmount = document.querySelector('meta[property="product:price:amount"]');
+            if (!ogPriceAmount) {
+                ogPriceAmount = document.createElement('meta');
+                ogPriceAmount.setAttribute('property', 'product:price:amount');
+                document.head.appendChild(ogPriceAmount);
+            }
+            ogPriceAmount.setAttribute('content', priceAmount);
+
+            let ogPriceCurrency = document.querySelector('meta[property="product:price:currency"]');
+            if (!ogPriceCurrency) {
+                ogPriceCurrency = document.createElement('meta');
+                ogPriceCurrency.setAttribute('property', 'product:price:currency');
+                document.head.appendChild(ogPriceCurrency);
+            }
+            ogPriceCurrency.setAttribute('content', priceCurrency || 'PKR');
+        }
+
+        // 7. Update Canonical
         if (canonical) {
             let linkCanonical = document.querySelector('link[rel="canonical"]');
             if (linkCanonical) {
@@ -65,5 +91,5 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical }: SEO
                 document.head.appendChild(linkCanonical);
             }
         }
-    }, [title, description, keywords, ogImage, canonical]);
+    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency]);
 };

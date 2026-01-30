@@ -9,13 +9,15 @@ interface SEOProps {
     ogType?: 'website' | 'product' | 'article';
     priceAmount?: string;
     priceCurrency?: string;
+    availability?: 'instock' | 'outofstock' | 'preorder' | 'available for order' | 'discontinued' | 'pending';
+    retailerItemId?: string;
 }
 
 /**
  * Hook to dynamically update SEO meta tags in a React application.
  * This is a lightweight alternative to react-helmet.
  */
-export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency }: SEOProps) => {
+export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId }: SEOProps) => {
     useEffect(() => {
         // 1. Update Title
         if (title) {
@@ -61,22 +63,44 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
         if (ogTypeTag) ogTypeTag.setAttribute('content', ogType);
 
         // 6. Update Product Meta (if applicable)
-        if (ogType === 'product' && priceAmount) {
-            let ogPriceAmount = document.querySelector('meta[property="product:price:amount"]');
-            if (!ogPriceAmount) {
-                ogPriceAmount = document.createElement('meta');
-                ogPriceAmount.setAttribute('property', 'product:price:amount');
-                document.head.appendChild(ogPriceAmount);
-            }
-            ogPriceAmount.setAttribute('content', priceAmount);
+        if (ogType === 'product') {
+            if (priceAmount) {
+                let ogPriceAmount = document.querySelector('meta[property="product:price:amount"]');
+                if (!ogPriceAmount) {
+                    ogPriceAmount = document.createElement('meta');
+                    ogPriceAmount.setAttribute('property', 'product:price:amount');
+                    document.head.appendChild(ogPriceAmount);
+                }
+                ogPriceAmount.setAttribute('content', priceAmount);
 
-            let ogPriceCurrency = document.querySelector('meta[property="product:price:currency"]');
-            if (!ogPriceCurrency) {
-                ogPriceCurrency = document.createElement('meta');
-                ogPriceCurrency.setAttribute('property', 'product:price:currency');
-                document.head.appendChild(ogPriceCurrency);
+                let ogPriceCurrency = document.querySelector('meta[property="product:price:currency"]');
+                if (!ogPriceCurrency) {
+                    ogPriceCurrency = document.createElement('meta');
+                    ogPriceCurrency.setAttribute('property', 'product:price:currency');
+                    document.head.appendChild(ogPriceCurrency);
+                }
+                ogPriceCurrency.setAttribute('content', priceCurrency || 'PKR');
             }
-            ogPriceCurrency.setAttribute('content', priceCurrency || 'PKR');
+
+            if (availability) {
+                let ogAvailability = document.querySelector('meta[property="product:availability"]');
+                if (!ogAvailability) {
+                    ogAvailability = document.createElement('meta');
+                    ogAvailability.setAttribute('property', 'product:availability');
+                    document.head.appendChild(ogAvailability);
+                }
+                ogAvailability.setAttribute('content', availability);
+            }
+
+            if (retailerItemId) {
+                let ogRetailerItemId = document.querySelector('meta[property="product:retailer_item_id"]');
+                if (!ogRetailerItemId) {
+                    ogRetailerItemId = document.createElement('meta');
+                    ogRetailerItemId.setAttribute('property', 'product:retailer_item_id');
+                    document.head.appendChild(ogRetailerItemId);
+                }
+                ogRetailerItemId.setAttribute('content', retailerItemId);
+            }
         }
 
         // 7. Update Canonical
@@ -90,6 +114,10 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
                 linkCanonical.setAttribute('href', canonical);
                 document.head.appendChild(linkCanonical);
             }
+
+            // Also update og:url to match canonical
+            const ogUrl = document.querySelector('meta[property="og:url"]');
+            if (ogUrl) ogUrl.setAttribute('content', canonical);
         }
-    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency]);
+    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId]);
 };

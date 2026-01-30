@@ -5,6 +5,7 @@ import { encode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 // Hash helper (Meta requires SHA256)
@@ -18,7 +19,7 @@ async function hash(value?: string): Promise<string | undefined> {
 serve(async (req) => {
     // Handle CORS preflight
     if (req.method === "OPTIONS") {
-        return new Response(null, { headers: corsHeaders });
+        return new Response("ok", { headers: corsHeaders, status: 200 });
     }
 
     try {

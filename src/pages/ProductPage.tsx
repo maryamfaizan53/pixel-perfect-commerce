@@ -228,6 +228,8 @@ const ProductPage = () => {
   }, [product]);
 
   // Expert Level SEO: Set Dynamic Metadata and JSON-LD
+  const canonicalUrl = product ? `${window.location.origin}/products/${product.handle}` : undefined;
+
   useSEO({
     title: product ? `${product.title} - Lowest Price in Pakistan - Free Shipping` : "Loading Product...",
     description: product ? `Shop ${product.title} at AI Bazar. ${product.description.substring(0, 120)}... Lowest prices in Pakistan with free express shipping and original quality guaranteed.` : "High quality products at AI Bazar.",
@@ -235,7 +237,10 @@ const ProductPage = () => {
     ogImage: product?.media.edges[0]?.node.previewImage?.url || product?.media.edges[0]?.node.image?.url,
     ogType: 'product',
     priceAmount: product?.priceRange.minVariantPrice.amount,
-    priceCurrency: product?.priceRange.minVariantPrice.currencyCode || 'PKR'
+    priceCurrency: product?.priceRange.minVariantPrice.currencyCode || 'PKR',
+    canonical: canonicalUrl,
+    availability: product ? (product.availableForSale ? 'instock' : 'outofstock') : undefined,
+    retailerItemId: product ? formatProductId(product.id) : undefined
   });
 
   // Inject JSON-LD for Search Rich Results
@@ -260,7 +265,7 @@ const ProductPage = () => {
         },
         "offers": {
           "@type": "Offer",
-          "url": window.location.href,
+          "url": canonicalUrl || window.location.href,
           "priceCurrency": currency,
           "price": price,
           "priceValidUntil": "2026-12-31",
@@ -343,7 +348,7 @@ const ProductPage = () => {
         "@type": "ListItem",
         "position": collection ? 3 : 2,
         "name": product.title,
-        "item": window.location.href
+        "item": canonicalUrl || window.location.href
       });
 
       const script = document.createElement('script');

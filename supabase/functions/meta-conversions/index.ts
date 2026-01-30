@@ -1,6 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
-import { encode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -14,7 +12,11 @@ async function hash(value?: string): Promise<string | undefined> {
     if (!value) return undefined;
     const data = new TextEncoder().encode(value.trim().toLowerCase());
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    return new TextDecoder().decode(encode(new Uint8Array(hashBuffer)));
+
+    // Convert buffer to hex string manually to avoid dependencies
+    return Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
 }
 
 serve(async (req) => {

@@ -166,9 +166,15 @@ const CategoryPage = () => {
   });
 
   useSEO({
-    title: collectionData ? `${collectionData.title} Collection` : "All Categories",
-    description: collectionData?.description || "Browse our curated collections of affordable products in Pakistan. Highest quality, lowest prices.",
-    keywords: collectionData ? `${collectionData.title.toLowerCase()}, aibazar collection, buy ${collectionData.title.toLowerCase()} online pakistan` : "aibazar categories"
+    title: collectionData
+      ? `${collectionData.title} - Lowest Prices in Pakistan - AI Bazar`
+      : "Shop All Categories - Lowest Prices in Pakistan",
+    description: collectionData?.description
+      ? `${collectionData.description} Lowest prices in Pakistan with free express shipping and original quality guaranteed.`
+      : "Browse our curated collections of affordable products in Pakistan. Highest quality, lowest prices, and free express shipping guaranteed.",
+    keywords: collectionData
+      ? `${collectionData.title.toLowerCase()}, aibazar collection, buy ${collectionData.title.toLowerCase()} online pakistan, affordable shopping`
+      : "aibazar categories, affordable products pakistan, lowest price shopping"
   });
 
   return (

@@ -8,9 +8,90 @@ import { motion } from "framer-motion";
 import { lazy, Suspense } from "react";
 const ReactMarkdownLazy = lazy(() => import("react-markdown"));
 
+import { useSEO } from "@/hooks/useSEO";
+import { useEffect } from "react";
+
 const BlogPost = () => {
     const { slug } = useParams<{ slug: string }>();
     const post = slug ? getBlogPostBySlug(slug) : undefined;
+
+    useSEO({
+        title: post ? `${post.title} | AI Bazar Blog` : "Blog Post",
+        description: post?.excerpt || "Read the latest from AI Bazar Blog.",
+        keywords: post?.tags.join(", ") || "aibazar blog",
+        ogType: "article"
+    });
+
+    useEffect(() => {
+        if (!post) return;
+
+        // Add BlogPosting + Breadcrumb Schema
+        const schemaId = 'blog-post-json-ld';
+        let script = document.getElementById(schemaId) as HTMLScriptElement;
+
+        if (!script) {
+            script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.id = schemaId;
+            document.head.appendChild(script);
+        }
+
+        const blogSchema = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": post.title,
+            "description": post.excerpt,
+            "author": {
+                "@type": "Person",
+                "name": post.author
+            },
+            "datePublished": post.publishDate,
+            "publisher": {
+                "@type": "Organization",
+                "name": "AI Bazar",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://www.aibazar.pk/favicon.png"
+                }
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": window.location.href
+            }
+        };
+
+        const breadcrumbSchema = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": window.location.origin
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Blog",
+                    "item": `${window.location.origin}/blog`
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": post.title,
+                    "item": window.location.href
+                }
+            ]
+        };
+
+        script.text = JSON.stringify([blogSchema, breadcrumbSchema]);
+
+        return () => {
+            const existingScript = document.getElementById(schemaId);
+            if (existingScript) existingScript.remove();
+        };
+    }, [post]);
 
     if (!post) {
         return <Navigate to="/blog" replace />;

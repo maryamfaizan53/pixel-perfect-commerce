@@ -8,9 +8,19 @@ import { blogPosts, getAllCategories } from "@/data/blogData";
 import { Calendar, Clock, User, Search, Tag, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { useSEO } from "@/hooks/useSEO";
+
 const Blog = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
+
+    useSEO({
+        title: selectedCategory === "All"
+            ? "AI Bazar Blog | E-commerce Tips & Shopping Guides in Pakistan"
+            : `${selectedCategory} Guides & Tips - AI Bazar Blog`,
+        description: `Explore our ${selectedCategory === "All" ? "" : selectedCategory} articles on AI Bazar. Expert shopping tips, product guides, and e-commerce trends in Pakistan.`,
+        keywords: `blog, aibazar blog, shopping tips pakistan, e-commerce guides, ${selectedCategory.toLowerCase()} tips`
+    });
 
     const categories = ["All", ...getAllCategories()];
 
@@ -92,8 +102,8 @@ const Blog = () => {
                                     variant={selectedCategory === category ? "default" : "outline"}
                                     onClick={() => setSelectedCategory(category)}
                                     className={`rounded-xl font-semibold transition-all ${selectedCategory === category
-                                            ? "shadow-lg shadow-primary/20"
-                                            : "hover:border-primary"
+                                        ? "shadow-lg shadow-primary/20"
+                                        : "hover:border-primary"
                                         }`}
                                 >
                                     {category}

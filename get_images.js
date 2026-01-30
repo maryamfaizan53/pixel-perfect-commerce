@@ -1,5 +1,6 @@
 
 import fetch from 'node-fetch';
+import fs from 'fs';
 
 const SHOPIFY_STORE_PERMANENT_DOMAIN = 'next-shop-apex-c8kgm.myshopify.com';
 const SHOPIFY_API_VERSION = '2024-04';
@@ -11,16 +12,7 @@ const query = `
   products(first: 100) {
     edges {
       node {
-        id
-        title
         handle
-        description
-        productType
-        priceRange {
-          minVariantPrice {
-            amount
-          }
-        }
         media(first: 1) {
           edges {
             node {
@@ -38,18 +30,25 @@ const query = `
 }
 `;
 
-async function getAllProducts() {
-  const response = await fetch(SHOPIFY_STOREFRONT_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
-    },
-    body: JSON.stringify({ query }),
-  });
+async function getImages() {
+    const response = await fetch(SHOPIFY_STOREFRONT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
+        },
+        body: JSON.stringify({ query }),
+    });
 
-  const data = await response.json();
-  console.log(JSON.stringify(data, null, 2));
+    const data = await response.json();
+    const mapping = {};
+    data.data.products.edges.forEach(e => {
+        const handle = e.node.handle;
+        const url = e.node.media.edges[0]?.node?.image?.url;
+        if (url) mapping[handle] = url;
+    });
+
+    console.log(JSON.stringify(mapping, null, 2));
 }
 
-getAllProducts();
+getImages();

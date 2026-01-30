@@ -98,6 +98,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <GoogleAnalytics />
+            <ConsentBanner />
             <AnimatedRoutes />
             <Suspense fallback={null}>
               <WhatsAppSupport />

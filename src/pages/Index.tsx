@@ -15,8 +15,60 @@ const Index = () => {
   useSEO({
     title: "Lowest Prices & Affordable Online Shopping in Pakistan",
     description: "Shop at AI Bazar, Pakistan's most affordable AI-powered marketplace. Discover high-quality household, beauty, and fashion items at the lowest prices. Cash on delivery nationwide.",
-    keywords: "lowest prices pakistan, affordable online shopping, ai bazar, buy cheap products, household items sale, kitchen gadgets, beauty products pakistan"
+    keywords: "lowest prices pakistan, affordable online shopping, ai bazar, buy cheap products, household items sale, kitchen gadgets, beauty products pakistan",
+    canonical: window.location.origin
   });
+
+  // JSON-LD for Organization and Website
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.aibazar.pk/#organization",
+        "name": "AI Bazar Pakistan",
+        "url": "https://www.aibazar.pk",
+        "logo": "https://www.aibazar.pk/logo.png",
+        "sameAs": [
+          "https://www.facebook.com/aibazar",
+          "https://www.instagram.com/aibazar"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+92-332-8222026",
+          "contactType": "customer service",
+          "areaServed": "PK",
+          "availableLanguage": "en"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.aibazar.pk/#website",
+        "url": "https://www.aibazar.pk",
+        "name": "AI Bazar Pakistan",
+        "description": "Lowest Prices & Affordable Online Shopping in Pakistan",
+        "publisher": {
+          "@id": "https://www.aibazar.pk/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://www.aibazar.pk/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  };
+
+  if (typeof document !== 'undefined') {
+    let script = document.getElementById('home-json-ld') as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = 'home-json-ld';
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+    script.text = JSON.stringify(schema);
+  }
 
   console.log("Index component rendering...");
   const { data: collections = [], isLoading, error } = useQuery({

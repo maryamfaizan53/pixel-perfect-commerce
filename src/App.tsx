@@ -10,6 +10,7 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 
 // Lazy load pages for code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -96,6 +97,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <GoogleAnalytics />
             <AnimatedRoutes />
             <Suspense fallback={null}>
               <WhatsAppSupport />

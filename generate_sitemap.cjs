@@ -47,7 +47,8 @@ async function generateSitemap() {
 
     // 2. Products from all_products.txt
     try {
-        const productsContent = fs.readFileSync(PRODUCTS_FILE, 'utf8');
+        // The file appears to be UTF-16LE encoded based on previous debug output
+        const productsContent = fs.readFileSync(PRODUCTS_FILE, 'utf16le');
         const productHandles = productsContent.split('\n')
             .map(line => line.trim())
             .filter(line => line && !line.startsWith('#')); // Filter empty lines and comments
@@ -56,11 +57,25 @@ async function generateSitemap() {
 
         productHandles.forEach(handle => {
             // Clean handle if it's a URL or has query params
-            let cleanHandle = handle;
-            if (handle.includes('product/')) {
-                cleanHandle = handle.split('product/')[1];
+            // Expected format: "- Product Title (handle)"
+            let cleanHandle = null;
+
+            // Try to extract from parentheses first
+            const match = handle.match(/\(([^)]+)\)\s*$/);
+
+            if (match) {
+                cleanHandle = match[1];
+            } else {
+                // Fallback for legacy format or direct handles
+                if (handle.includes('Total Products:')) return; // Skip summary line
+
+                cleanHandle = handle;
+                if (handle.includes('product/')) {
+                    cleanHandle = handle.split('product/')[1];
+                }
             }
-            if (handle.includes('?')) {
+
+            if (cleanHandle && cleanHandle.includes('?')) {
                 cleanHandle = cleanHandle.split('?')[0];
             }
 

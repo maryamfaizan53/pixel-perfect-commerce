@@ -28,9 +28,9 @@
 - [ ] **Google My Business**: (If applicable) specific for local SEO visibility.
 
 ## Blog SEO
-- [ ] **Regular Updates**: Publish consistent, high-quality blog posts related to niche.
+- [x] **Regular Updates**: Publish consistent, high-quality blog posts related to niche.
 - [ ] **Long-tail Keywords**: Target specific queries users might ask.
-- [ ] **Interlinking**: Link blog posts to product pages to drive conversion.
+- [x] **Interlinking**: Link blog posts to product pages to drive conversion.
 
 ## User Experience (UX)
 - [ ] **Easy Navigation**: rigorous menu structure.

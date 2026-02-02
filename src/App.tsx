@@ -11,6 +11,7 @@ import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 
 // Lazy load pages for code splitting
 const Index = lazy(() => import("./pages/Index"));

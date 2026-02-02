@@ -15135,6 +15135,132 @@ Achieve everything from pin-straight hair to beachy waves with a simple flick of
         tags: ["straightener", "hair styling", "curler", "beauty tech", "grooming"],
         image: "/api/placeholder/800/500",
         featured: false
+    },
+    {
+        id: "327",
+        slug: "white (slim-n-fit-body-shaper-vest-shirt-tank-top-sleeveless-shapewear-for-men-white",
+        title: "Men's Shapewear: The White Slim-N-Fit Shaper Vest",
+        excerpt: "Achieve an instant toned look with our top-selling white compression vest for men.",
+        content: `
+# Discreet Confidence in White
+
+The **White Slim-N-Fit Body Shaper** is the perfect base layer for light-colored dress shirts and casual wear. It provides the same firm torso support and posture correction as our standard shaper.
+
+[Shop White Shaper](/product/slim-n-fit-body-shaper-vest-shirt-tank-top-sleeveless-shapewear-for-men-white)
+        `,
+        author: "Ahmed Fitness",
+        authorRole: "Men's Wellness Specialist",
+        publishDate: "2024-07-03",
+        readTime: "2 min read",
+        category: "Personal Care",
+        tags: ["shapewear", "men's fashion"],
+        image: "/api/placeholder/800/500",
+        featured: false
+    },
+    {
+        id: "328",
+        slug: "with box (lint-remover-chargeable-portable-design-gentle-on-fabrics-removes-lint-and-fuzz-easy-to-use-durable-performance-suitable-for-daily-clothing-care-with-box",
+        title: "Gift Ready: Lint Remover with Premium Packaging",
+        excerpt: "The perfect gift for fashion lovers. Our rechargeable lint remover now comes with a durable storage box.",
+        content: `
+# Store & Protect Your Lint Remover
+
+Our **Rechargeable Lint Remover** (With Box version) includes a protective case to keep your blades sharp and your charger organized. Perfect for travel or gifting.
+
+[Shop with Box](/product/lint-remover-chargeable-portable-design-gentle-on-fabrics-removes-lint-and-fuzz-easy-to-use-durable-performance-suitable-for-daily-clothing-care-with-box)
+        `,
+        author: "Sarah Home",
+        authorRole: "Organization Expert",
+        publishDate: "2024-07-03",
+        readTime: "2 min read",
+        category: "Home & Garden",
+        tags: ["clothing care", "organization"],
+        image: "/api/placeholder/800/500",
+        featured: false
+    },
+    {
+        id: "329",
+        slug: "toys",
+        title: "Fun for Everyone: Mini Butterfly Makeup Kit for Kids",
+        excerpt: "Safe, colorful, and fun. This mini butterfly makeup kit is the perfect introductory set for little fashionistas.",
+        content: `
+# Sparks of Creativity
+
+The **Mini Butterfly Makeup Kit** is designed specifically for children, featuring non-toxic, washable colors in a beautiful butterfly case.
+
+[Shop Butterfly Kit](/product/mini-butterfly-makeup-kit-for-kids)
+        `,
+        author: "Fatima Mom",
+        authorRole: "Parenting Expert",
+        publishDate: "2024-07-03",
+        readTime: "2 min read",
+        category: "Gadgets",
+        tags: ["kids", "toys", "makeup"],
+        image: "/api/placeholder/800/500",
+        featured: false
+    },
+    {
+        id: "330",
+        slug: "random color (portable-telescopic-stool-lightweight-collapsible-folding-seat-for-camping-fishing-hiking-and-outdoor-activities-with-adjustable-height-random-color",
+        title: "Colorful Comfort: The Telescopic Folding Stool",
+        excerpt: "Now available in a variety of vibrant colors. The same high-strength telescopic stool you love.",
+        content: `
+# Pick Your Vibe
+
+Our **Telescopic Stool (Random Color)** adds a pop of personality to your outdoor gear. Same 1-second setup, now in exciting new shades.
+
+[Shop Stool](/product/portable-telescopic-stool-lightweight-collapsible-folding-seat-for-camping-fishing-hiking-and-outdoor-activities-with-adjustable-height-random-color)
+        `,
+        author: "Ali Tech",
+        authorRole: "Outdoor Blogger",
+        publishDate: "2024-07-03",
+        readTime: "2 min read",
+        category: "Home & Garden",
+        tags: ["travel", "camping"],
+        image: "/api/placeholder/800/500",
+        featured: false
+    },
+    {
+        id: "331",
+        slug: "size10 (1-pair-medicated-insole-for-shoes-pain-relief-shock-absorption-arch-support-all-day-comfort-for-walking-sports-daily-wearsize10",
+        title: "Perfect Fit: Size 10 Medicated Support Insoles",
+        excerpt: "Maximum support for Size 10 footwear. Relieve foot pain with our specialized medicated insoles.",
+        content: `
+# Targeted Pain Relief
+
+These **Size 10 Medicated Insoles** are specifically cut for high-volume shoes, providing extra arch support where you need it most.
+
+[Shop Size 10](/product/1-pair-medicated-insole-for-shoes-pain-relief-shock-absorption-arch-support-all-day-comfort-for-walking-sports-daily-wearsize10)
+        `,
+        author: "Ahmed Fitness",
+        authorRole: "Recovery Expert",
+        publishDate: "2024-07-03",
+        readTime: "2 min read",
+        category: "Personal Care",
+        tags: ["health", "foot care"],
+        image: "/api/placeholder/800/500",
+        featured: false
+    },
+    {
+        id: "332",
+        slug: "without box (ladies-waterproof-watch-elegant-round-dial-with-soft-strap-stylish-design-without-box",
+        title: "Elegant Timing: Ladies Waterproof Round Watch",
+        excerpt: "Sleek, waterproof, and stylish. The perfect everyday watch for the modern woman.",
+        content: `
+# Simplicity & Grace
+
+This **Ladies Waterproof Watch** offers a clean, minimalist design that pairs perfectly with both casual and formal wear.
+
+[Shop Watch](/product/ladies-waterproof-watch-elegant-round-dial-with-soft-strap-stylish-design-without-box)
+        `,
+        author: "Zainab Fashion",
+        authorRole: "Style Blogger",
+        publishDate: "2024-07-03",
+        readTime: "2 min read",
+        category: "Fashion",
+        tags: ["accessories", "watches"],
+        image: "/api/placeholder/800/500",
+        featured: false
     }
 ];
 

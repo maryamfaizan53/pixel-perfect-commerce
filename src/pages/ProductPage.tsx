@@ -231,9 +231,9 @@ const ProductPage = () => {
   const canonicalUrl = product ? `${window.location.origin}/products/${product.handle}` : undefined;
 
   useSEO({
-    title: product ? `${product.title} - Lowest Price in Pakistan - Free Shipping` : "Loading Product...",
-    description: product ? `Shop ${product.title} at AI Bazar. ${product.description.substring(0, 120)}... Lowest prices in Pakistan with free express shipping and original quality guaranteed.` : "High quality products at AI Bazar.",
-    keywords: product ? `${product.title.toLowerCase()}, aibazar, affordable ${product.productType.toLowerCase()}, buy ${product.title.toLowerCase()} online pakistan, ${product.vendor} pakistan` : "aibazar shopping",
+    title: product ? `${product.title} - Lowest Price in Pakistan | Free Shipping & COD` : "Loading Product...",
+    description: product ? `Buy ${product.title} at the lowest price in Pakistan. AI Bazar offers original quality, free express shipping, and cash on delivery. ${product.description.substring(0, 100)}... Shop now and save!` : "Shop high-quality products at AI Bazar Pakistan. Lowest prices, free shipping, and original quality guaranteed.",
+    keywords: product ? `${product.title.toLowerCase()}, buy ${product.title.toLowerCase()} online, ${product.title.toLowerCase()} price in pakistan, aibazar, affordable ${product.productType.toLowerCase()}, ${product.vendor} original` : "aibazar shopping, online shopping pakistan, lowest price online",
     ogImage: product?.media.edges[0]?.node.previewImage?.url || product?.media.edges[0]?.node.image?.url,
     ogType: 'product',
     priceAmount: product?.priceRange.minVariantPrice.amount,
@@ -261,7 +261,7 @@ const ProductPage = () => {
         "mpn": formatProductId(product.id),
         "brand": {
           "@type": "Brand",
-          "name": product.vendor
+          "name": product.vendor || "AI Bazar Original"
         },
         "offers": {
           "@type": "Offer",
@@ -271,6 +271,7 @@ const ProductPage = () => {
           "priceValidUntil": "2026-12-31",
           "itemCondition": "https://schema.org/NewCondition",
           "availability": product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          "url_link": canonicalUrl || window.location.href,
           "seller": {
             "@type": "Organization",
             "name": "AI Bazar Pakistan"
@@ -279,7 +280,7 @@ const ProductPage = () => {
             "@type": "MerchantReturnPolicy",
             "applicableCountry": "PK",
             "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-            "merchantReturnDays": 30,
+            "merchantReturnDays": 7,
             "returnMethod": "https://schema.org/ReturnByMail",
             "returnFees": "https://schema.org/FreeReturn"
           },
@@ -600,7 +601,7 @@ const ProductPage = () => {
                     >
                       {(() => {
                         const mediaNode = product.media.edges[selectedImage]?.node;
-                        if (!mediaNode) return <img src="/placeholder.svg" alt={product.title} className="w-full h-full object-cover" />;
+                        if (!mediaNode) return <img src="/placeholder.svg" alt={`${product.title} placeholder`} className="w-full h-full object-cover" />;
 
                         if (mediaNode.mediaContentType === 'VIDEO' && mediaNode.sources?.[0]) {
                           return (
@@ -632,7 +633,7 @@ const ProductPage = () => {
                         return (
                           <motion.img
                             src={imageUrl}
-                            alt={product.title}
+                            alt={`${product.title} - ${product.vendor} original product image`}
                             animate={{
                               scale: isInspecting ? 2 : 1,
                               transformOrigin: `${mousePos.x}% ${mousePos.y}%`
@@ -689,7 +690,7 @@ const ProductPage = () => {
                   >
                     <img
                       src={media.node.previewImage?.url || media.node.image?.url || "/placeholder.svg"}
-                      alt={`${product.title} ${index + 1}`}
+                      alt={`${product.title} - View ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                     {(media.node.mediaContentType === 'VIDEO' || media.node.mediaContentType === 'EXTERNAL_VIDEO') && (

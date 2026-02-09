@@ -47,13 +47,13 @@ Modern e-commerce platforms in Pakistan offer multiple secure payment methods:
 ## Top Online Shopping Categories in Pakistan
 
 ### Fashion & Apparel
-Pakistani fashion e-commerce is booming with brands like Khaadi, Gul Ahmed, and J. Junaid Jamshed offering their collections online. From traditional shalwar kameez to modern western wear, everything is available at your fingertips.
+Pakistani fashion e-commerce is booming with brands like Khaadi, Gul Ahmed, and J. Junaid Jamshed offering their collections online. From traditional shalwar kameez to modern [western wear](/category/fashion), everything is available at your fingertips.
 
 ### Electronics & Gadgets
 Smartphones, laptops, tablets, and accessories are among the most purchased items online. Authentic products with warranties make online shopping for electronics trustworthy.
 
 ### Home & Kitchen
-From cookware to home decor, online platforms offer extensive collections for homemakers looking to beautify their spaces.
+From [cookware](/category/kitchen) to home decor, online platforms offer extensive collections for homemakers looking to beautify their spaces.
 
 ### Beauty & Cosmetics
 Makeup, skincare, and grooming products from international and local brands are readily available with detailed descriptions and reviews.
@@ -339,14 +339,14 @@ Many e-commerce sites offer free COD on:
 
 ### Fashion & Clothing
 The most popular COD category, including:
-- Women's eastern wear
+- [Women's eastern wear](/category/fashion)
 - Men's clothing
 - Kids' fashion
 - Footwear and accessories
 
 ### Electronics
 High-value items where customers prefer COD:
-- Smartphones
+- [Smartphones](/category/electronics)
 - Laptops and tablets
 - Accessories
 - Home appliances
@@ -15259,6 +15259,50 @@ This **Ladies Waterproof Watch** offers a clean, minimalist design that pairs pe
         readTime: "2 min read",
         category: "Fashion",
         tags: ["accessories", "watches"],
+        image: "/api/placeholder/800/500",
+        featured: false
+    },
+    {
+        id: "333",
+        slug: "2-in-1-oil-sprayer-bottle-kitchen-tool-for-cooking-baking-bbq-easy-spray-and-convenient-use-470ml",
+        title: "Healthier Cooking Made Easy: The 2-in-1 Oil Sprayer Bottle Guide",
+        excerpt: "Discover how the 2-in-1 Oil Sprayer Bottle can transform your kitchen. Perfect for BBQ, baking, and healthy daily cooking with its dual spray functionality.",
+        content: `
+# Transform Your Kitchen with the 2-in-1 Oil Sprayer Bottle
+
+Cooking healthy and delicious meals starts with the right tools. The **2-in-1 Oil Sprayer Bottle** is a must-have for every modern kitchen, designed to give you precise control over your oil usage while providing maximum convenience.
+
+## Why You Need This 2-in-1 Sprayer
+
+### Precision and Control
+- **Dual Functionality:** Easily switch between a fine mist spray and a steady pour.
+- **Healthier Choices:** Use significantly less oil without sacrificing flavor, perfect for calorie-conscious cooking.
+- **No More Mess:** Say goodbye to greasy counters and unevenly oiled pans.
+
+### Features You'll Love
+- **470ml Capacity:** Holds a generous amount of oil, reducing the need for frequent refills.
+- **Durable Glass Material:** Made from high-quality, eco-friendly glass that's easy to clean and doesn't absorb odors.
+- **Multipurpose Use:** Ideal for olive oil, vinegar, soy sauce, lemon juice, or even water for misting plants.
+- **Ergonomic Design:** Comfortable grip and easy-to-use spray mechanism for effortless operation.
+
+## Best Ways to Use Your Oil Sprayer
+
+1. **Perfect BBQ Grilling:** Mist your meats and vegetables evenly to prevent sticking and ensure a perfect sear.
+2. **Even Baking:** Get a golden crust on your pastries and breads with just a touch of oil.
+3. **Salad Dressing:** Create a light, even coating of oil and vinegar for the perfect salad every time.
+4. **Air Frying:** The best companion for your air fryer to get that extra crispiness with minimal oil.
+
+## Maintenance Tips
+To keep your sprayer working perfectly, we recommend cleaning it once a month with warm soapy water and ensuring it's completely dry before refilling.
+
+[Shop 2-in-1 Oil Sprayer](/product/2-in-1-oil-sprayer-bottle-kitchen-tool-for-cooking-baking-bbq-easy-spray-and-convenient-use-470ml) and start cooking healthier today!
+        `,
+        author: "Sarah Home",
+        authorRole: "Kitchen Specialist",
+        publishDate: "2024-07-04",
+        readTime: "3 min read",
+        category: "Kitchen",
+        tags: ["kitchen tools", "healthy cooking", "oil sprayer", "BBQ hacks", "home gadgets"],
         image: "/api/placeholder/800/500",
         featured: false
     }

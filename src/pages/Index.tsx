@@ -13,42 +13,65 @@ const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ 
 
 const Index = () => {
   useSEO({
-    title: "Lowest Prices & Affordable Online Shopping in Pakistan",
-    description: "Shop at AI Bazar, Pakistan's most affordable AI-powered marketplace. Discover high-quality household, beauty, and fashion items at the lowest prices. Cash on delivery nationwide.",
-    keywords: "lowest prices pakistan, affordable online shopping, ai bazar, buy cheap products, household items sale, kitchen gadgets, beauty products pakistan",
-    canonical: window.location.origin
+    title: "AI Bazar | Best Online Store in Pakistan - Buy at Lowest Prices",
+    description: "AI Bazar is the #1 online store in Pakistan for affordable shopping. Buy high-quality household, beauty, and fashion items at the lowest prices. Fast home delivery and cash on delivery nationwide.",
+    keywords: "online store in pakistan, best online shopping pakistan, lowest prices pakistan, affordable online shopping, buy cheap products, household items sale, kitchen gadgets, beauty products pakistan",
+    canonical: "https://www.aibazar.pk"
   });
 
-  // JSON-LD for Organization and Website
+  // JSON-LD for Organization, Store, and Website
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
-        "@id": "https://www.aibazar.pk/#organization",
+        "@type": "Store",
+        "@id": "https://www.aibazar.pk/#store",
         "name": "AI Bazar Pakistan",
         "url": "https://www.aibazar.pk",
         "logo": "https://www.aibazar.pk/logo.png",
+        "image": "https://www.aibazar.pk/og-image.jpg",
+        "description": "The best online store in Pakistan offering high-quality products at the lowest prices.",
+        "telephone": "+92-332-8222026",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Main Road",
+          "addressLocality": "Karachi",
+          "addressRegion": "Sindh",
+          "postalCode": "75500",
+          "addressCountry": "PK"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "24.8607",
+          "longitude": "67.0011"
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        },
         "sameAs": [
           "https://www.facebook.com/aibazar",
           "https://www.instagram.com/aibazar"
-        ],
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "telephone": "+92-332-8222026",
-          "contactType": "customer service",
-          "areaServed": "PK",
-          "availableLanguage": "en"
-        }
+        ]
       },
       {
         "@type": "WebSite",
         "@id": "https://www.aibazar.pk/#website",
         "url": "https://www.aibazar.pk",
         "name": "AI Bazar Pakistan",
-        "description": "Lowest Prices & Affordable Online Shopping in Pakistan",
+        "description": "The Most Affordable Online Store in Pakistan",
         "publisher": {
-          "@id": "https://www.aibazar.pk/#organization"
+          "@id": "https://www.aibazar.pk/#store"
         },
         "potentialAction": {
           "@type": "SearchAction",

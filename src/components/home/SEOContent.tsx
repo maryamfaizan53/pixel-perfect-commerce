@@ -10,7 +10,17 @@ export const SEOContent = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          {/* Main Heading */}
+          {/* SEO Optimized H1 for Ranking */}
+          <div className="text-center mb-12">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-black mb-6 tracking-tight uppercase">
+              The Best <span className="text-primary italic">Online Store</span> in Pakistan
+            </h1>
+            <p className="text-lg md:text-xl text-black/60 font-medium max-w-3xl mx-auto">
+              Welcome to AI Bazar, your premier destination for high-quality products at the lowest prices. We are proud to be recognized as the most reliable and affordable online store in Pakistan.
+            </p>
+          </div>
+
+          {/* Secondary Heading */}
           <h2 className="text-2xl md:text-3xl font-bold text-black mb-8 text-center uppercase tracking-tight">
             Shop at the Lowest Prices in Pakistan - AI Bazar Marketplace
           </h2>

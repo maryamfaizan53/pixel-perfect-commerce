@@ -167,14 +167,14 @@ const CategoryPage = () => {
 
   useSEO({
     title: collectionData
-      ? `${collectionData.title} - Lowest Prices in Pakistan - AI Bazar`
-      : "Shop All Categories - Lowest Prices in Pakistan",
+      ? `${collectionData.title} | Online Store Pakistan - AI Bazar`
+      : "Lowest Prices Online Store Pakistan | AI Bazar",
     description: collectionData?.description
-      ? `${collectionData.description} Lowest prices in Pakistan with free express shipping and original quality guaranteed.`
-      : "Browse our curated collections of affordable products in Pakistan. Highest quality, lowest prices, and free express shipping guaranteed.",
+      ? `${collectionData.description} Shop this collection at AI Bazar, the leading online store in Pakistan for lowest prices and original quality.`
+      : "Shop the best selection of affordable products at AI Bazar, Pakistan's top online store. Enjoy lowest prices, original quality, and fast shipping nationwide.",
     keywords: collectionData
-      ? `${collectionData.title.toLowerCase()}, aibazar collection, buy ${collectionData.title.toLowerCase()} online pakistan, affordable shopping`
-      : "aibazar categories, affordable products pakistan, lowest price shopping"
+      ? `${collectionData.title.toLowerCase()}, online store pakistan, best online shopping pakistan, buy ${collectionData.title.toLowerCase()} online`
+      : "online store pakistan, affordable products pakistan, lowest price shopping pakistan"
   });
 
   return (

@@ -64,6 +64,7 @@ interface Product {
   availableForSale: boolean;
   productType: string;
   vendor: string;
+  tags: string[];
   media: {
     edges: ProductMedia[];
   };
@@ -100,6 +101,7 @@ const PRODUCT_QUERY = `
       availableForSale
       productType
       vendor
+      tags
       priceRange {
         minVariantPrice {
           amount
@@ -263,14 +265,18 @@ const ProductPage = () => {
           "@type": "Brand",
           "name": product.vendor || "AI Bazar Original"
         },
-        "material": "BPA-free ABS plastic, 420-grade stainless steel",
-        "additionalProperty": [
-          {
-            "@type": "PropertyValue",
-            "name": "Pieces In Set",
-            "value": "22"
-          }
-        ],
+        "material": product.tags?.find(t => t.toLowerCase().includes('steel')) ? "Stainless Steel" : (product.tags?.find(t => t.toLowerCase().includes('plastic')) ? "BPA-free Plastic" : undefined),
+        "productID": product.id,
+        "category": product.productType,
+        "additionalProperty": (product.tags || []).map(tag => ({
+          "@type": "PropertyValue",
+          "name": "Feature",
+          "value": tag
+        })).concat(product.title.includes('22 in 1') || product.title.includes('22 Pcs') ? [{
+          "@type": "PropertyValue",
+          "name": "Pieces In Set",
+          "value": "22"
+        }] : []),
         "review": reviews.slice(0, 5).map(r => ({
           "@type": "Review",
           "reviewRating": {

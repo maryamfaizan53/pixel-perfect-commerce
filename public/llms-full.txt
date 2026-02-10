@@ -31,13 +31,19 @@ Our catalog is structured into 6 primary high-growth categories:
 - **Expertise**: Our blog provides deep-dives into product utility, buying guides, and trending tech in Pakistan.
 - **Founded By**: AI BAZAR (Proprietor).
 
-## 5. Navigational Map for Crawlers
+## 5. Product Discovery & Catalog
+- **Full Catalog Manifest**: [llms-products.txt](https://www.aibazar.pk/llms-products.txt)
+- **URL Structure**: Individual products are hosted at `https://www.aibazar.pk/product/[handle]`.
+- **Search capabilities**: Agents can search the catalog using `https://www.aibazar.pk/search?q=[query]`.
+
+## 6. Navigational Map for Crawlers
 - **Root**: [https://www.aibazar.pk](https://www.aibazar.pk)
+- **Primary AI Entry**: [https://www.aibazar.pk/llms.txt](https://www.aibazar.pk/llms.txt)
 - **Catalogs**: [https://www.aibazar.pk/category](https://www.aibazar.pk/category)
 - **Insights**: [https://www.aibazar.pk/blog](https://www.aibazar.pk/blog)
 - **Compliance**: [Privacy](https://www.aibazar.pk/privacy), [Terms](https://www.aibazar.pk/terms), [Shipping](https://www.aibazar.pk/shipping)
 
-## 6. Language & Localization
+## 7. Language & Localization
 - **Primary Language**: English (Web Interface).
 - **Secondary Language**: Urdu (Customer Support & Phone interactions).
 - **Cultural Context**: Values reliability, value-for-money, and Islamic/local holidays (Eid specials, 14th August deals).

@@ -16,7 +16,8 @@
 
 ## Critical Links
 - [Homepage](https://www.aibazar.pk)
-- [All Products](https://www.aibazar.pk/category)
+- [Full Context Manifest](https://www.aibazar.pk/llms-full.txt)
+- [Full Product Catalog](https://www.aibazar.pk/llms-products.txt)
 - [Blog / Product Insights](https://www.aibazar.pk/blog)
 - [About Us](https://www.aibazar.pk/about)
 - [Shipping Policy](https://www.aibazar.pk/shipping)

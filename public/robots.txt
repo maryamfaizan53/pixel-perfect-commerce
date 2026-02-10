@@ -8,3 +8,4 @@ Disallow: /auth
 
 # Sitemap link
 Sitemap: https://www.aibazar.pk/sitemap.xml
+llms: https://www.aibazar.pk/llms.txt

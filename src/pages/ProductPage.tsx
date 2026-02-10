@@ -192,7 +192,7 @@ const ProductPage = () => {
   });
 
   const productId = product?.id?.replace("gid://shopify/Product/", "") || "";
-  const { stats: reviewStats } = useReviews(productId, handle || "");
+  const { stats: reviewStats, reviews } = useReviews(productId, handle || "");
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -287,7 +287,8 @@ const ProductPage = () => {
           "availability": product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           "url_link": canonicalUrl || window.location.href,
           "seller": {
-            "@id": "https://www.aibazar.pk/#store"
+            "@type": "Organization",
+            "@id": "https://www.aibazar.pk/#organization"
           },
           "hasMerchantReturnPolicy": {
             "@type": "MerchantReturnPolicy",
@@ -404,7 +405,7 @@ const ProductPage = () => {
         if (scriptToRemove) scriptToRemove.remove();
       };
     }
-  }, [product, reviewStats, reviews]);
+  }, [product, reviewStats, reviews, canonicalUrl]);
 
   useEffect(() => {
     if (product) {

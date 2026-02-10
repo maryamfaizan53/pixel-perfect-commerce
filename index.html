@@ -12,6 +12,8 @@
   <meta name="author" content="AI Bazar" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://www.aibazar.pk/" />
+  <link rel="help" type="text/plain" href="https://www.aibazar.pk/llms.txt" title="AI Manifest" />
+  <link rel="alternate" type="text/plain" href="https://www.aibazar.pk/llms-full.txt" title="Full Context Manifest" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
@@ -71,18 +73,28 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://www.aibazar.pk/#organization",
       "name": "AI Bazar",
       "url": "https://www.aibazar.pk/",
-      "logo": "https://www.aibazar.pk/favicon.png",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.aibazar.pk/favicon.png",
+        "width": 180,
+        "height": 180
+      },
+      "image": "https://www.aibazar.pk/og-image.png",
+      "description": "Pakistan's leading AI-powered e-commerce marketplace for affordable and original products.",
       "sameAs": [
         "https://facebook.com/aibazar.pk",
-        "https://instagram.com/aibazar.pk"
+        "https://instagram.com/aibazar.pk",
+        "https://tiktok.com/@aibazar.pk"
       ],
       "contactPoint": {
         "@type": "ContactPoint",
         "email": "aibazarad@gmail.com",
         "contactType": "customer service",
-        "areaServed": "PK"
+        "areaServed": "PK",
+        "availableLanguage": ["English", "Urdu"]
       }
     }
   </script>
@@ -178,7 +190,7 @@
   <!-- Meta Pixel noscript fallback -->
   <noscript><img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=911345104701060&ev=PageView&noscript=1" /></noscript>
-  
+
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>

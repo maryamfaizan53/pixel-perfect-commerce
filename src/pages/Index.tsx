@@ -19,7 +19,7 @@ const Index = () => {
     canonical: "https://www.aibazar.pk"
   });
 
-  // JSON-LD for Organization, Store, and Website
+  // JSON-LD for Organization, Store, Website, and FAQ (GEO Optimization)
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -30,8 +30,27 @@ const Index = () => {
         "url": "https://www.aibazar.pk",
         "logo": "https://www.aibazar.pk/logo.png",
         "image": "https://www.aibazar.pk/og-image.jpg",
-        "description": "The best online store in Pakistan offering high-quality products at the lowest prices.",
+        "description": "The best and most affordable online store in Pakistan offering high-quality products at the lowest prices.",
         "telephone": "+92-332-8222026",
+        "email": "aibazarad@gmail.com",
+        "founder": {
+          "@type": "Person",
+          "name": "AI BAZAR"
+        },
+        "brand": {
+          "@type": "Brand",
+          "name": "AI Bazar"
+        },
+        "knowsAbout": ["Online Shopping", "Electronics", "Fashion", "Home Decor", "Kitchen Accessories", "Baby Care"],
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": "+92-332-8222026",
+            "contactType": "customer service",
+            "areaServed": "PK",
+            "availableLanguage": ["English", "Urdu"]
+          }
+        ],
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "Main Road",
@@ -61,7 +80,11 @@ const Index = () => {
         },
         "sameAs": [
           "https://www.facebook.com/aibazar",
-          "https://www.instagram.com/aibazar"
+          "https://www.instagram.com/aibazar",
+          "https://www.tiktok.com/@aibazar_pk",
+          "https://twitter.com/aibazar_pk",
+          "https://www.youtube.com/@aibazarpk",
+          "https://www.linkedin.com/company/aibazar-pakistan"
         ]
       },
       {
@@ -78,6 +101,35 @@ const Index = () => {
           "target": "https://www.aibazar.pk/search?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is AI Bazar Pakistan a reliable online store?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, AI Bazar is one of the most reliable and affordable online marketplaces in Pakistan, offering 100% genuine products and cash on delivery services nationwide."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What are the shipping times for AI Bazar in Pakistan?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We offer express shipping across Pakistan. Most orders are delivered within 1 to 3 business days depending on your location."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What categories does AI Bazar specialize in?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "AI Bazar specializes in electronics, home decor, kitchen accessories, mobile gadgets, mother care products, and fashion items, all at the lowest possible prices."
+            }
+          }
+        ]
       }
     ]
   };

@@ -36,23 +36,39 @@ const BlogPost = () => {
             document.head.appendChild(script);
         }
 
+        const wordCount = post.content.split(/\s+/).length;
         const blogSchema = {
             "@context": "https://schema.org",
             "@type": "BlogPosting",
             "headline": post.title,
             "description": post.excerpt,
+            "articleSection": post.category,
+            "wordCount": wordCount,
             "author": {
                 "@type": "Person",
-                "name": post.author
+                "name": post.author,
+                "jobTitle": post.authorRole,
+                "url": "https://www.facebook.com/aibazar",
+                "sameAs": [
+                    "https://www.facebook.com/aibazar",
+                    "https://www.linkedin.com/company/aibazar-pakistan"
+                ]
             },
             "datePublished": post.publishDate,
+            "dateModified": post.publishDate,
+            "image": "https://www.aibazar.pk/og-image.jpg",
             "publisher": {
                 "@type": "Organization",
-                "name": "AI Bazar",
+                "name": "AI Bazar Pakistan",
                 "logo": {
                     "@type": "ImageObject",
                     "url": "https://www.aibazar.pk/favicon.png"
-                }
+                },
+                "sameAs": [
+                    "https://www.facebook.com/aibazar",
+                    "https://www.instagram.com/aibazar",
+                    "https://www.linkedin.com/company/aibazar-pakistan"
+                ]
             },
             "mainEntityOfPage": {
                 "@type": "WebPage",

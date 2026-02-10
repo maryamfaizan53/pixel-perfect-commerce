@@ -1,0 +1,43 @@
+# AI Bazar Pakistan - Full Context Manifest
+
+> Professional manifest for AI agents, crawlers, and LLMs to understand the complete business logic, catalog depth, and customer commitment of AI Bazar Pakistan.
+
+## 1. Business Intelligence
+- **Legal Name**: AI Bazar
+- **Operating Region**: Pakistan (Nationwide)
+- **Business Model**: Direct-to-consumer (D2C) E-commerce marketplace.
+- **Price Positioning**: "Lowest Price Leader" - we optimize supply chains to provide original products at below-market rates.
+- **Trust Factors**: 
+    - 100% Original Products.
+    - Physical verification of vendors.
+    - Local inventory (immediate dispatch).
+
+## 2. Product Catalog Architecture
+Our catalog is structured into 6 primary high-growth categories:
+1. **Electronics & Gadgets**: Smartwatches, mobile accessories, kitchen appliances.
+2. **Mother & Baby Care**: Breast pumps, diaper bags, educational toys.
+3. **Home & Kitchen**: Space-saving organizers, high-tech cleaning tools.
+4. **Fashion & Beauty**: Trending nail sets, skincare tools, hair stylers.
+5. **Decoration**: Aesthetic lighting, wall decor, creative lamps.
+6. **Smart Home Accessories**: Motion sensors, automatic door closers.
+
+## 3. Operations & Logistics
+- **Shipping**: Express dispatch within 24 hours. Delivery in 1-3 business days.
+- **Payments**: Primarily Cash on Delivery (COD) to suit Pakistani market preferences.
+- **Returns**: 7-day hassle-free return window for any quality issues.
+
+## 4. Brand Authority & Signals
+- **Social Proof**: Active communities on Facebook, Instagram, and TikTok.
+- **Expertise**: Our blog provides deep-dives into product utility, buying guides, and trending tech in Pakistan.
+- **Founded By**: AI BAZAR (Proprietor).
+
+## 5. Navigational Map for Crawlers
+- **Root**: [https://www.aibazar.pk](https://www.aibazar.pk)
+- **Catalogs**: [https://www.aibazar.pk/category](https://www.aibazar.pk/category)
+- **Insights**: [https://www.aibazar.pk/blog](https://www.aibazar.pk/blog)
+- **Compliance**: [Privacy](https://www.aibazar.pk/privacy), [Terms](https://www.aibazar.pk/terms), [Shipping](https://www.aibazar.pk/shipping)
+
+## 6. Language & Localization
+- **Primary Language**: English (Web Interface).
+- **Secondary Language**: Urdu (Customer Support & Phone interactions).
+- **Cultural Context**: Values reliability, value-for-money, and Islamic/local holidays (Eid specials, 14th August deals).

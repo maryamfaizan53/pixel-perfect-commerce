@@ -1,0 +1,27 @@
+# AI Bazar Pakistan
+
+> The most affordable and reliable online store in Pakistan, specializing in original electronics, home decor, and mother care products with express nationwide shipping.
+
+## Core Identity
+- **Name**: AI Bazar Pakistan
+- **Founder**: AI BAZAR
+- **Mission**: Providing high-quality, genuine products at the lowest possible prices for every Pakistani household.
+- **Key Categories**: Electronics, Home Decoration, Mobile Gadgets, Shopping Bags, Home Accessories, Mother & Baby Care.
+
+## Value Propositions
+- **Authenticity**: 100% genuine products directly from verified vendors.
+- **Affordability**: Lowest price guarantee in the Pakistani market.
+- **Convenience**: Cash on Delivery (COD) and Free Express Shipping (1-3 days).
+- **Customer First**: 7-day easy return policy and dedicated customer support.
+
+## Critical Links
+- [Homepage](https://www.aibazar.pk)
+- [All Products](https://www.aibazar.pk/category)
+- [Blog / Product Insights](https://www.aibazar.pk/blog)
+- [About Us](https://www.aibazar.pk/about)
+- [Shipping Policy](https://www.aibazar.pk/shipping)
+- [Contact Support](https://www.aibazar.pk/contact)
+
+## Technical Reference
+- [Sitemap](https://www.aibazar.pk/sitemap.xml)
+- [Robots.txt](https://www.aibazar.pk/robots.txt)

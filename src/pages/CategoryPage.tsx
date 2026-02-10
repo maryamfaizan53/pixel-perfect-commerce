@@ -177,6 +177,47 @@ const CategoryPage = () => {
       : "online store pakistan, affordable products pakistan, lowest price shopping pakistan"
   });
 
+  // Pro-Level AI Schema: CollectionPage & ItemList
+  useEffect(() => {
+    if (products.length > 0) {
+      const schemaId = 'category-seo-json-ld';
+      let script = document.getElementById(schemaId) as HTMLScriptElement;
+
+      if (!script) {
+        script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.id = schemaId;
+        document.head.appendChild(script);
+      }
+
+      const collectionSchema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": collectionData?.title || "All Products",
+        "description": collectionData?.description || "Browse our full catalog of high-quality products at the lowest prices in Pakistan.",
+        "url": window.location.href,
+        "mainEntity": {
+          "@type": "ItemList",
+          "numberOfItems": sortedProducts.length,
+          "itemListElement": sortedProducts.map((product, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "url": `${window.location.origin}/product/${product.node.handle}`,
+            "name": product.node.title,
+            "image": product.node.featuredImage?.url
+          }))
+        }
+      };
+
+      script.text = JSON.stringify(collectionSchema);
+
+      return () => {
+        const existingScript = document.getElementById(schemaId);
+        if (existingScript) existingScript.remove();
+      };
+    }
+  }, [products, collectionData, sortedProducts]);
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Header />

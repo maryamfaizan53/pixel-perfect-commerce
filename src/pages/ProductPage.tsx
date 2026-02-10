@@ -263,6 +263,20 @@ const ProductPage = () => {
           "@type": "Brand",
           "name": product.vendor || "AI Bazar Original"
         },
+        "review": reviews.slice(0, 5).map(r => ({
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": r.rating,
+            "bestRating": "5"
+          },
+          "author": {
+            "@type": "Person",
+            "name": r.user_name || "Anonymous"
+          },
+          "datePublished": r.created_at,
+          "reviewBody": r.comment
+        })),
         "offers": {
           "@type": "Offer",
           "url": canonicalUrl || window.location.href,
@@ -273,8 +287,7 @@ const ProductPage = () => {
           "availability": product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           "url_link": canonicalUrl || window.location.href,
           "seller": {
-            "@type": "Organization",
-            "name": "AI Bazar Pakistan"
+            "@id": "https://www.aibazar.pk/#store"
           },
           "hasMerchantReturnPolicy": {
             "@type": "MerchantReturnPolicy",
@@ -323,6 +336,29 @@ const ProductPage = () => {
         };
       }
 
+      const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": `Is this ${product.title} genuine?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, AI Bazar guarantees 100% genuine products directly from verified vendors and original brands."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `What is the return policy for ${product.title}?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We offer a 7-day easy return policy for this product. If you're not satisfied, you can return it for a full refund or exchange."
+            }
+          }
+        ]
+      };
+
       const breadcrumbSchema = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -354,7 +390,7 @@ const ProductPage = () => {
 
       const script = document.createElement('script');
       script.type = 'application/ld+json';
-      script.text = JSON.stringify([productSchema, breadcrumbSchema]);
+      script.text = JSON.stringify([productSchema, faqSchema, breadcrumbSchema]);
       script.id = 'product-seo-json-ld';
 
       // Remove existing script if any
@@ -368,7 +404,7 @@ const ProductPage = () => {
         if (scriptToRemove) scriptToRemove.remove();
       };
     }
-  }, [product, reviewStats]);
+  }, [product, reviewStats, reviews]);
 
   useEffect(() => {
     if (product) {

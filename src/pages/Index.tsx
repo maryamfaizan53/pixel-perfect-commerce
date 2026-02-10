@@ -13,9 +13,9 @@ const FooterLazy = lazy(() => import("@/components/layout/Footer").then(m => ({ 
 
 const Index = () => {
   useSEO({
-    title: "AI Bazar | Best Online Store in Pakistan - Buy at Lowest Prices",
-    description: "AI Bazar is the #1 online store in Pakistan for affordable shopping. Buy high-quality household, beauty, and fashion items at the lowest prices. Fast home delivery and cash on delivery nationwide.",
-    keywords: "online store in pakistan, best online shopping pakistan, lowest prices pakistan, affordable online shopping, buy cheap products, household items sale, kitchen gadgets, beauty products pakistan",
+    title: "AI Bazar | Best Online Shopping Store in Pakistan - Quality & Reliability",
+    description: "Experience hassle-free online shopping in Pakistan at aibazar.pk. Find the latest electronics, fashion, home decor, mother care, and gadgets at the lowest prices. Enjoy 100% genuine products with cash on delivery across Pakistan.",
+    keywords: "online shopping pakistan, best online store in pakistan, aibazar pk, electronic shop online, fashion shopping pakistan, home decor pakistan, mother care products, mobile gadgets pakistan, kitchen accessories online, cash on delivery shop, genuine products online pakistan",
     canonical: "https://www.aibazar.pk"
   });
 

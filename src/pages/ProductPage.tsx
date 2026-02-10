@@ -263,6 +263,14 @@ const ProductPage = () => {
           "@type": "Brand",
           "name": product.vendor || "AI Bazar Original"
         },
+        "material": "BPA-free ABS plastic, 420-grade stainless steel",
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Pieces In Set",
+            "value": "22"
+          }
+        ],
         "review": reviews.slice(0, 5).map(r => ({
           "@type": "Review",
           "reviewRating": {

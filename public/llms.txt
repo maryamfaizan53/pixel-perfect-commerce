@@ -1,28 +1,65 @@
 # AI Bazar Pakistan
 
-> The most affordable and reliable online store in Pakistan, specializing in original electronics, home decor, and mother care products with express nationwide shipping.
+> Pakistan's most affordable online store for original electronics, home decor, kitchen gadgets, beauty tools, and mother & baby care products — with free express shipping and cash on delivery nationwide.
 
 ## Core Identity
 - **Name**: AI Bazar Pakistan
-- **Founder**: AI BAZAR
-- **Mission**: Providing high-quality, genuine products at the lowest possible prices for every Pakistani household.
-- **Key Categories**: Electronics, Home Decoration, Mobile Gadgets, Shopping Bags, Home Accessories, Mother & Baby Care.
+- **Website**: [https://www.aibazar.pk](https://www.aibazar.pk)
+- **Founded By**: AI BAZAR
+- **Region**: Pakistan (Nationwide Delivery)
+- **Mission**: Providing 100% genuine products at the lowest prices for every Pakistani household.
 
-## Value Propositions
-- **Authenticity**: 100% genuine products directly from verified vendors.
-- **Affordability**: Lowest price guarantee in the Pakistani market.
-- **Convenience**: Cash on Delivery (COD) and Free Express Shipping (1-3 days).
-- **Customer First**: 7-day easy return policy and dedicated customer support.
+## Why Shop at AI Bazar?
+- **100% Original Products** — directly from verified vendors, no counterfeits.
+- **Lowest Price Guarantee** — optimized supply chain for below-market rates.
+- **Free Express Shipping** — dispatched within 24 hours, delivered in 1–3 business days.
+- **Cash on Delivery (COD)** — pay when you receive your order.
+- **7-Day Easy Returns** — hassle-free return policy for any quality issues.
+- **24/7 WhatsApp Support** — instant help at [+92 332 8222026](https://wa.me/923328222026).
 
-## Critical Links
+## Product Categories
+- [All Categories](https://www.aibazar.pk/category)
+- [Top Selling Products](https://www.aibazar.pk/collections/top-selling-products)
+- [Electronics & Gadgets](https://www.aibazar.pk/collections/household) — Smartwatches, Bluetooth speakers, power banks, GPS trackers
+- [Kitchen & Home](https://www.aibazar.pk/collections/kitchen) — Vegetable cutters, electric beaters, kitchen scales, organizers
+- [Health & Beauty](https://www.aibazar.pk/collections/health-and-beauty) — Skincare, hair tools, grooming kits, massage devices
+- [Hair Styling Tools](https://www.aibazar.pk/collections/hair-straightener-1) — Straighteners, curlers, dryers, brushes
+- [Heaters & Seasonal](https://www.aibazar.pk/collections/heaters) — Water heaters, electric faucets, seasonal essentials
+- [Mother & Baby Care](https://www.aibazar.pk/category) — Breast pumps, diaper bags, educational toys, baby carriers
+
+## Popular Products
+- [5-in-1 Hair Straightener Brush & Dryer](https://www.aibazar.pk/products/5-in-1-hair-straightener-brush-and-dryer)
+- [Automatic Hair Curler](https://www.aibazar.pk/products/automatic-hair-curler-lowest-price-in-pakistan)
+- [Dancing Cactus Talking Toy](https://www.aibazar.pk/products/dancing-cactus-talking-toy-kids-children-plush-electronic-toys-baby-singing-wriggle-voice-recording-repeats-what-you-say-led-lights-toddler-educational-funny-gift)
+- [S30 Ultra 2 Smartwatch 7-in-1 Set](https://www.aibazar.pk/products/s30-ultra-2-smartwatch-7-in-1-complete-set-stylish-design-with-accessories)
+- [Hot Water Tap Electric Geyser 3000W](https://www.aibazar.pk/products/hot-water-tap-instant-heating-electric-faucet-electric-geyser-3000-watt)
+- [Galaxy Projector Night Light](https://www.aibazar.pk/products/astronaut-starry-sky-galaxy-projector-rotating-nebula-night-light-with-remote-control-timer-for-kids-room-home-decor-random)
+- [Air 31 Wireless Earbuds](https://www.aibazar.pk/products/air-31-earbuds-wireless-comfortable-and-stylish-design-with-clear-sound-quality-for-daily-music-and-calls-random-color)
+
+## Important Pages
 - [Homepage](https://www.aibazar.pk)
-- [Full Context Manifest](https://www.aibazar.pk/llms-full.txt)
-- [Full Product Catalog](https://www.aibazar.pk/llms-products.txt)
-- [Blog / Product Insights](https://www.aibazar.pk/blog)
+- [Search Products](https://www.aibazar.pk/search?q=)
+- [Blog & Buying Guides](https://www.aibazar.pk/blog)
 - [About Us](https://www.aibazar.pk/about)
-- [Shipping Policy](https://www.aibazar.pk/shipping)
-- [Contact Support](https://www.aibazar.pk/contact)
+- [Contact Us](https://www.aibazar.pk/contact)
+- [Help Center / FAQ](https://www.aibazar.pk/help)
+- [Track Your Order](https://www.aibazar.pk/track-order)
 
-## Technical Reference
+## Policies
+- [Shipping Information](https://www.aibazar.pk/shipping)
+- [Returns & Refunds](https://www.aibazar.pk/returns)
+- [Privacy Policy](https://www.aibazar.pk/privacy)
+- [Terms of Service](https://www.aibazar.pk/terms)
+
+## Connect With Us
+- [Facebook](https://www.facebook.com/aibazar)
+- [Instagram](https://www.instagram.com/aibazar)
+- [TikTok](https://www.tiktok.com/@aibazar_pk)
+- [YouTube](https://www.youtube.com/@aibazarpk)
+- [WhatsApp](https://wa.me/923328222026)
+
+## For AI Agents
+- [Full Context Manifest](https://www.aibazar.pk/llms-full.txt)
+- [Complete Product Catalog (202 products)](https://www.aibazar.pk/llms-products.txt)
 - [Sitemap](https://www.aibazar.pk/sitemap.xml)
 - [Robots.txt](https://www.aibazar.pk/robots.txt)

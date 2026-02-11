@@ -16,12 +16,12 @@ export const SEOContent = () => {
             <h1 className="text-3xl md:text-5xl font-black text-black mb-6 tracking-tight uppercase">
               Online Shopping Store in <span className="text-primary italic">Pakistan</span>
             </h1>
-            <div className="space-y-6 text-black/70 leading-relaxed text-base md:text-lg">
+            <div className="space-y-6 text-black/70 leading-relaxed text-base md:text-lg text-justify">
               <p>
-                Online shopping in Pakistan: Find the latest products and deals on <strong className="text-black">aibazar.pk</strong>. Online shopping for kitchen accessories, electronics, mobile phones, fashion, and more. We want to create a Pre-eminent Online shopping marketplace by bringing a reliable, hassle-free and convenient online shopping experience to your fingertips with a consumer-friendly purchase policy and Quality assured 100% genuine products cash on delivery.
+                Discover the ultimate destination for <strong className="text-black">online shopping in Pakistan</strong>. At <strong className="text-black">aibazar.pk</strong>, we bring you a meticulously curated selection of kitchen accessories, electronics, fashion, and baby care products. Our mission is to provide a reliable, hassle-free marketplace that combines convenience with a consumer-friendly purchase policy and 100% genuine quality.
               </p>
               <p>
-                At aibazar.pk, we will spoil you with a wide variety and range of products spanning numerous categories to fulfil your shopping urge, electronics, accessories, toys, kitchen accessories, home appliances and many more. We at aibazar.pk, your favourite online shopping store, strive to bring you prices which are very economical and pocket-friendly, don't forget the deals and discounts on offers, combined with the most sought elements of business Trust, Reliability, Originality and Agility to bring you a unique shopping store experience and at the same time keeping customer satisfaction at the top of our priority so all you need to do is simply shop n go at any time of your choosing as you please, there is no need to wait for the weekend.
+                Whether you are looking for the latest gadgets or essential home appliances, our store offers competitive prices that are both economical and pocket-friendly. We prioritize customer satisfaction by ensuring every product meets our rigorous quality standards. Experience seamless shopping with <strong className="text-black">cash on delivery across Pakistan</strong> and enjoy the peace of mind that comes with shopping at your favorite trusted online store.
               </p>
             </div>
           </div>

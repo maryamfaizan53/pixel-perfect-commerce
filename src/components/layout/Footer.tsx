@@ -104,15 +104,22 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div className="lg:col-span-2">
-            <h3 className="font-semibold text-white mb-4">Shop</h3>
+            <h3 className="font-semibold text-white mb-4">Shop Categories</h3>
             <ul className="space-y-2.5">
-              {['All Products', 'New Arrivals', 'Best Sellers', 'On Sale'].map((item) => (
-                <li key={item}>
+              {[
+                { name: 'All Products', title: 'Browse All Online Products in Pakistan' },
+                { name: 'New Arrivals', title: 'Check Latest Products at AI Bazar' },
+                { name: 'Best Sellers', title: 'Top Selling Online Products in Pakistan' },
+                { name: 'On Sale', title: 'Best Discounts and Deals Online Pakistan' }
+              ].map((item) => (
+                <li key={item.name}>
                   <Link
                     to={`/category/all`}
+                    title={item.title}
+                    aria-label={item.title}
                     className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors"
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -121,35 +128,35 @@ export const Footer = () => {
 
           {/* Customer Service */}
           <div className="lg:col-span-2">
-            <h3 className="font-semibold text-white mb-4">Help</h3>
+            <h3 className="font-semibold text-white mb-4">Customer Care</h3>
             <ul className="space-y-2.5">
               <li>
-                <Link to="/track-order" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Link to="/track-order" title="Track Your Online Order in Pakistan" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                   Track Order
                 </Link>
               </li>
               <li>
-                <Link to="/shipping" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Link to="/shipping" title="Shipping and Delivery Information Pakistan" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                   Shipping Info
                 </Link>
               </li>
               <li>
-                <Link to="/returns" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Link to="/returns" title="Returns and Exchange Policy" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                   Returns & Exchange
                 </Link>
               </li>
               <li>
-                <Link to="/help" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Link to="/help" title="Frequently Asked Questions" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                   FAQs
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Link to="/contact" title="Contact AI Bazar Customer Support" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
+                <Link to="/blog" title="Latest Online Shopping Trends Blog Pakistan" className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors">
                   Blog
                 </Link>
               </li>

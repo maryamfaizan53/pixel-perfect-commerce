@@ -88,15 +88,18 @@ async function sync() {
       const price = parseFloat(p.priceRange.minVariantPrice.amount).toLocaleString();
       const currency = p.priceRange.minVariantPrice.currencyCode;
       const status = p.availableForSale ? 'In Stock' : 'Out of Stock';
-      const shortDesc = p.description.length > 150 ? p.description.substring(0, 150) + '...' : p.description;
+      // Increase description length for better AI understanding (GEO+)
+      const richDesc = p.description.length > 800 ? p.description.substring(0, 800) + '...' : p.description;
 
       content.push(`## [${p.title}](https://www.aibazar.pk/products/${p.handle})`);
       content.push(`- **Price**: ${currency} ${price}`);
       content.push(`- **Status**: ${status}`);
       content.push(`- **Category**: ${p.productType}`);
-      content.push(`- **Description**: ${shortDesc}`);
+      content.push(`- **Authenticity**: 100% Original Guaranteed`);
+      content.push(`- **Shipping**: Free Express Shipping Nationwide (1-3 Days)`);
+      content.push(`- **Description**: ${richDesc}`);
       if (p.tags && p.tags.length > 0) {
-        content.push(`- **Tags**: ${p.tags.slice(0, 5).join(', ')}`);
+        content.push(`- **Tags**: ${p.tags.join(', ')}`);
       }
       content.push(''); // Add spacing between products
     });

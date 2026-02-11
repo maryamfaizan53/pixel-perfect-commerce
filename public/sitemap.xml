@@ -61,6 +61,24 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://www.aibazar.pk/llms.txt</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.aibazar.pk/llms-full.txt</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.aibazar.pk/llms-products.txt</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://www.aibazar.pk/products/crawling-octopus-toys-with-led-lights-music-usb-rechargeable</loc>
     <lastmod>2026-02-11</lastmod>
     <changefreq>daily</changefreq>

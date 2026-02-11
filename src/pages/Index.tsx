@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { HeroCategories } from "@/components/home/HeroCategories";
 import { CategoryProductRow } from "@/components/home/CategoryProductRow";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { fetchCollections } from "@/lib/shopify";
+import { fetchCollections, fetchProductsByCollection } from "@/lib/shopify";
 import { useQuery } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { useSEO } from "@/hooks/useSEO";
@@ -144,6 +144,66 @@ const Index = () => {
     }
     script.text = JSON.stringify(schema);
   }
+
+  // Fetch top-selling products for ItemList schema (Google product carousel)
+  const { data: topSellingProducts } = useQuery({
+    queryKey: ['top-selling-schema'],
+    queryFn: () => fetchProductsByCollection('top-selling-products', 12),
+  });
+
+  useEffect(() => {
+    if (!topSellingProducts?.products?.length) return;
+
+    const siteUrl = 'https://www.aibazar.pk';
+    const schemaId = 'top-selling-itemlist-json-ld';
+    let script = document.getElementById(schemaId) as HTMLScriptElement;
+
+    if (!script) {
+      script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = schemaId;
+      document.head.appendChild(script);
+    }
+
+    const itemListSchema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Top Selling Products in Pakistan",
+      "description": "Our most popular and best-selling products voted by the community at AI Bazar Pakistan",
+      "url": `${siteUrl}/collections/top-selling-products`,
+      "numberOfItems": topSellingProducts.products.length,
+      "itemListElement": topSellingProducts.products.map((product: any, index: number) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": product.node.title,
+        "url": `${siteUrl}/products/${product.node.handle}`,
+        "image": product.node.featuredImage?.url || product.node.media?.edges?.[0]?.node?.previewImage?.url,
+        "item": {
+          "@type": "Product",
+          "name": product.node.title,
+          "url": `${siteUrl}/products/${product.node.handle}`,
+          "image": product.node.featuredImage?.url,
+          "offers": {
+            "@type": "Offer",
+            "price": product.node.priceRange.minVariantPrice.amount,
+            "priceCurrency": product.node.priceRange.minVariantPrice.currencyCode || "PKR",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "AI Bazar Pakistan"
+            }
+          }
+        }
+      }))
+    };
+
+    script.text = JSON.stringify(itemListSchema);
+
+    return () => {
+      const existingScript = document.getElementById(schemaId);
+      if (existingScript) existingScript.remove();
+    };
+  }, [topSellingProducts]);
 
   console.log("Index component rendering...");
   const { data: collections = [], isLoading, error } = useQuery({

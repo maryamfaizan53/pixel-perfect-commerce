@@ -177,7 +177,7 @@ const CategoryPage = () => {
       : "online store pakistan, affordable products pakistan, lowest price shopping pakistan"
   });
 
-  // Pro-Level AI Schema: CollectionPage & ItemList
+  // Pro-Level AI Schema: CollectionPage, ItemList & Breadcrumb
   useEffect(() => {
     if (products.length > 0) {
       const schemaId = 'category-seo-json-ld';
@@ -190,33 +190,61 @@ const CategoryPage = () => {
         document.head.appendChild(script);
       }
 
+      const siteUrl = 'https://www.aibazar.pk';
+      const canonicalUrl = `${siteUrl}/collections/${category}`;
+
       const collectionSchema = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": collectionData?.title || "All Products",
         "description": collectionData?.description || "Browse our full catalog of high-quality products at the lowest prices in Pakistan.",
-        "url": window.location.href,
+        "url": canonicalUrl,
         "mainEntity": {
           "@type": "ItemList",
           "numberOfItems": sortedProducts.length,
-          "itemListElement": sortedProducts.map((product, index) => ({
+          "itemListElement": sortedProducts.slice(0, 30).map((product, index) => ({
             "@type": "ListItem",
             "position": index + 1,
-            "url": `${window.location.origin}/product/${product.node.handle}`,
+            "url": `${siteUrl}/products/${product.node.handle}`,
             "name": product.node.title,
             "image": product.node.featuredImage?.url
           }))
         }
       };
 
-      script.text = JSON.stringify(collectionSchema);
+      const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": siteUrl
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Collections",
+            "item": `${siteUrl}/category`
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": collectionData?.title || category,
+            "item": canonicalUrl
+          }
+        ]
+      };
+
+      script.text = JSON.stringify([collectionSchema, breadcrumbSchema]);
 
       return () => {
         const existingScript = document.getElementById(schemaId);
         if (existingScript) existingScript.remove();
       };
     }
-  }, [products, collectionData, sortedProducts]);
+  }, [products, collectionData, sortedProducts, category]);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">

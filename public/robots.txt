@@ -1,3 +1,24 @@
+# AI Bazar Pakistan - Robots.txt
+# https://www.aibazar.pk
+
+User-agent: Googlebot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+User-agent: Bingbot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
 User-agent: *
 Allow: /
 Disallow: /checkout
@@ -5,7 +26,10 @@ Disallow: /cart
 Disallow: /account
 Disallow: /orders
 Disallow: /auth
+Disallow: /wishlist
 
-# Sitemap link
+# Sitemaps
 Sitemap: https://www.aibazar.pk/sitemap.xml
-llms: https://www.aibazar.pk/llms.txt
+
+# AI/LLM Manifest
+# See https://www.aibazar.pk/llms.txt

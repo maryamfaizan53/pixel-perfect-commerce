@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -19,8 +19,73 @@ const Blog = () => {
             ? "AI Bazar Blog | E-commerce Tips & Shopping Guides in Pakistan"
             : `${selectedCategory} Guides & Tips - AI Bazar Blog`,
         description: `Explore our ${selectedCategory === "All" ? "" : selectedCategory} articles on AI Bazar. Expert shopping tips, product guides, and e-commerce trends in Pakistan.`,
-        keywords: `blog, aibazar blog, shopping tips pakistan, e-commerce guides, ${selectedCategory.toLowerCase()} tips`
+        keywords: `blog, aibazar blog, shopping tips pakistan, e-commerce guides, ${selectedCategory.toLowerCase()} tips`,
+        canonical: "https://www.aibazar.pk/blog"
     });
+
+    // Blog listing page JSON-LD schema
+    useEffect(() => {
+        const siteUrl = 'https://www.aibazar.pk';
+        const schemaId = 'blog-listing-json-ld';
+        let script = document.getElementById(schemaId) as HTMLScriptElement;
+
+        if (!script) {
+            script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.id = schemaId;
+            document.head.appendChild(script);
+        }
+
+        const blogListSchema = {
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": "AI Bazar Blog",
+            "description": "Expert shopping tips, product guides, and e-commerce trends in Pakistan.",
+            "url": `${siteUrl}/blog`,
+            "publisher": {
+                "@type": "Organization",
+                "name": "AI Bazar Pakistan",
+                "@id": `${siteUrl}/#organization`
+            },
+            "blogPost": blogPosts.slice(0, 20).map(post => ({
+                "@type": "BlogPosting",
+                "headline": post.title,
+                "description": post.excerpt,
+                "url": `${siteUrl}/blog/${post.slug}`,
+                "datePublished": post.publishDate,
+                "author": {
+                    "@type": "Person",
+                    "name": post.author
+                }
+            }))
+        };
+
+        const breadcrumbSchema = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": siteUrl
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Blog",
+                    "item": `${siteUrl}/blog`
+                }
+            ]
+        };
+
+        script.text = JSON.stringify([blogListSchema, breadcrumbSchema]);
+
+        return () => {
+            const existingScript = document.getElementById(schemaId);
+            if (existingScript) existingScript.remove();
+        };
+    }, []);
 
     const categories = ["All", ...getAllCategories()];
 

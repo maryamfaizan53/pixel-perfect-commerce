@@ -7,9 +7,37 @@ const OUTPUT_FILE = path.join(__dirname, 'public', 'sitemap.xml');
 const PRODUCTS_FILE = path.join(__dirname, 'all_products.txt');
 const BLOG_DATA_FILE = path.join(__dirname, 'src', 'data', 'blogData.ts');
 
+// Top-selling product handles that should get highest priority
+const TOP_SELLING_HANDLES = [
+    'crawling-octopus-toys-with-led-lights-music-usb-rechargeable',
+    '2-in-1-smart-clever-cutter',
+    'magic-kitchen-foldable-chef-basket',
+    'hot-water-tap-instant-heating-electric-faucet-electric-geyser-3000-watt',
+    '5-in-1-hair-straightener-brush-and-dryer',
+    'hair-straightener-brush-curling-comb-2-in-1',
+    'hair-dryer-brush-hot-air-hair-brush-styler-for-straightening-curling-electric-blower-brush-volumizer-warm-air-comb-one-step-dryer',
+    'automatic-hair-curler-lowest-price-in-pakistan',
+    'mosquito-killer-lamp',
+    'digital-kitchen-weight-scale-10-kg-capacity-measures-in-g-oz-without-led',
+    'new-foldable-uv-mosquito-killer-rechargeable-racket',
+    '2-in-1-electric-eyebrow-trimmer',
+    'flawless-facial-hair-remover-machine-for-women-high-quality-pocket-size-painless-face-hair-removing-machine-cell-operated',
+    'instant-electric-hot-water-heater-faucet-with-hand-shower-fast-heating-easy-installation',
+];
+
 // Helper to format date
 const formatDate = (date) => {
     return date.toISOString().split('T')[0];
+};
+
+// Escape XML special characters
+const escapeXml = (str) => {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 };
 
 // Main function
@@ -19,56 +47,48 @@ async function generateSitemap() {
     const today = formatDate(new Date());
     let urls = [];
 
-    // 1. Static Pages
+    // 1. Static Pages (EXCLUDE pages that are in robots.txt Disallow)
     const staticPages = [
-        '',
-        '/category',
-        '/blog',
-        '/about',
-        '/contact',
-        '/privacy',
-        '/terms',
-        '/shipping',
-        '/returns',
-        '/track-order',
-        '/auth',
-        '/cart',
-        '/wishlist'
+        { path: '', changefreq: 'daily', priority: '1.0' },
+        { path: '/category', changefreq: 'weekly', priority: '0.8' },
+        { path: '/blog', changefreq: 'daily', priority: '0.9' },
+        { path: '/about', changefreq: 'monthly', priority: '0.6' },
+        { path: '/contact', changefreq: 'monthly', priority: '0.6' },
+        { path: '/privacy', changefreq: 'yearly', priority: '0.3' },
+        { path: '/terms', changefreq: 'yearly', priority: '0.3' },
+        { path: '/shipping', changefreq: 'monthly', priority: '0.5' },
+        { path: '/returns', changefreq: 'monthly', priority: '0.5' },
+        { path: '/help', changefreq: 'monthly', priority: '0.5' },
     ];
+    // NOTE: /auth, /cart, /wishlist, /checkout, /account, /orders are excluded (robots.txt Disallow)
 
     staticPages.forEach(page => {
         urls.push({
-            loc: `${BASE_URL}${page}`,
+            loc: `${BASE_URL}${page.path}`,
             lastmod: today,
-            changefreq: 'weekly',
-            priority: page === '' ? '1.0' : '0.8'
+            changefreq: page.changefreq,
+            priority: page.priority
         });
     });
 
     // 2. Products from all_products.txt
     try {
-        // The file appears to be UTF-16LE encoded based on previous debug output
         const productsContent = fs.readFileSync(PRODUCTS_FILE, 'utf16le');
         const productHandles = productsContent.split('\n')
             .map(line => line.trim())
-            .filter(line => line && !line.startsWith('#')); // Filter empty lines and comments
+            .filter(line => line && !line.startsWith('#'));
 
-        console.log(`Found ${productHandles.length} products.`);
+        console.log(`Found ${productHandles.length} product lines.`);
 
         productHandles.forEach(handle => {
-            // Clean handle if it's a URL or has query params
-            // Expected format: "- Product Title (handle)"
             let cleanHandle = null;
 
-            // Try to extract from parentheses first
             const match = handle.match(/\(([^)]+)\)\s*$/);
 
             if (match) {
                 cleanHandle = match[1];
             } else {
-                // Fallback for legacy format or direct handles
-                if (handle.includes('Total Products:')) return; // Skip summary line
-
+                if (handle.includes('Total Products:')) return;
                 cleanHandle = handle;
                 if (handle.includes('product/')) {
                     cleanHandle = handle.split('product/')[1];
@@ -80,11 +100,13 @@ async function generateSitemap() {
             }
 
             if (cleanHandle) {
+                // Top-selling products get highest priority
+                const isTopSeller = TOP_SELLING_HANDLES.includes(cleanHandle);
                 urls.push({
-                    loc: `${BASE_URL}/product/${cleanHandle}`,
+                    loc: `${BASE_URL}/products/${escapeXml(cleanHandle)}`,
                     lastmod: today,
                     changefreq: 'daily',
-                    priority: '0.9'
+                    priority: isTopSeller ? '1.0' : '0.8'
                 });
             }
         });
@@ -93,44 +115,64 @@ async function generateSitemap() {
     }
 
     // 3. Blog Posts from blogData.ts
-    // Since blogData.ts is TypeScript, we'll try to extract handles using regex
     try {
         const blogContent = fs.readFileSync(BLOG_DATA_FILE, 'utf8');
-        // Regex to find slug: "some-slug"
-        const slugRegex = /slug:\s*"([^"]+)"/g;
-        let match;
-        let blogCount = 0;
 
-        while ((match = slugRegex.exec(blogContent)) !== null) {
+        // Extract slugs and featured status
+        const slugRegex = /slug:\s*"([^"]+)"/g;
+        const featuredRegex = /featured:\s*(true|false)/g;
+
+        let slugMatch;
+        let blogCount = 0;
+        const slugs = [];
+
+        while ((slugMatch = slugRegex.exec(blogContent)) !== null) {
+            slugs.push(slugMatch[1]);
+        }
+
+        // Check featured status for each post
+        const featuredMatches = [];
+        let featuredMatch;
+        while ((featuredMatch = featuredRegex.exec(blogContent)) !== null) {
+            featuredMatches.push(featuredMatch[1] === 'true');
+        }
+
+        slugs.forEach((slug, index) => {
+            const isFeatured = featuredMatches[index] || false;
             urls.push({
-                loc: `${BASE_URL}/blog/${match[1]}`,
-                lastmod: today, // Ideally use publishDate from file if we parsed it properly
+                loc: `${BASE_URL}/blog/${escapeXml(slug)}`,
+                lastmod: today,
                 changefreq: 'weekly',
-                priority: '0.7'
+                priority: isFeatured ? '0.9' : '0.7'
             });
             blogCount++;
-        }
-        console.log(`Found ${blogCount} blog posts.`);
+        });
 
+        console.log(`Found ${blogCount} blog posts.`);
     } catch (error) {
         console.error('Error reading blog data:', error);
     }
 
-    // 4. Categories (Hardcoded for now based on navigation)
+    // 4. Categories
     const categories = [
-        'electronics',
-        'fashion',
-        'home-living',
-        'kitchen',
-        'beauty'
+        { handle: 'top-selling-products', priority: '1.0' },
+        { handle: 'household', priority: '0.9' },
+        { handle: 'heaters', priority: '0.8' },
+        { handle: 'health-and-beauty', priority: '0.9' },
+        { handle: 'hair-straightener-1', priority: '0.8' },
+        { handle: 'kitchen', priority: '0.9' },
+        { handle: 'electronics', priority: '0.9' },
+        { handle: 'fashion', priority: '0.8' },
+        { handle: 'home-living', priority: '0.8' },
+        { handle: 'beauty', priority: '0.8' },
     ];
 
     categories.forEach(cat => {
         urls.push({
-            loc: `${BASE_URL}/category/${cat}`,
+            loc: `${BASE_URL}/collections/${cat.handle}`,
             lastmod: today,
-            changefreq: 'weekly',
-            priority: '0.8'
+            changefreq: 'daily',
+            priority: cat.priority
         });
     });
 
@@ -153,6 +195,14 @@ ${urls.map(url => `  <url>
 
     fs.writeFileSync(OUTPUT_FILE, sitemapContent);
     console.log(`Sitemap generated with ${urls.length} URLs at ${OUTPUT_FILE}`);
+
+    // Stats
+    const topSellerCount = urls.filter(u => u.priority === '1.0' && u.loc.includes('/products/')).length;
+    console.log(`  - Top-selling products (priority 1.0): ${topSellerCount}`);
+    console.log(`  - Regular products (priority 0.8): ${urls.filter(u => u.priority === '0.8' && u.loc.includes('/products/')).length}`);
+    console.log(`  - Blog posts: ${urls.filter(u => u.loc.includes('/blog/')).length}`);
+    console.log(`  - Categories: ${urls.filter(u => u.loc.includes('/collections/')).length}`);
+    console.log(`  - Static pages: ${urls.filter(u => !u.loc.includes('/products/') && !u.loc.includes('/blog/') && !u.loc.includes('/collections/')).length}`);
 }
 
 generateSitemap();

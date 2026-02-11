@@ -19,9 +19,23 @@ interface SEOProps {
  */
 export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId }: SEOProps) => {
     useEffect(() => {
+        // Auto-generate canonical from current URL if not provided
+        // Normalize duplicate routes: /product/ -> /products/, /category/ -> /collections/
+        if (!canonical) {
+            let currentUrl = window.location.origin + window.location.pathname;
+            // Normalize /product/:handle to /products/:handle
+            currentUrl = currentUrl.replace(/\/product\//, '/products/');
+            // Normalize /category/:cat to /collections/:cat (but not /category alone)
+            currentUrl = currentUrl.replace(/\/category\/(.+)/, '/collections/$1');
+            // Remove trailing slash
+            currentUrl = currentUrl.replace(/\/$/, '');
+            canonical = currentUrl;
+        }
         // 1. Update Title
         if (title) {
-            const fullTitle = `${title} | AI Bazar Pakistan`;
+            // Avoid double-appending suffix if already present
+            const suffix = ' | AI Bazar Pakistan';
+            const fullTitle = title.includes('AI Bazar') ? title : `${title}${suffix}`;
             document.title = fullTitle;
 
             const ogTitle = document.querySelector('meta[property="og:title"]');

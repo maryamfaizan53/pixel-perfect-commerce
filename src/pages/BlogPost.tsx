@@ -15,11 +15,15 @@ const BlogPost = () => {
     const { slug } = useParams<{ slug: string }>();
     const post = slug ? getBlogPostBySlug(slug) : undefined;
 
+    const canonicalUrl = post ? `https://www.aibazar.pk/blog/${post.slug}` : undefined;
+
     useSEO({
-        title: post ? `${post.title} | AI Bazar Blog` : "Blog Post",
+        title: post ? `${post.title}` : "Blog Post",
         description: post?.excerpt || "Read the latest from AI Bazar Blog.",
         keywords: post?.tags.join(", ") || "aibazar blog",
-        ogType: "article"
+        ogType: "article",
+        canonical: canonicalUrl,
+        ogImage: "https://www.aibazar.pk/og-image.png"
     });
 
     useEffect(() => {
@@ -36,6 +40,8 @@ const BlogPost = () => {
             document.head.appendChild(script);
         }
 
+        const siteUrl = 'https://www.aibazar.pk';
+        const postUrl = `${siteUrl}/blog/${post.slug}`;
         const wordCount = post.content.split(/\s+/).length;
         const blogSchema = {
             "@context": "https://schema.org",
@@ -44,6 +50,7 @@ const BlogPost = () => {
             "description": post.excerpt,
             "articleSection": post.category,
             "wordCount": wordCount,
+            "inLanguage": "en-PK",
             "author": {
                 "@type": "Person",
                 "name": post.author,
@@ -56,13 +63,13 @@ const BlogPost = () => {
             },
             "datePublished": post.publishDate,
             "dateModified": post.publishDate,
-            "image": "https://www.aibazar.pk/og-image.jpg",
+            "image": `${siteUrl}/og-image.png`,
             "publisher": {
                 "@type": "Organization",
                 "name": "AI Bazar Pakistan",
                 "logo": {
                     "@type": "ImageObject",
-                    "url": "https://www.aibazar.pk/favicon.png"
+                    "url": `${siteUrl}/favicon.png`
                 },
                 "sameAs": [
                     "https://www.facebook.com/aibazar",
@@ -72,8 +79,9 @@ const BlogPost = () => {
             },
             "mainEntityOfPage": {
                 "@type": "WebPage",
-                "@id": window.location.href
-            }
+                "@id": postUrl
+            },
+            "keywords": post.tags.join(", ")
         };
 
         const breadcrumbSchema = {
@@ -84,19 +92,19 @@ const BlogPost = () => {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Home",
-                    "item": window.location.origin
+                    "item": siteUrl
                 },
                 {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Blog",
-                    "item": `${window.location.origin}/blog`
+                    "item": `${siteUrl}/blog`
                 },
                 {
                     "@type": "ListItem",
                     "position": 3,
                     "name": post.title,
-                    "item": window.location.href
+                    "item": postUrl
                 }
             ]
         };

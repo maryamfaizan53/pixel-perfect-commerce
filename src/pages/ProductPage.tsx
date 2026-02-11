@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag, CreditCard, Play, RotateCcw, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout } from "@/lib/shopify";
+import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout, fetchProductsByCollection } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { ProductReviews } from "@/components/reviews/ProductReviews";
@@ -40,11 +40,17 @@ interface ProductMedia {
 interface Variant {
   id: string;
   title: string;
+  sku: string | null;
+  barcode: string | null;
   availableForSale: boolean;
   price: {
     amount: string;
     currencyCode: string;
   };
+  compareAtPrice: {
+    amount: string;
+    currencyCode: string;
+  } | null;
   selectedOptions: {
     name: string;
     value: string;
@@ -60,11 +66,18 @@ interface Product {
   id: string;
   title: string;
   description: string;
+  descriptionHtml: string;
   handle: string;
   availableForSale: boolean;
   productType: string;
   vendor: string;
   tags: string[];
+  createdAt: string;
+  updatedAt: string;
+  seo: {
+    title: string | null;
+    description: string | null;
+  };
   media: {
     edges: ProductMedia[];
   };
@@ -75,6 +88,16 @@ interface Product {
   };
   options: ProductOption[];
   priceRange: {
+    minVariantPrice: {
+      amount: string;
+      currencyCode: string;
+    };
+    maxVariantPrice: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
+  compareAtPriceRange: {
     minVariantPrice: {
       amount: string;
       currencyCode: string;
@@ -97,12 +120,29 @@ const PRODUCT_QUERY = `
       id
       title
       description
+      descriptionHtml
       handle
       availableForSale
       productType
       vendor
       tags
+      createdAt
+      updatedAt
+      seo {
+        title
+        description
+      }
       priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+        maxVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      compareAtPriceRange {
         minVariantPrice {
           amount
           currencyCode
@@ -112,6 +152,7 @@ const PRODUCT_QUERY = `
         edges {
           node {
             mediaContentType
+            alt
             previewImage {
               url
             }
@@ -119,6 +160,9 @@ const PRODUCT_QUERY = `
               id
               image {
                 url
+                altText
+                width
+                height
               }
             }
             ... on Video {
@@ -141,7 +185,13 @@ const PRODUCT_QUERY = `
           node {
             id
             title
+            sku
+            barcode
             price {
+              amount
+              currencyCode
+            }
+            compareAtPrice {
               amount
               currencyCode
             }
@@ -157,7 +207,7 @@ const PRODUCT_QUERY = `
         name
         values
       }
-      collections(first: 1) {
+      collections(first: 3) {
         edges {
           node {
             title
@@ -180,6 +230,7 @@ const ProductPage = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [showStickyCTA, setShowStickyCTA] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState<ShopifyProduct[]>([]);
   const addItem = useCartStore(state => state.addItem);
 
   const { ref: priceRef, inView: priceInView } = useInView({ threshold: 0 });
@@ -215,6 +266,21 @@ const ProductPage = () => {
     }
   }, [handle]);
 
+  // Fetch related products from same collection for internal linking
+  useEffect(() => {
+    if (!product) return;
+    const collectionHandle = product.collections.edges[0]?.node?.handle;
+    if (!collectionHandle) return;
+
+    fetchProductsByCollection(collectionHandle, 8).then(data => {
+      if (data?.products) {
+        // Filter out current product
+        const filtered = data.products.filter((p: ShopifyProduct) => p.node.handle !== product.handle);
+        setRelatedProducts(filtered.slice(0, 6));
+      }
+    });
+  }, [product]);
+
   // Meta Pixel & Browser SEO: Track ViewContent and set Dynamic Title
   useEffect(() => {
     if (product) {
@@ -230,12 +296,38 @@ const ProductPage = () => {
   }, [product]);
 
   // Expert Level SEO: Set Dynamic Metadata and JSON-LD
-  const canonicalUrl = product ? `${window.location.origin}/products/${product.handle}` : undefined;
+  // Always use /products/ as the canonical route (not /product/)
+  const canonicalUrl = product ? `https://www.aibazar.pk/products/${product.handle}` : undefined;
+
+  // Use Shopify SEO fields if available, otherwise generate optimized ones
+  const seoTitle = product
+    ? (product.seo?.title || `${product.title} - Buy Online at Lowest Price in Pakistan`)
+    : "Loading Product...";
+
+  const priceText = product ? `Rs. ${parseFloat(product.priceRange.minVariantPrice.amount).toLocaleString()}` : '';
+  const seoDescription = product
+    ? (product.seo?.description || `Buy ${product.title} for only ${priceText} at AI Bazar Pakistan. ${product.availableForSale ? 'In Stock' : 'Out of Stock'} - Free shipping, cash on delivery & 7-day returns. ${product.description.substring(0, 120)}`)
+    : "Shop high-quality products at AI Bazar Pakistan. Lowest prices, free shipping, and original quality guaranteed.";
+
+  const seoKeywords = product
+    ? [
+      product.title.toLowerCase(),
+      `buy ${product.title.toLowerCase()} online`,
+      `${product.title.toLowerCase()} price in pakistan`,
+      `${product.title.toLowerCase()} online shopping`,
+      product.productType?.toLowerCase(),
+      `${product.vendor?.toLowerCase()} products`,
+      `${product.productType?.toLowerCase()} lowest price pakistan`,
+      'aibazar',
+      'cash on delivery pakistan',
+      ...product.tags.map(t => t.toLowerCase()),
+    ].filter(Boolean).join(', ')
+    : "aibazar shopping, online shopping pakistan, lowest price online";
 
   useSEO({
-    title: product ? `${product.title} - Lowest Price in Pakistan | Free Shipping & COD` : "Loading Product...",
-    description: product ? `Buy ${product.title} at the lowest price in Pakistan. AI Bazar offers original quality, free express shipping, and cash on delivery. ${product.description.substring(0, 100)}... Shop now and save!` : "Shop high-quality products at AI Bazar Pakistan. Lowest prices, free shipping, and original quality guaranteed.",
-    keywords: product ? `${product.title.toLowerCase()}, buy ${product.title.toLowerCase()} online, ${product.title.toLowerCase()} price in pakistan, aibazar, affordable ${product.productType.toLowerCase()}, ${product.vendor} original` : "aibazar shopping, online shopping pakistan, lowest price online",
+    title: seoTitle,
+    description: seoDescription,
+    keywords: seoKeywords,
     ogImage: product?.media.edges[0]?.node.previewImage?.url || product?.media.edges[0]?.node.image?.url,
     ogType: 'product',
     priceAmount: product?.priceRange.minVariantPrice.amount,
@@ -253,30 +345,112 @@ const ProductPage = () => {
       const imageUrl = product.media.edges.map(edge => edge.node.previewImage?.url || edge.node.image?.url).filter(Boolean);
       const collection = product.collections.edges[0]?.node;
 
+      // Get SKU and GTIN from first variant
+      const firstVariant = product.variants.edges[0]?.node;
+      const sku = firstVariant?.sku || formatProductId(product.id);
+      const gtin = firstVariant?.barcode || undefined;
+
+      // Build shared shipping & return policy
+      const shippingDetails = {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "PKR"
+        },
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "PK"
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 0,
+            "maxValue": 1,
+            "unitCode": "d"
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 1,
+            "maxValue": 3,
+            "unitCode": "d"
+          }
+        }
+      };
+
+      const returnPolicy = {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "PK",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 7,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+      };
+
+      // Build offers - one per variant for Google Merchant
+      const hasMultipleVariants = product.variants.edges.length > 1 && product.variants.edges[0]?.node.title !== 'Default Title';
+      const offers = hasMultipleVariants
+        ? product.variants.edges.map(v => ({
+          "@type": "Offer",
+          "url": canonicalUrl || `https://www.aibazar.pk/products/${product.handle}`,
+          "priceCurrency": v.node.price.currencyCode || 'PKR',
+          "price": v.node.price.amount,
+          "priceValidUntil": "2026-12-31",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": v.node.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          "sku": v.node.sku || sku,
+          ...(v.node.barcode ? { "gtin": v.node.barcode } : {}),
+          "name": `${product.title} - ${v.node.title}`,
+          "seller": {
+            "@type": "Organization",
+            "@id": "https://www.aibazar.pk/#organization"
+          },
+          "hasMerchantReturnPolicy": returnPolicy,
+          "shippingDetails": shippingDetails
+        }))
+        : [{
+          "@type": "Offer",
+          "url": canonicalUrl || `https://www.aibazar.pk/products/${product.handle}`,
+          "priceCurrency": currency,
+          "price": price,
+          "priceValidUntil": "2026-12-31",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          "sku": sku,
+          ...(gtin ? { "gtin": gtin } : {}),
+          "seller": {
+            "@type": "Organization",
+            "@id": "https://www.aibazar.pk/#organization"
+          },
+          "hasMerchantReturnPolicy": returnPolicy,
+          "shippingDetails": shippingDetails
+        }];
+
       const productSchema = {
         "@context": "https://schema.org/",
         "@type": "Product",
         "name": product.title,
         "image": imageUrl,
         "description": product.description,
-        "sku": formatProductId(product.id),
+        "sku": sku,
         "mpn": formatProductId(product.id),
+        ...(gtin ? { "gtin": gtin } : {}),
         "brand": {
           "@type": "Brand",
           "name": product.vendor || "AI Bazar Original"
         },
+        "color": product.options?.find(o => o.name.toLowerCase() === 'color')?.values?.[0],
+        "size": product.options?.find(o => o.name.toLowerCase() === 'size')?.values?.join(', '),
         "material": product.tags?.find(t => t.toLowerCase().includes('steel')) ? "Stainless Steel" : (product.tags?.find(t => t.toLowerCase().includes('plastic')) ? "BPA-free Plastic" : undefined),
         "productID": product.id,
         "category": product.productType,
+        "url": canonicalUrl || `https://www.aibazar.pk/products/${product.handle}`,
         "additionalProperty": (product.tags || []).map(tag => ({
           "@type": "PropertyValue",
           "name": "Feature",
           "value": tag
-        })).concat(product.title.includes('22 in 1') || product.title.includes('22 Pcs') ? [{
-          "@type": "PropertyValue",
-          "name": "Pieces In Set",
-          "value": "22"
-        }] : []),
+        })),
         "review": reviews.slice(0, 5).map(r => ({
           "@type": "Review",
           "reviewRating": {
@@ -291,55 +465,7 @@ const ProductPage = () => {
           "datePublished": r.created_at,
           "reviewBody": r.comment
         })),
-        "offers": {
-          "@type": "Offer",
-          "url": canonicalUrl || window.location.href,
-          "priceCurrency": currency,
-          "price": price,
-          "priceValidUntil": "2026-12-31",
-          "itemCondition": "https://schema.org/NewCondition",
-          "availability": product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-          "url_link": canonicalUrl || window.location.href,
-          "seller": {
-            "@type": "Organization",
-            "@id": "https://www.aibazar.pk/#organization"
-          },
-          "hasMerchantReturnPolicy": {
-            "@type": "MerchantReturnPolicy",
-            "applicableCountry": "PK",
-            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-            "merchantReturnDays": 7,
-            "returnMethod": "https://schema.org/ReturnByMail",
-            "returnFees": "https://schema.org/FreeReturn"
-          },
-          "shippingDetails": {
-            "@type": "OfferShippingDetails",
-            "shippingRate": {
-              "@type": "MonetaryAmount",
-              "value": "0",
-              "currency": "PKR"
-            },
-            "shippingDestination": {
-              "@type": "DefinedRegion",
-              "addressCountry": "PK"
-            },
-            "deliveryTime": {
-              "@type": "ShippingDeliveryTime",
-              "handlingTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 0,
-                "maxValue": 1,
-                "unitCode": "d"
-              },
-              "transitTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 1,
-                "maxValue": 3,
-                "unitCode": "d"
-              }
-            }
-          }
-        }
+        "offers": hasMultipleVariants ? { "@type": "AggregateOffer", "lowPrice": product.priceRange.minVariantPrice.amount, "highPrice": product.priceRange.maxVariantPrice.amount, "priceCurrency": currency, "offerCount": product.variants.edges.length, "offers": offers } : offers[0]
       } as any;
 
       // Add actual review data to schema if available
@@ -347,7 +473,10 @@ const ProductPage = () => {
         productSchema.aggregateRating = {
           "@type": "AggregateRating",
           "ratingValue": reviewStats.averageRating.toFixed(1),
-          "reviewCount": reviewStats.totalReviews
+          "bestRating": "5",
+          "worstRating": "1",
+          "reviewCount": reviewStats.totalReviews,
+          "ratingCount": reviewStats.totalReviews
         };
       }
 
@@ -370,10 +499,27 @@ const ProductPage = () => {
               "@type": "Answer",
               "text": "We offer a 7-day easy return policy for this product. If you're not satisfied, you can return it for a full refund or exchange."
             }
+          },
+          {
+            "@type": "Question",
+            "name": `What is the delivery time for ${product.title} in Pakistan?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We offer fast delivery across Pakistan. Most orders are delivered within 1-3 business days. Free shipping is available on this product."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `Can I pay cash on delivery for ${product.title}?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, AI Bazar offers Cash on Delivery (COD) across Pakistan. You can also pay online via credit/debit card or bank transfer."
+            }
           }
         ]
       };
 
+      const siteUrl = 'https://www.aibazar.pk';
       const breadcrumbSchema = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -382,7 +528,7 @@ const ProductPage = () => {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": window.location.origin
+            "item": siteUrl
           }
         ]
       };
@@ -392,7 +538,7 @@ const ProductPage = () => {
           "@type": "ListItem",
           "position": 2,
           "name": collection.title,
-          "item": `${window.location.origin}/collections/${collection.handle}`
+          "item": `${siteUrl}/collections/${collection.handle}`
         });
       }
 
@@ -400,7 +546,7 @@ const ProductPage = () => {
         "@type": "ListItem",
         "position": collection ? 3 : 2,
         "name": product.title,
-        "item": canonicalUrl || window.location.href
+        "item": canonicalUrl || `${siteUrl}/products/${product.handle}`
       });
 
       const script = document.createElement('script');
@@ -962,11 +1108,18 @@ const ProductPage = () => {
                   <div className="space-y-6 bg-slate-50/50 p-8 rounded-[2.5rem] border border-slate-100/50">
                     <div className="flex items-center gap-3">
                       <div className="w-1 h-1 rounded-full bg-primary" />
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">The Narrative</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Product Description</label>
                     </div>
-                    <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                      {product.description}
-                    </p>
+                    {product.descriptionHtml ? (
+                      <div
+                        className="text-lg text-slate-600 leading-relaxed font-medium prose prose-slate max-w-none prose-headings:text-slate-900 prose-strong:text-slate-800 prose-a:text-primary"
+                        dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                      />
+                    ) : (
+                      <p className="text-lg text-slate-600 leading-relaxed font-medium">
+                        {product.description}
+                      </p>
+                    )}
                   </div>
 
                   {/* Artisan Signature Block (Subtle below description) */}
@@ -1042,10 +1195,17 @@ const ProductPage = () => {
               <div className="max-w-5xl mx-auto">
                 <TabsContent value="description" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                   <div className="prose prose-slate max-w-none">
-                    <h3 className="text-2xl font-bold mb-6 text-slate-900">Product Narrative</h3>
-                    <p className="text-lg text-slate-600 leading-relaxed">
-                      {product.description}
-                    </p>
+                    <h2 className="text-2xl font-bold mb-6 text-slate-900">{product.title} - Full Description</h2>
+                    {product.descriptionHtml ? (
+                      <div
+                        className="text-lg text-slate-600 leading-relaxed prose-headings:text-slate-900 prose-strong:text-slate-800"
+                        dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                      />
+                    ) : (
+                      <p className="text-lg text-slate-600 leading-relaxed">
+                        {product.description}
+                      </p>
+                    )}
                   </div>
                 </TabsContent>
 
@@ -1080,6 +1240,85 @@ const ProductPage = () => {
             </Tabs>
           </motion.div>
         </article>
+
+        {/* Product SEO Content Block - Keyword-rich crawlable content */}
+        {product && (
+          <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+            <div className="bg-white rounded-3xl border border-slate-100 p-8 md:p-12">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4">
+                Buy {product.title} Online in Pakistan - AI Bazar
+              </h2>
+              <div className="text-slate-600 space-y-4 text-sm leading-relaxed">
+                <p>
+                  Looking to <strong>buy {product.title} online in Pakistan</strong>? AI Bazar offers this {product.productType || 'product'} at the <strong>lowest price in Pakistan</strong> with free express shipping and cash on delivery nationwide. Get original quality {product.vendor && product.vendor !== 'AI Bazar' ? `${product.vendor} ` : ''}products delivered to your doorstep in just 1-3 business days.
+                </p>
+                <p>
+                  At <strong>aibazar.pk</strong>, we guarantee 100% genuine products with a 7-day easy return policy. Whether you're in Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, or anywhere across Pakistan, enjoy hassle-free online shopping with our secure payment options including cash on delivery (COD).
+                </p>
+                {product.tags && product.tags.length > 0 && (
+                  <div className="pt-4 border-t border-slate-100">
+                    <p className="text-xs text-slate-400">
+                      <strong>Related searches:</strong>{' '}
+                      {[
+                        `${product.title} price in Pakistan`,
+                        `buy ${product.title} online`,
+                        `${product.title} cash on delivery`,
+                        `${product.productType} online shopping Pakistan`,
+                        `best ${product.productType} in Pakistan`,
+                        `${product.title} free shipping`,
+                        ...product.tags.slice(0, 5).map(t => `${t} Pakistan`),
+                      ].filter(Boolean).join(' | ')}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Related Products - Critical for Internal Linking & SEO */}
+        {relatedProducts.length > 0 && (
+          <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-16 sm:mt-24 pb-16">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-3">
+                You May Also Like
+              </h2>
+              <p className="text-slate-500 font-medium">
+                Explore more products from {collection?.title || 'our collection'} at the lowest prices in Pakistan
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {relatedProducts.map((rp) => {
+                const rpPrice = parseFloat(rp.node.priceRange.minVariantPrice.amount);
+                const rpImage = rp.node.media?.edges?.[0]?.node?.previewImage?.url || rp.node.media?.edges?.[0]?.node?.image?.url;
+                return (
+                  <Link
+                    key={rp.node.id}
+                    to={`/products/${rp.node.handle}`}
+                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100"
+                  >
+                    <div className="aspect-square overflow-hidden bg-slate-50">
+                      <img
+                        src={rpImage || '/placeholder.svg'}
+                        alt={`${rp.node.title} - Buy online at AI Bazar Pakistan`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3 className="text-xs font-bold text-slate-900 line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+                        {rp.node.title}
+                      </h3>
+                      <p className="text-sm font-black text-primary">
+                        Rs. {rpPrice.toLocaleString()}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />

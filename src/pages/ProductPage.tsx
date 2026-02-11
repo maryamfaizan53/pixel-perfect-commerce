@@ -301,13 +301,13 @@ const ProductPage = () => {
 
   // Use Shopify SEO fields if available, otherwise generate optimized ones
   const seoTitle = product
-    ? (product.seo?.title || `${product.title} - Buy Online at Lowest Price in Pakistan`)
+    ? (product.seo?.title || `${product.title} - Best Price Online Shopping Pakistan`)
     : "Loading Product...";
 
   const priceText = product ? `Rs. ${parseFloat(product.priceRange.minVariantPrice.amount).toLocaleString()}` : '';
   const seoDescription = product
-    ? (product.seo?.description || `Buy ${product.title} for only ${priceText} at AI Bazar Pakistan. ${product.availableForSale ? 'In Stock' : 'Out of Stock'} - Free shipping, cash on delivery & 7-day returns. ${product.description.substring(0, 120)}`)
-    : "Shop high-quality products at AI Bazar Pakistan. Lowest prices, free shipping, and original quality guaranteed.";
+    ? (product.seo?.description || `Buy ${product.title} from AI Bazar at only ${priceText}. Enjoy Free Express Shipping & Cash on Delivery across Pakistan. 100% Original Quality. Order now!`)
+    : "Shop premium products at AI Bazar Pakistan. Lowest prices, free shipping, and 100% original quality guaranteed.";
 
   const seoKeywords = product
     ? [
@@ -320,6 +320,7 @@ const ProductPage = () => {
       `${product.productType?.toLowerCase()} lowest price pakistan`,
       'aibazar',
       'cash on delivery pakistan',
+      'free shipping pakistan',
       ...product.tags.map(t => t.toLowerCase()),
     ].filter(Boolean).join(', ')
     : "aibazar shopping, online shopping pakistan, lowest price online";
@@ -388,6 +389,17 @@ const ProductPage = () => {
         "returnFees": "https://schema.org/FreeReturn"
       };
 
+      // Extract Material
+      const materialTags = ['steel', 'stainless', 'plastic', 'bpa-free', 'wood', 'ceramic', 'glass', 'cotton', 'silk', 'polyester', 'leather', 'silicone'];
+      const detectedMaterial = product.tags?.find(t => materialTags.some(m => t.toLowerCase().includes(m)))
+        || product.description?.match(/(?:made of|material:)\s*([a-zA-Z\s]+)/i)?.[1]
+        || undefined;
+
+      // Extract Piece Count
+      const pieceCountMatch = product.title.match(/(\d+)\s*(?:-in-1|pcs|pieces|sets?)/i)
+        || product.tags?.join(' ').match(/(\d+)\s*(?:-in-1|pcs|pieces|sets?)/i);
+      const pieceCount = pieceCountMatch ? parseInt(pieceCountMatch[1]) : undefined;
+
       // Build offers - one per variant for Google Merchant
       const hasMultipleVariants = product.variants.edges.length > 1 && product.variants.edges[0]?.node.title !== 'Default Title';
       const offers = hasMultipleVariants
@@ -442,10 +454,11 @@ const ProductPage = () => {
         },
         "color": product.options?.find(o => o.name.toLowerCase() === 'color')?.values?.[0],
         "size": product.options?.find(o => o.name.toLowerCase() === 'size')?.values?.join(', '),
-        "material": product.tags?.find(t => t.toLowerCase().includes('steel')) ? "Stainless Steel" : (product.tags?.find(t => t.toLowerCase().includes('plastic')) ? "BPA-free Plastic" : undefined),
+        "material": detectedMaterial,
         "productID": product.id,
         "category": product.productType,
         "url": canonicalUrl || `https://www.aibazar.pk/products/${product.handle}`,
+        ...(pieceCount ? { "isRelatedTo": { "@type": "Product", "name": `${pieceCount} pieces set` } } : {}),
         "additionalProperty": (product.tags || []).map(tag => ({
           "@type": "PropertyValue",
           "name": "Feature",

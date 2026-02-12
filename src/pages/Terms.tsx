@@ -1,8 +1,16 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FileText } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const Terms = () => {
+  useSEO({
+    title: "Terms of Service - AI Bazar Pakistan",
+    description: "Read AI Bazar Pakistan's terms of service. Understand the rules and regulations for using aibazar.pk and purchasing products from our store.",
+    keywords: "aibazar terms of service, aibazar terms, aibazar pk terms and conditions",
+    canonical: "https://www.aibazar.pk/terms"
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

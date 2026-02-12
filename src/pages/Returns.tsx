@@ -1,8 +1,15 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { RotateCcw, Package, Clock, CheckCircle } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const Returns = () => {
+  useSEO({
+    title: "Returns & Refund Policy - AI Bazar Pakistan | 7-Day Easy Returns",
+    description: "AI Bazar Pakistan offers a 7-day hassle-free return policy. Learn how to return products, get refunds, and exchange items. Free return shipping on defective products.",
+    keywords: "aibazar returns, aibazar refund policy, aibazar return policy, aibazar exchange, 7 day return pakistan",
+    canonical: "https://www.aibazar.pk/returns"
+  });
   const steps = [
     { icon: Package, title: "Request Return", description: "Log into your account and select the item you wish to return" },
     { icon: RotateCcw, title: "Pack Your Item", description: "Securely pack the item in its original packaging with all accessories" },

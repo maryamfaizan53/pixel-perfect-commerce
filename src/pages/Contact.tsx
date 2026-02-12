@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useSEO } from "@/hooks/useSEO";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -19,6 +20,13 @@ const contactSchema = z.object({
 });
 
 const Contact = () => {
+  useSEO({
+    title: "Contact Us - AI Bazar Pakistan | 24/7 WhatsApp Support",
+    description: "Get in touch with AI Bazar Pakistan. Reach us via WhatsApp at +92 332 8222026, email, or contact form. 24/7 customer support for orders, returns, and inquiries.",
+    keywords: "contact aibazar, aibazar whatsapp, aibazar phone number, aibazar customer support, aibazar email",
+    canonical: "https://www.aibazar.pk/contact"
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",

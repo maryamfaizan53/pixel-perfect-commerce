@@ -1,6 +1,8 @@
 # AI Bazar Pakistan - Robots.txt
 # https://www.aibazar.pk
 
+# === Traditional Search Engines ===
+
 User-agent: Googlebot
 Allow: /
 Disallow: /checkout
@@ -19,6 +21,96 @@ Disallow: /orders
 Disallow: /auth
 Disallow: /wishlist
 
+# === AI / LLM Search Crawlers ===
+
+# OpenAI (ChatGPT Search & Browsing)
+User-agent: GPTBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Google Gemini / AI Overviews
+User-agent: Google-Extended
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Anthropic (Claude)
+User-agent: ClaudeBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Apple Intelligence / Siri
+User-agent: Applebot-Extended
+Allow: /
+
+# TikTok Search
+User-agent: Bytespider
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# === Default (All Other Crawlers) ===
+
 User-agent: *
 Allow: /
 Disallow: /checkout
@@ -31,5 +123,7 @@ Disallow: /wishlist
 # Sitemaps
 Sitemap: https://www.aibazar.pk/sitemap.xml
 
-# AI/LLM Manifest
-# See https://www.aibazar.pk/llms.txt
+# AI/LLM Manifests
+# https://www.aibazar.pk/llms.txt
+# https://www.aibazar.pk/llms-full.txt
+# https://www.aibazar.pk/llms-products.txt

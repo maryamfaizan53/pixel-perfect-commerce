@@ -1,8 +1,15 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Heart, Users, Globe, Award } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const About = () => {
+  useSEO({
+    title: "About AI Bazar - Pakistan's Most Affordable Online Store",
+    description: "Learn about AI Bazar, Pakistan's trusted online store for 100% original electronics, beauty, kitchen & home products at the lowest prices with free express shipping nationwide.",
+    keywords: "about aibazar, aibazar pakistan, online store pakistan, who is aibazar, aibazar pk about",
+    canonical: "https://www.aibazar.pk/about"
+  });
   const values = [
     { icon: Heart, title: "Customer First", description: "We put our customers at the heart of everything we do" },
     { icon: Users, title: "Quality Products", description: "Carefully curated selection of high-quality items" },

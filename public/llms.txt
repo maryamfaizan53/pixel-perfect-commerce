@@ -65,6 +65,6 @@
 
 ## For AI Agents
 - [Full Context Manifest](https://www.aibazar.pk/llms-full.txt)
-- [Complete Product Catalog (202 products)](https://www.aibazar.pk/llms-products.txt)
+- [Complete Product Catalog (208 products)](https://www.aibazar.pk/llms-products.txt)
 - [Sitemap](https://www.aibazar.pk/sitemap.xml)
 - [Robots.txt](https://www.aibazar.pk/robots.txt)

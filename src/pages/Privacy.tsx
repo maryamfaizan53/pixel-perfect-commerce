@@ -1,8 +1,16 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Shield } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const Privacy = () => {
+  useSEO({
+    title: "Privacy Policy - AI Bazar Pakistan",
+    description: "Read AI Bazar Pakistan's privacy policy. Learn how we collect, use, and protect your personal information when you shop at aibazar.pk.",
+    keywords: "aibazar privacy policy, aibazar data protection, aibazar pk privacy",
+    canonical: "https://www.aibazar.pk/privacy"
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

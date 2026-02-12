@@ -1,8 +1,15 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Truck, Package, Globe, Clock } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 
 const Shipping = () => {
+  useSEO({
+    title: "Shipping Information - AI Bazar Pakistan | Free Express Delivery",
+    description: "AI Bazar Pakistan offers free express shipping nationwide. Orders dispatched within 24 hours with 1-3 day delivery across all cities in Pakistan. Cash on delivery available.",
+    keywords: "aibazar shipping, free shipping pakistan, aibazar delivery time, cash on delivery pakistan, express shipping pakistan",
+    canonical: "https://www.aibazar.pk/shipping"
+  });
   const shippingMethods = [
     { name: "Standard Shipping", time: "5-7 business days", cost: "Free on orders over $50, otherwise $9.99" },
     { name: "Express Shipping", time: "2-3 business days", cost: "$19.99" },

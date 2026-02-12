@@ -3,8 +3,15 @@ import { Footer } from "@/components/layout/Footer";
 import { Input } from "@/components/ui/input";
 import { Search, Package, Truck, RotateCcw, CreditCard, Shield, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
 
 const Help = () => {
+  useSEO({
+    title: "Help Center & FAQ - AI Bazar Pakistan",
+    description: "Find answers to common questions about orders, shipping, returns, payments, and more at AI Bazar Pakistan. Get help with tracking orders and contacting support.",
+    keywords: "aibazar help, aibazar faq, aibazar customer support, order help pakistan, shipping questions, return policy",
+    canonical: "https://www.aibazar.pk/help"
+  });
   const categories = [
     { icon: Package, title: "Orders", description: "Track orders, view history, and manage returns", link: "/track-order" },
     { icon: Truck, title: "Shipping", description: "Delivery times, shipping costs, and tracking", link: "/shipping" },

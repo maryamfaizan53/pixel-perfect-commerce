@@ -58,6 +58,8 @@ async function generateSitemap() {
         { path: '/terms', changefreq: 'yearly', priority: '0.3' },
         { path: '/shipping', changefreq: 'monthly', priority: '0.5' },
         { path: '/returns', changefreq: 'monthly', priority: '0.5' },
+        { path: '/help', changefreq: 'monthly', priority: '0.6' },
+        { path: '/track-order', changefreq: 'monthly', priority: '0.4' },
         { path: '/help', changefreq: 'monthly', priority: '0.5' },
         // AI/LLM Manifest Discovery (GEO+)
         { path: '/llms.txt', changefreq: 'daily', priority: '1.0' },

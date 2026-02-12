@@ -73,7 +73,7 @@
 15. [Flash Card Reader Educational Toy](https://www.aibazar.pk/products/flash-card-reader-educational-toy-for-toddlers-kids) — Early learning for toddlers
 
 ### Full Product Catalog
-- **Total Products**: 202
+- **Total Products**: 208
 - **Machine-Readable Catalog**: [llms-products.txt](https://www.aibazar.pk/llms-products.txt) — Markdown formatted list with direct links
 - **Product URL Pattern**: `https://www.aibazar.pk/products/[product-handle]`
 - **Search**: `https://www.aibazar.pk/search?q=[query]` — Search all products by keyword

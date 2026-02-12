@@ -72,6 +72,9 @@ const Auth = () => {
       });
       if (error) throw error;
 
+      // Store email for Meta Pixel advanced matching
+      localStorage.setItem('user-email', validatedData.email);
+
       // Meta Pixel: Track CompleteRegistration
       trackMetaEvent('CompleteRegistration', {
         content_name: validatedData.fullName,
@@ -97,13 +100,15 @@ const Auth = () => {
       });
       if (error) throw error;
 
-      // Meta Pixel: Track Login
-      trackMetaEvent('Contact', {
-        method: 'direct',
-        email: validatedData.email
+      // Store email for Meta Pixel advanced matching
+      localStorage.setItem('user-email', validatedData.email);
+
+      // Meta Pixel: Track Login (custom event for analytics)
+      trackMetaEvent('Login', {
+        method: 'email',
       });
 
-      toast.success("Welcome back to ShopHub!");
+      toast.success("Welcome back!");
     } catch (error: any) {
       toast.error(error instanceof z.ZodError ? error.errors[0].message : error.message);
     } finally {

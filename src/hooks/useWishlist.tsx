@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 interface WishlistItem {
   id: string;
@@ -98,6 +99,13 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         });
 
       if (error) throw error;
+
+      // Meta Pixel: Track AddToWishlist
+      trackMetaEvent('AddToWishlist', {
+        content_ids: [productId],
+        content_type: 'product',
+      });
+
       toast.success("Added to wishlist");
     } catch (error: any) {
       console.error('Error adding to wishlist:', error);

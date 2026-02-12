@@ -10,6 +10,7 @@ import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useSEO } from "@/hooks/useSEO";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -45,7 +46,13 @@ const Contact = () => {
       
       // In a real app, you would send this to your backend
       console.log("Contact form submitted:", validatedData);
-      
+
+      // Meta Pixel: Track Lead
+      trackMetaEvent('Lead', {
+        content_name: validatedData.subject,
+        content_category: 'contact_form',
+      });
+
       toast.success("Message sent!", {
         description: "We'll get back to you within 24 hours."
       });

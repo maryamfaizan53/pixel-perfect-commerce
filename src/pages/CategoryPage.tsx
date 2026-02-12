@@ -14,6 +14,7 @@ import { fetchProducts, fetchProductsByCollection, ShopifyProduct, CollectionDat
 import { motion, AnimatePresence } from "framer-motion";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { useSEO } from "@/hooks/useSEO";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
 
@@ -92,6 +93,15 @@ const CategoryPage = () => {
         }
 
         setProducts(list);
+
+        // Meta Pixel: Track ViewContent for category pages
+        if (category && category !== "all" && list.length > 0) {
+          trackMetaEvent('ViewContent', {
+            content_type: 'product_group',
+            content_category: category,
+            num_items: list.length,
+          });
+        }
 
         const prices = list
           .map((p) => Number.parseFloat(p.node.priceRange.minVariantPrice.amount))

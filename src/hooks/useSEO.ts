@@ -11,13 +11,19 @@ interface SEOProps {
     priceCurrency?: string;
     availability?: 'instock' | 'outofstock' | 'preorder' | 'available for order' | 'discontinued' | 'pending';
     retailerItemId?: string;
+    // Article-specific meta (for blog posts)
+    articlePublishedTime?: string;
+    articleModifiedTime?: string;
+    articleAuthor?: string;
+    articleSection?: string;
+    articleTags?: string[];
 }
 
 /**
  * Hook to dynamically update SEO meta tags in a React application.
  * This is a lightweight alternative to react-helmet.
  */
-export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId }: SEOProps) => {
+export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags }: SEOProps) => {
     useEffect(() => {
         // Auto-generate canonical from current URL if not provided
         // Normalize duplicate routes: /product/ -> /products/, /category/ -> /collections/
@@ -141,7 +147,35 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             }
         }
 
-        // 7. Update Canonical
+        // 7. Update Article Meta (if applicable)
+        if (ogType === 'article') {
+            const setMeta = (property: string, content: string) => {
+                let tag = document.querySelector(`meta[property="${property}"]`);
+                if (!tag) {
+                    tag = document.createElement('meta');
+                    tag.setAttribute('property', property);
+                    document.head.appendChild(tag);
+                }
+                tag.setAttribute('content', content);
+            };
+
+            if (articlePublishedTime) setMeta('article:published_time', articlePublishedTime);
+            if (articleModifiedTime) setMeta('article:modified_time', articleModifiedTime);
+            if (articleAuthor) setMeta('article:author', articleAuthor);
+            if (articleSection) setMeta('article:section', articleSection);
+            if (articleTags) {
+                // Remove old article:tag metas
+                document.querySelectorAll('meta[property="article:tag"]').forEach(el => el.remove());
+                articleTags.forEach(tag => {
+                    const meta = document.createElement('meta');
+                    meta.setAttribute('property', 'article:tag');
+                    meta.setAttribute('content', tag);
+                    document.head.appendChild(meta);
+                });
+            }
+        }
+
+        // 8. Update Canonical
         if (canonical) {
             let linkCanonical = document.querySelector('link[rel="canonical"]');
             if (linkCanonical) {
@@ -162,5 +196,5 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             }
             ogUrl.setAttribute('content', canonical);
         }
-    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId]);
+    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags]);
 };

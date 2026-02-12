@@ -18,9 +18,12 @@ const Blog = () => {
         title: selectedCategory === "All"
             ? "AI Bazar Blog | E-commerce Tips & Shopping Guides in Pakistan"
             : `${selectedCategory} Guides & Tips - AI Bazar Blog`,
-        description: `Explore our ${selectedCategory === "All" ? "" : selectedCategory} articles on AI Bazar. Expert shopping tips, product guides, and e-commerce trends in Pakistan.`,
-        keywords: `blog, aibazar blog, shopping tips pakistan, e-commerce guides, ${selectedCategory.toLowerCase()} tips`,
-        canonical: "https://www.aibazar.pk/blog"
+        description: selectedCategory === "All"
+            ? "Read expert shopping tips, product reviews, buying guides, and e-commerce trends in Pakistan. AI Bazar Blog helps you make smart online shopping decisions."
+            : `Explore our ${selectedCategory} articles on AI Bazar. Expert shopping tips, product guides, and e-commerce trends in Pakistan.`,
+        keywords: `blog, aibazar blog, shopping tips pakistan, e-commerce guides, online shopping pakistan, product reviews, buying guides, ${selectedCategory.toLowerCase()} tips`,
+        canonical: "https://www.aibazar.pk/blog",
+        ogImage: "https://www.aibazar.pk/og-image.png"
     });
 
     // Blog listing page JSON-LD schema
@@ -40,24 +43,50 @@ const Blog = () => {
             "@context": "https://schema.org",
             "@type": "Blog",
             "name": "AI Bazar Blog",
-            "description": "Expert shopping tips, product guides, and e-commerce trends in Pakistan.",
+            "description": "Expert shopping tips, product reviews, buying guides, and e-commerce trends in Pakistan. Your ultimate guide to smart online shopping.",
             "url": `${siteUrl}/blog`,
+            "inLanguage": "en-PK",
             "publisher": {
                 "@type": "Organization",
                 "name": "AI Bazar Pakistan",
-                "@id": `${siteUrl}/#organization`
+                "@id": `${siteUrl}/#organization`,
+                "url": siteUrl,
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": `${siteUrl}/favicon.png`
+                }
             },
-            "blogPost": blogPosts.slice(0, 20).map(post => ({
+            "blogPost": blogPosts.slice(0, 30).map(post => ({
                 "@type": "BlogPosting",
                 "headline": post.title,
                 "description": post.excerpt,
                 "url": `${siteUrl}/blog/${post.slug}`,
                 "datePublished": post.publishDate,
+                "articleSection": post.category,
+                "keywords": post.tags.join(", "),
                 "author": {
                     "@type": "Person",
                     "name": post.author
                 }
             }))
+        };
+
+        const collectionPageSchema = {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "AI Bazar Blog",
+            "description": "Expert shopping tips, product reviews, and buying guides for online shopping in Pakistan.",
+            "url": `${siteUrl}/blog`,
+            "mainEntity": {
+                "@type": "ItemList",
+                "numberOfItems": blogPosts.length,
+                "itemListElement": blogPosts.slice(0, 30).map((post, index) => ({
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "url": `${siteUrl}/blog/${post.slug}`,
+                    "name": post.title
+                }))
+            }
         };
 
         const breadcrumbSchema = {
@@ -79,7 +108,7 @@ const Blog = () => {
             ]
         };
 
-        script.text = JSON.stringify([blogListSchema, breadcrumbSchema]);
+        script.text = JSON.stringify([blogListSchema, breadcrumbSchema, collectionPageSchema]);
 
         return () => {
             const existingScript = document.getElementById(schemaId);

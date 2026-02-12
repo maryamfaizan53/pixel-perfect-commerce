@@ -23,7 +23,12 @@ const BlogPost = () => {
         keywords: post?.tags.join(", ") || "aibazar blog",
         ogType: "article",
         canonical: canonicalUrl,
-        ogImage: "https://www.aibazar.pk/og-image.png"
+        ogImage: "https://www.aibazar.pk/og-image.png",
+        articlePublishedTime: post?.publishDate,
+        articleModifiedTime: post?.publishDate,
+        articleAuthor: post?.author,
+        articleSection: post?.category,
+        articleTags: post?.tags
     });
 
     useEffect(() => {
@@ -48,6 +53,7 @@ const BlogPost = () => {
             "@type": "BlogPosting",
             "headline": post.title,
             "description": post.excerpt,
+            "url": postUrl,
             "articleSection": post.category,
             "wordCount": wordCount,
             "inLanguage": "en-PK",
@@ -55,33 +61,54 @@ const BlogPost = () => {
                 "@type": "Person",
                 "name": post.author,
                 "jobTitle": post.authorRole,
-                "url": "https://www.facebook.com/aibazar",
+                "url": siteUrl,
                 "sameAs": [
                     "https://www.facebook.com/aibazar",
-                    "https://www.linkedin.com/company/aibazar-pakistan"
+                    "https://www.instagram.com/aibazar",
+                    "https://www.tiktok.com/@aibazar_pk",
+                    "https://www.youtube.com/@aibazarpk"
                 ]
             },
             "datePublished": post.publishDate,
             "dateModified": post.publishDate,
-            "image": `${siteUrl}/og-image.png`,
+            "image": {
+                "@type": "ImageObject",
+                "url": `${siteUrl}/og-image.png`,
+                "width": 1200,
+                "height": 630
+            },
             "publisher": {
                 "@type": "Organization",
                 "name": "AI Bazar Pakistan",
+                "@id": `${siteUrl}/#organization`,
+                "url": siteUrl,
                 "logo": {
                     "@type": "ImageObject",
-                    "url": `${siteUrl}/favicon.png`
+                    "url": `${siteUrl}/favicon.png`,
+                    "width": 180,
+                    "height": 180
                 },
                 "sameAs": [
                     "https://www.facebook.com/aibazar",
                     "https://www.instagram.com/aibazar",
-                    "https://www.linkedin.com/company/aibazar-pakistan"
+                    "https://www.tiktok.com/@aibazar_pk",
+                    "https://www.youtube.com/@aibazarpk"
                 ]
+            },
+            "isPartOf": {
+                "@type": "Blog",
+                "name": "AI Bazar Blog",
+                "url": `${siteUrl}/blog`
             },
             "mainEntityOfPage": {
                 "@type": "WebPage",
                 "@id": postUrl
             },
-            "keywords": post.tags.join(", ")
+            "keywords": post.tags.join(", "),
+            "speakable": {
+                "@type": "SpeakableSpecification",
+                "cssSelector": ["article h1", "article .prose"]
+            }
         };
 
         const breadcrumbSchema = {

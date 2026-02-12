@@ -127,6 +127,41 @@ export const SEOContent = () => {
             </div>
           </div>
 
+          {/* Section 6: Online Shopping Store In Pakistan (User Requested) */}
+          <div className="pt-12 border-t border-slate-100 space-y-8">
+            <div className="max-w-4xl mx-auto space-y-6 text-black/70 leading-relaxed text-base md:text-lg text-justify">
+              <h2 className="text-2xl md:text-4xl font-black text-black uppercase tracking-tight text-center mb-8">
+                Online Shopping Store In <span className="text-primary">Pakistan</span>
+              </h2>
+              <p>
+                <strong className="text-black">AIbazar pk</strong> is your one-stop solution when it comes to <strong className="text-black">Online Shopping in Pakistan</strong>. We strive to deliver the best home accessories and kitchen accessories in Pakistan. We provide a user-friendly platform where customers can easily search for a product and can place their orders without any hassle. Our accessories are scattered all over Pakistan including Karachi, Islamabad, Lahore, Gujranwala.
+              </p>
+              <p>
+                Our user-friendly website will make it easier for you to shop online. All our accessories are divided into a group of categories to help you choose the right product. <strong className="text-black">aibazar pk</strong> is the best place to buy kitchen and home accessories. So, what are you waiting for, visit the incredible Online Shopping Store in Pakistan. You can easily buy our high-quality accessories with the ease of cash on delivery. We are 24/7 available for answering your queries all over Pakistan. For inquiry contact us now.
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-xl font-bold text-black mb-6 flex items-center gap-2">
+                <span className="w-8 h-1 bg-primary rounded-full"></span>
+                Honorable Mentions
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {[
+                  "Home Accessories", "Kitchen Accessories", "Organizers", "Baby Products",
+                  "Mobile Accessories", "Cleaning Products", "Personal Care", "Health & Beauty",
+                  "Gadgets & Tech", "Household Essentials", "Sports & Fitness", "Toys & Games",
+                  "Office Supplies", "Pet Care", "Outdoor & Garden", "Fashion & Apparel"
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-black/60 hover:text-black transition-colors cursor-default">
+                    <span className="w-1.5 h-1.5 bg-primary/40 rounded-full"></span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Keyword Cloud - Minimalist for Footer */}
           <div className="pt-8 border-t border-slate-100">
             <details className="cursor-pointer group">

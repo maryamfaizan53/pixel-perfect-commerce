@@ -17,13 +17,14 @@ interface SEOProps {
     articleAuthor?: string;
     articleSection?: string;
     articleTags?: string[];
+    schema?: any[]; // For injecting custom JSON-LD schema
 }
 
 /**
  * Hook to dynamically update SEO meta tags in a React application.
  * This is a lightweight alternative to react-helmet.
  */
-export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags }: SEOProps) => {
+export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema }: SEOProps) => {
     useEffect(() => {
         // Auto-generate canonical from current URL if not provided
         // Normalize duplicate routes: /product/ -> /products/, /category/ -> /collections/
@@ -196,5 +197,53 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             }
             ogUrl.setAttribute('content', canonical);
         }
-    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags]);
+
+        // 9. Inject JSON-LD Schema
+        const injectionTarget = document.head;
+        const schemaId = 'seo-dynamic-json-ld';
+        let script = document.getElementById(schemaId) as HTMLScriptElement;
+
+        if (script) script.remove();
+
+        const schemasToInject = schema ? [...schema] : [];
+
+        // Special: If it's the homepage, always inject Organization schema for E-E-A-T
+        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+            const orgSchema = {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "@id": "https://www.aibazar.pk/#organization",
+                "name": "AI Bazar",
+                "url": "https://www.aibazar.pk",
+                "logo": "https://www.aibazar.pk/logo.png",
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "telephone": "+92-332-8222026",
+                    "contactType": "customer service",
+                    "areaServed": "PK",
+                    "availableLanguage": ["English", "Urdu"]
+                },
+                "sameAs": [
+                    "https://www.facebook.com/aibazar",
+                    "https://www.instagram.com/aibazar",
+                    "https://www.tiktok.com/@aibazar_pk",
+                    "https://www.youtube.com/@aibazarpk"
+                ]
+            };
+            schemasToInject.push(orgSchema);
+        }
+
+        if (schemasToInject.length > 0) {
+            script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.id = schemaId;
+            script.text = JSON.stringify(schemasToInject);
+            injectionTarget.appendChild(script);
+        }
+
+        return () => {
+            const cleanupScript = document.getElementById(schemaId);
+            if (cleanupScript) cleanupScript.remove();
+        };
+    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema]);
 };

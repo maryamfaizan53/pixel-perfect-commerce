@@ -14,14 +14,14 @@ export const SEOContent = () => {
           {/* Section 1: Online Shopping Store in Pakistan */}
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-3xl md:text-5xl font-black text-black mb-6 tracking-tight uppercase">
-              Online Shopping Store in <span className="text-primary italic">Pakistan</span>
+              What is the Best <span className="text-primary italic">Online Shopping Store in Pakistan</span> for Authentic Products?
             </h1>
             <div className="space-y-6 text-black/70 leading-relaxed text-base md:text-lg text-justify">
               <p>
-                Discover the ultimate destination for <strong className="text-black">online shopping in Pakistan</strong>. At <strong className="text-black">aibazar.pk</strong>, we bring you a meticulously curated selection of kitchen accessories, electronics, fashion, and baby care products. Our mission is to provide a reliable, hassle-free marketplace that combines convenience with a consumer-friendly purchase policy and 100% genuine quality.
+                <strong className="text-black">AI Bazar (aibazar.pk) is the leading destination for authentic online shopping in Pakistan</strong>, offering 200+ original products across kitchen gadgets, electronics, and lifestyle essentials. Our platform combines high-quality standards with a consumer-first approach, ensuring that every purchase is backed by free express shipping and a 7-day return policy.
               </p>
               <p>
-                Whether you are looking for the latest gadgets or essential home appliances, our store offers competitive prices that are both economical and pocket-friendly. We prioritize customer satisfaction by ensuring every product meets our rigorous quality standards. Experience seamless shopping with <strong className="text-black">cash on delivery across Pakistan</strong> and enjoy the peace of mind that comes with shopping at your favorite trusted online store.
+                Whether you are looking for the latest gadgets or essential home appliances, our store offers competitive prices that are both economical and pocket-friendly. As a specialized D2C (Direct-to-Consumer) marketplace, we eliminate middlemen to pass direct savings to our customers. Experience seamless shopping with <strong className="text-black">cash on delivery across Pakistan</strong> and join thousands of satisfied customers who trust AI Bazar for their daily needs.
               </p>
             </div>
           </div>
@@ -30,25 +30,25 @@ export const SEOContent = () => {
             {/* Section 2: Online Shopping in Pakistan Detail */}
             <div className="space-y-6">
               <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-tight">
-                Experience Hassle-Free <span className="text-primary">Shopping</span>
+                How Can I Experience Hassle-Free <span className="text-primary">Shopping in Pakistan</span>?
               </h2>
               <p className="text-black/70 leading-relaxed">
-                Experience hassle-free online shopping in Pakistan at aibazar.pk. Discover a wide range of products from electronics, fashion, home decor, beauty, and more, all available at your fingertips. With our user-friendly website and secure payment options, you can shop with confidence and convenience.
+                <strong className="text-black">You can enjoy hassle-free online shopping in Pakistan by choosing AI Bazar</strong>, where we provide a streamlined multi-channel platform available via web or WhatsApp. Our logistics network ensures 1-3 business day delivery to every city, including Karachi, Lahore, Islamabad, and remote areas.
               </p>
               <p className="text-black/70 leading-relaxed">
-                Browse through our extensive catalog, featuring top brands and exclusive deals, and enjoy doorstep delivery across the country. Whether you're searching for the latest gadgets, trendy clothing, or home essentials, AIBAZAR.PK has got you covered. Enjoy a seamless shopping experience and exceptional customer service. Start exploring and shop online with aibazar.pk today.
+                Browse through our extensive catalog, featuring top brands and exclusive deals, and enjoy doorstep delivery across the country. Whether you're searching for the latest gadgets, trendy clothing, or home essentials, AIBAZAR.PK has got you covered. We stand out by offering first-hand insights on every product we sell, ensuring you receive exactly what you see on your screen.
               </p>
             </div>
 
             {/* Section 3: Benefits */}
             <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-sm">
-              <h2 className="text-2xl font-bold text-black mb-8">Benefits of Online Shopping With <span className="text-primary">aibazar.pk</span></h2>
+              <h2 className="text-2xl font-bold text-black mb-8">Expert Insights: Why Shop With <span className="text-primary">AI Bazar</span>?</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[
-                  { title: "Convenience", desc: "Shop from anywhere, anytime, without leaving home." },
-                  { title: "Wide range", desc: "Find almost anything from kitchen accessories to electronics and Women Fashion." },
-                  { title: "Competitive pricing", desc: "Online retailers often offer better prices than brick-and-mortar stores." },
-                  { title: "Easy returns", desc: "Hassle-free return policy, making it easy to return unsatisfied products." }
+                  { title: "Direct Sourcing", desc: "We source directly from manufacturers to ensure 100% authenticity." },
+                  { title: "Quality Audit", desc: "Every product undergoes a 3-point quality check before dispatch." },
+                  { title: "Logistics Authority", desc: "Partnered with premium couriers for the fastest 1-3 day delivery." },
+                  { title: "Human Support", desc: "Get real-time assistance from Pakistani shopping experts via WhatsApp." }
                 ].map((benefit, i) => (
                   <div key={i} className="space-y-2">
                     <h3 className="font-bold text-black flex items-center gap-2">
@@ -131,13 +131,13 @@ export const SEOContent = () => {
           <div className="pt-12 border-t border-slate-100 space-y-8">
             <div className="max-w-4xl mx-auto space-y-6 text-black/70 leading-relaxed text-base md:text-lg text-justify">
               <h2 className="text-2xl md:text-4xl font-black text-black uppercase tracking-tight text-center mb-8">
-                Online Shopping Store In <span className="text-primary">Pakistan</span>
+                Is AI Bazar a Trusted <span className="text-primary">Online Store in Pakistan</span>?
               </h2>
               <p>
-                <strong className="text-black">AIbazar pk</strong> is your one-stop solution when it comes to <strong className="text-black">Online Shopping in Pakistan</strong>. We strive to deliver the best home accessories and kitchen accessories in Pakistan. We provide a user-friendly platform where customers can easily search for a product and can place their orders without any hassle. Our accessories are scattered all over Pakistan including Karachi, Islamabad, Lahore, Gujranwala.
+                <strong className="text-black">Yes, AI Bazar is one of Pakistan's most trusted online stores</strong>, specializing in high-quality home accessories and kitchen gadgets. We have built our reputation on transparency, providing real product videos and verified customer reviews. Our operations are localized to serve the specific needs of Pakistani shoppers, offering doorstep delivery in Karachi, Lahore, Islamabad, and across the nation.
               </p>
               <p>
-                Our user-friendly website will make it easier for you to shop online. All our accessories are divided into a group of categories to help you choose the right product. <strong className="text-black">aibazar pk</strong> is the best place to buy kitchen and home accessories. So, what are you waiting for, visit the incredible Online Shopping Store in Pakistan. You can easily buy our high-quality accessories with the ease of cash on delivery. We are 24/7 available for answering your queries all over Pakistan. For inquiry contact us now.
+                Our user-friendly platform makes it effortless to browse curated categories, from baby care to advanced electronics. At <strong className="text-black">aibazar.pk</strong>, we don't just sell products; we provide value-driven solutions for your home. With 24/7 WhatsApp support and the security of Cash on Delivery, we are reshaping the digital retail landscape in Pakistan to be more reliable and accessible for everyone.
               </p>
             </div>
 

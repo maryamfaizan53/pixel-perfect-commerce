@@ -184,7 +184,31 @@ const CategoryPage = () => {
       : "Shop the best selection of affordable products at AI Bazar, Pakistan's top online store. Enjoy lowest prices, original quality, and fast shipping nationwide.",
     keywords: collectionData
       ? `${collectionData.title.toLowerCase()}, online store pakistan, best online shopping pakistan, buy ${collectionData.title.toLowerCase()} online`
-      : "online store pakistan, affordable products pakistan, lowest price shopping pakistan"
+      : "online store pakistan, affordable products pakistan, lowest price shopping pakistan",
+    schema: collectionData ? [
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": `Is the ${collectionData.title} collection available for COD in Pakistan?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `Yes, all items in the ${collectionData.title} collection at AI Bazar are available for Cash on Delivery (COD) across Pakistan, with free express shipping.`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `How long does delivery take for ${collectionData.title} items?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We dispatch orders within 24 hours. Delivery typically takes 1-3 business days nationwide."
+            }
+          }
+        ]
+      }
+    ] : []
   });
 
   // Pro-Level AI Schema: CollectionPage, ItemList & Breadcrumb
@@ -291,9 +315,19 @@ const CategoryPage = () => {
                 )}
               </h1>
               {collectionData?.description && (
-                <p className="text-lg text-white/60 font-medium max-w-2xl mb-8 leading-relaxed">
-                  {collectionData.description}
-                </p>
+                <div className="space-y-6 max-w-2xl mb-8">
+                  <p className="text-lg text-white/60 font-medium leading-relaxed">
+                    {collectionData.description}
+                  </p>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 glass">
+                    <p className="text-sm text-primary font-bold mb-2 uppercase tracking-widest flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" /> AI Summary & Expert Guide
+                    </p>
+                    <p className="text-sm text-white/80 leading-relaxed italic">
+                      Looking for the best <strong className="text-primary">{collectionData.title}</strong> in Pakistan? Our experts recommend prioritizing {products[0]?.node.productType?.toLowerCase() || 'these items'} for their verified quality and lowest available pricing. All products in this collection are eligible for free 24-hour dispatch.
+                    </p>
+                  </div>
+                </div>
               )}
               <div className="flex flex-wrap items-center gap-6 sm:gap-10">
                 <div className="flex flex-col">

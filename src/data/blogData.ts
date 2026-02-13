@@ -1,23 +1,10 @@
-// Blog post data structure
-export interface BlogPost {
-    id: string;
-    slug: string;
-    title: string;
-    excerpt: string;
-    content: string;
-    author: string;
-    authorRole: string;
-    publishDate: string;
-    readTime: string;
-    category: string;
-    tags: string[];
-    image: string;
-    featured: boolean;
-    keyTakeaways?: string[];
-}
+import { BlogPost } from './blogTypes';
+import { generatedBlogPosts } from './generatedBlogData';
+
+export type { BlogPost };
 
 // SEO-optimized blog posts for e-commerce
-export const blogPosts: BlogPost[] = [
+const originalBlogPosts: BlogPost[] = [
     {
         id: "1",
         slug: "ultimate-guide-online-shopping-pakistan-2024",
@@ -15489,8 +15476,398 @@ Check out our [Latest Smart Home Collection](/) for high-quality, affordable tec
         tags: ["smart home", "gadgets", "Pakistan", "lifestyle", "tech"],
         image: "/api/placeholder/800/500",
         featured: false
+    },
+    {
+        id: "6",
+        slug: "best-makeup-organizers-pakistan-2026",
+        title: "Best Makeup Organizers in Pakistan 2026: 360° Rotating & Dustproof Guides",
+        excerpt: "Discover the top-rated makeup organizers to declutter your vanity. Featuring the best 360° rotating brush holders, acrylic storage boxes, and dustproof cosmetic cases.",
+        content: `
+# Best Makeup Organizers in Pakistan 2026: 360° Rotating & Dustproof Guides
+
+A cluttered vanity can add unnecessary stress to your morning routine. Finding the right makeup organizer is essential for keeping your beauty tools accessible, clean, and organized. In 2026, the trend has shifted towards **360° Rotating Organizers** and **Dustproof Acrylic Cases** that offer both style and functionality.
+
+## Top Picks for 2026
+
+### 1. Luxury 360° Rotating Makeup Brush Holder
+**Best Overall for Versatility & Access**
+
+The **Luxury 360° Rotating Makeup Brush Holder** is our top pick for its brilliant design and efficiency. It features a smooth-spinning base that allows you to access any brush or tool with a simple spin.
+
+- **Key Features**: 
+    - 360° Rotation for quick access.
+    - 5-7 Compartments for sorting brushes, liners, and lipsticks.
+    - Transparent Acrylic or "Luxury" ribbed texture.
+    - Optional Dustproof Lid to keep hygiene high.
+- **Why We Love It**: It saves counter space while holding a surprising amount of items. The rotation mechanism is smooth, and the material feels premium (resembling high-end glass).
+- **Price Range**: PKR 950 - PKR 1,500
+- **Where to Buy**: [Shop Now on AI Bazar](/products/luxury-360-rotating-makeup-brush-holder) for the best price.
+
+### 2. Large Capacity Cosmetic Storage Box with Drawers
+**Best for Skincare & Bottles**
+
+If you have a large collection of toners, serums, and creams, a tiered storage box with drawers is ideal. These units often feature a large top compartment for tall bottles and lower drawers for palettes and jewelry.
+
+- **Key Features**: Water-resistant, dustproof cover, portable handle.
+- **Best Use**: Bathroom counters or dressers.
+
+### 3. Clear Acrylic Lipstick Organizer
+**Best for Lipstick Addicts**
+
+For those who want to display their lipstick shades clearly, a dedicated acrylic tower is a must-have. It keeps every shade visible so you never lose track of your favorites.
+
+## Why Choose a Rotating Organizer?
+
+A **360° Rotating Makeup Organizer** transforms your daily routine by bringing everything to your fingertips. Unlike stationary holders where items at the back get forgotten, a rotating base ensures every product gets used. They are typically made from durable **PET** or **Acrylic**, making them easy to clean and resistant to yellowing.
+
+## Frequently Asked Questions (FAQ)
+
+### What is the price of a rotating makeup organizer in Pakistan?
+The price of a high-quality 360° rotating makeup organizer in Pakistan typically ranges from **PKR 800 to PKR 2,500**, depending on the size and material (acrylic vs. plastic).
+
+### Are these organizers dustproof?
+Many rotating models come with a **transparent lid** or cover specifically designed to be dustproof and moisture-resistant, making them perfect for bathroom use.
+
+### Where can I buy luxury makeup organizers online?
+You can find a wide range of luxury makeup organizers on **AI Bazar**, **Daraz**, and **AliExpress**. AI Bazar offers free express shipping and a guarantee of original products.
+
+### How do I clean my acrylic makeup organizer?
+To clean your organizer, simply wipe it down with a damp cloth and mild soap. Avoid harsh chemicals that might cloud the acrylic.
+    `,
+        author: "Zarah Khan",
+        authorRole: "Beauty Editor",
+        publishDate: "2026-02-12",
+        readTime: "5 min read",
+        category: "Beauty Guide",
+        tags: ["makeup organizer", "beauty storage", "360 rotating", "vanity", "cosmetics"],
+        image: "/api/placeholder/800/500",
+        featured: true,
+        keyTakeaways: [
+            "360° Rotating Organizers are the top choice for accessibility and space-saving.",
+            "Look for 'Dustproof' models if you store makeup in the bathroom.",
+            "Prices start from PKR 950 for high-quality acrylic models.",
+            "AI Bazar offers premium organizers with free nationwide shipping."
+        ]
+    },
+    {
+        id: "7",
+        slug: "top-10-kitchen-gadgets-pakistan-2026",
+        title: "Top 10 Must-Have Kitchen Gadgets in Pakistan 2026: Vegetable Cutters, Choppers & More",
+        excerpt: "Upgrade your kitchen with the latest smart gadgets. From the 22-in-1 Vegetable Cutter to electric choppers, discover the best tools to save time and effort.",
+        content: `
+# Top 10 Must-Have Kitchen Gadgets in Pakistan 2026
+
+Cooking should be a joy, not a chore. In 2026, smart kitchen gadgets are transforming how Pakistani households prepare meals. Whether you're a busy professional or a culinary enthusiast, these top-rated tools will save you time and effort.
+
+## 1. 22-in-1 Vegetable Cutter & Slicer
+**The Ultimate Meal Prep Station**
+
+Stop wasting hours chopping vegetables by hand. The **22-in-1 Vegetable Cutter** is a complete system that dices, slices, shreds, and grates in seconds.
+
+- **Key Features**: 
+    - 22 different blades/functions.
+    - Safety hand guard included.
+    - Built-in colander for washing.
+- **Why It's #1**: It replaces nearly every knife and grater in your kitchen. Perfect for making salads, fries, and desi curries.
+- **Where to Buy**: [Shop 22-in-1 Cutter on AI Bazar](/products/22-in-1-vegetable-cutter-with-drain-basket-magic-rotate-vegetable-cutter-slicer-chopper-grater)
+
+## 2. Electric Mini Garlic Chopper
+**No More Smelly Hands**
+
+A compact, rechargeable chopper perfect for garlic, ginger, chilies, and small quantities of meat. Just press the button and get perfectly minced ingredients in 5 seconds.
+
+## 3. 4-in-1 Handheld Electric Vegetable Cutter
+**Slice Directly into the Pot**
+
+This innovative gadget lets you slice vegetables directly into your cooking pot. It also comes with a cleaning brush attachment to scrub pots!
+
+## 4. Heavy Duty Juicer Blender
+**For Fresh Morning Boosts**
+
+Start your day with fresh juice. Modern heavy-duty blenders can crush ice and blend tough fruits like carrots and apples without overheating.
+
+## 5. Non-Stick Silicone Cooking Utensils
+**Protect Your Cookware**
+
+Ditch the metal spoons that scratch your expensive non-stick pans. Silicone heat-resistant utensils are durable, easy to clean, and safe for all cookware.
+
+## 6. Digital Kitchen Scale
+**Precision Baking**
+
+For the bakers out there, a digital scale is non-negotiable. Get consistent results every time by weighing your ingredients accurately.
+
+## 7. Oil Spray Bottle
+**Healthier Cooking**
+
+Control the amount of oil you use with a spray bottle. Perfect for air frying or lightly greasing pans for parathas.
+
+## 8. Adjustable Drawer Organizer
+**Declutter Your Cutlery**
+
+Keep your spoons, forks, and knives neatly arranged with expandable drawer organizers.
+
+## 9. Sink Drain Strainer Basket
+**Keep Drains Clog-Free**
+
+A simple yet essential tool to catch food scraps and prevent sink blockages.
+
+## 10. Fridge Storage Containers
+**Organize Your Groceries**
+
+Transparent, stackable containers keep your fridge organized and help vegetables stay fresh longer.
+
+## Frequently Asked Questions (FAQ)
+
+### What is the best vegetable cutter in Pakistan?
+The **22-in-1 Vegetable Cutter** is currently the most versatile and popular option, offering the best value for money.
+
+### Are electric choppers worth it?
+Yes, for Pakistani cooking which involves a lot of onion, garlic, and ginger chopping, an electric chopper is a massive time-saver.
+
+### Where can I buy original kitchen gadgets?
+**AI Bazar** offers a curated selection of 100% original kitchen gadgets with cash on delivery and easy returns.
+    `,
+        author: "Sana Mir",
+        authorRole: "Home & Living Editor",
+        publishDate: "2026-02-14",
+        readTime: "7 min read",
+        category: "Kitchen Guide",
+        tags: ["kitchen gadgets", "vegetable cutter", "cooking tips", "home appliances"],
+        image: "/api/placeholder/800/500",
+        featured: true,
+        keyTakeaways: [
+            "The 22-in-1 Vegetable Cutter is the top-rated time-saver for 2026.",
+            "Electric choppers are essential for desi cooking prep.",
+            "Silicone utensils extend the life of your non-stick cookware.",
+            "Shop authentic gadgets on AI Bazar with Cash on Delivery."
+        ]
+    },
+    {
+        id: "8",
+        slug: "best-home-decor-ideas-pakistan-2026",
+        title: "Best Home Decor Accessories for Modern Living in Pakistan 2026",
+        excerpt: "Transform your home with affordable luxury. Discover trending lamps, organizers, and wall art to elevate your living space.",
+        content: `
+# Best Home Decor Accessories for Modern Living
+
+Creating a beautiful home doesn't require a massive renovation budget. With the right accessories, you can transform any room. Here are the top home decor trends and products for Pakistan in 2026.
+
+## 1. Crystal Diamond Table Lamp
+**Touch-Activated Elegance**
+
+Add a touch of rose-gold luxury to your bedroom or living room. This rechargeable crystal lamp creates a stunning visual pattern on the table and offers 3 different light colors (Warm, White, Neutral).
+
+- **Best For**: Bedside tables, romantic dinners, living room accents.
+- **Where to Buy**: [Shop Crystal Lamp](/products/crystal-diamond-table-lamp)
+
+## 2. 3D Moon Lamp
+**Bring the Galaxy Home**
+
+A favorite for kids and adults alike, the 3D Moon Lamp offers a realistic lunar texture and soothing glow. It's a perfect night light or conversation piece.
+
+## 3. Wall Mounted Organizers
+**Space-Saving Solutions**
+
+Adhesive wall shelves and organizers are perfect for bathrooms and kitchens where space is limited. No drilling required!
+
+## 4. Digital Wooden Clock
+**Minimalist Aesthetic**
+
+Replace your ticking wall clock with a sleek, sound-activated wooden digital clock that displays time, temperature, and date.
+
+## 5. Sunset Projection Lamp
+**Golden Hour Anytime**
+
+Create the perfect vibe for photography or relaxation with a sunset lamp that projects a warm, golden halo on your wall.
+
+## Frequently Asked Questions (FAQ)
+
+### How can I decorate my room cheaply in Pakistan?
+Focus on lighting (lamps), decluttering (organizers), and small accents (cushions, plants) rather than changing furniture.
+
+### Are rechargeable lamps durable?
+Yes, modern LED rechargeable lamps are durable and energy-efficient, often lasting 8-10 hours on a single charge.
+
+### Where to buy modern home decor online?
+**AI Bazar** features a "Home & Living" collection with trending, affordable decor items delivered to your doorstep.
+    `,
+        author: "Hina Altaf",
+        authorRole: "Interior Design Enthusiast",
+        publishDate: "2026-02-15",
+        readTime: "5 min read",
+        category: "Home Decor",
+        tags: ["home decor", "lamps", "interior design", "organizers"],
+        image: "/api/placeholder/800/500",
+        featured: false,
+        keyTakeaways: [
+            "Lighting is the easiest way to change a room's mood.",
+            "Crystal and Moon lamps are top trending gifts for 2026.",
+            "Wall-mounted organizers save space without damaging walls.",
+            "Shop the latest decor trends on AI Bazar."
+        ]
+    },
+    {
+        id: "9",
+        slug: "top-tech-gadgets-accessories-pakistan",
+        title: "Must-Have Tech Gadgets & Accessories in Pakistan: 2026 Guide",
+        excerpt: "From wireless earbuds to smartwatches, explore the essential tech gadgets that define 2026. Reviews of Air 31, M10, and more.",
+        content: `
+# Must-Have Tech Gadgets & Accessories in Pakistan
+
+Tech moves fast. To keep you updated, we've rounded up the essential gadgets and accessories taking Pakistan by storm in 2026.
+
+## 1. Air 31 & Air 39 Crystal Earbuds
+**Transparent Design, Crystal Clear Sound**
+
+The trend for 2026 is transparency. The **Air 31** and **Air 39** earbuds feature a stunning see-through case and heavy bass performance.
+
+- **Why Buy**: Futuristic design, digital battery display, and incredibly affordable price.
+- **Price**: Under PKR 1,500.
+
+## 2. M10 TWS Wireless Earbuds
+**The Battery King**
+
+Known for its massive power bank case, the M10 earbuds can charge your phone in an emergency!
+
+- **Key Feature**: 2000mAh Power Bank Case.
+
+## 3. T800 Ultra Smart Watch
+**Premium Features on a Budget**
+
+Experience a full touchscreen, heart rate monitoring, and Bluetooth calling with the T800 Ultra. It looks and feels like a premium device at a fraction of the cost.
+
+## 4. P9 Wireless Headphones
+**Over-Ear Comfort**
+
+For those who prefer headphones, the P9 offers noise isolation and high-fidelity sound in a stylish package.
+
+## Frequently Asked Questions (FAQ)
+
+### Which wireless earbuds are best under 2000 in Pakistan?
+The **Air 31** and **M10 TWS** are widely considered the best options under PKR 2000, offering great sound and battery life.
+
+### Are these smartwatches compatible with iPhone and Android?
+Yes, models like the T800 Ultra connect via Bluetooth to both iOS and Android devices.
+
+### Where to buy original tech accessories?
+Avoid cheap copies. Shop at **AI Bazar** for quality-checked tech accessories with warranty.
+    `,
+        author: "Bilal Tech",
+        authorRole: "Gadget Reviewer",
+        publishDate: "2026-02-16",
+        readTime: "6 min read",
+        category: "Electronics",
+        tags: ["tech gadgets", "earbuds", "smartwatch", "headphones"],
+        image: "/api/placeholder/800/500",
+        featured: false,
+        keyTakeaways: [
+            "Transparent earbuds (Air 31/39) are the biggest trend of 2026.",
+            "M10 Earbuds double as a power bank for your phone.",
+            "T800 Ultra offers premium smartwatch features for a budget price.",
+            "Always buy tech from trusted sources like AI Bazar to ensure battery safety."
+        ]
+    },
+    {
+        id: "10",
+        slug: "trending-fashion-accessories-2026",
+        title: "Trending Fashion Accessories for 2026: Jewelry, Bags & More",
+        excerpt: "Complete your look with the hottest fashion accessories. Discover trending jewelry sets, luxury bags, and hair accessories.",
+        content: `
+# Trending Fashion Accessories for 2026
+
+No outfit is complete without the right accessories. In 2026, Pakistani fashion is embracing bold statements and vintage charm.
+
+## 1. Vintage Jewelry Sets
+**Timeless Elegance**
+
+Oxidized silver and gold-plated jewelry sets are making a huge comeback. Perfect for weddings and casual wear alike.
+
+## 2. Luxury Handbags & Clutches
+**The Perfect Carrier**
+
+Structured handbags and embellished clutches are essential for the modern woman. Look for pastel colors and geometric shapes.
+
+## 3. Korean Style Hair Accessories
+**Cute & Functional**
+
+Pearl clips, velvet scrunchies, and oversized bows are the top hair trends, influenced by K-fashion.
+
+## Frequently Asked Questions (FAQ)
+
+### What jewelry is trending in Pakistan 2026?
+Oxidized jewellery and minimalist gold-plated pieces are trending.
+
+### Where can I find affordable fashion accessories?
+**AI Bazar** offers a wide range of fashion accessories starting from just PKR 299.
+    `,
+        author: "Ayesha Style",
+        authorRole: "Fashion Stylist",
+        publishDate: "2026-02-17",
+        readTime: "4 min read",
+        category: "Fashion",
+        tags: ["fashion", "jewelry", "bags", "accessories"],
+        image: "/api/placeholder/800/500",
+        featured: false,
+        keyTakeaways: [
+            "Oxidized jewelry is a must-have for 2026.",
+            "K-fashion hair accessories are dominating the trends.",
+            "Accessories can elevate even a simple outfit instantly."
+        ]
+    },
+    {
+        id: "11",
+        slug: "ultimate-beauty-tools-guide-2026",
+        title: "The Ultimate Beauty Tools Guide 2026: Brushes, Steamers & Skincare",
+        excerpt: "Achieve salon-like results at home with these essential beauty tools. Facial steamers, makeup brushes, and more.",
+        content: `
+# The Ultimate Beauty Tools Guide 2026
+
+Invest in the right tools, and your skin (and makeup) will thank you. Here are the top beauty devices every woman needs in her arsenal.
+
+## 1. Facial Steamer
+**Spa Treatment at Home**
+
+Open up your pores and detoxify your skin with a portable facial steamer. Essential for deep cleaning and hydration.
+
+## 2. Professional Makeup Brush Sets
+**Flawless Application**
+
+A good set of brushes makes blending effortless. Look for soft, synthetic bristles that are cruelty-free.
+
+## 3. Blackhead Remover Vacuum
+**Deep Pore Cleaning**
+
+Safely remove blackheads and whiteheads without damaging your skin using a suction vacuum.
+
+## Frequently Asked Questions (FAQ)
+
+### Is facial steaming good for acne?
+Yes, it helps unclog pores and loosen dirt, making it easier to treat acne.
+
+### How often should I wash my makeup brushes?
+Weekly! Dirty brushes are a leading cause of breakouts.
+
+### Where to buy beauty tools in Pakistan?
+**AI Bazar** stocks original beauty tools and devices to help you look your best.
+    `,
+        author: "Dr. Sarah Skin",
+        authorRole: "Dermatologist Consultant",
+        publishDate: "2026-02-18",
+        readTime: "5 min read",
+        category: "Beauty Guide",
+        tags: ["beauty tools", "skincare", "makeup brushes", "facial"],
+        image: "/api/placeholder/800/500",
+        featured: false,
+        keyTakeaways: [
+            "Facial steamers are the secret to glowing skin.",
+            "Quality tools = Quality makeup application.",
+            "Keep your tools clean to prevent skin issues.",
+            "Shop trusted beauty devices on AI Bazar."
+        ]
     }
 ];
+
+export const blogPosts: BlogPost[] = [...originalBlogPosts, ...generatedBlogPosts];
 
 // Helper function to get blog post by slug
 export const getBlogPostBySlug = (slug: string): BlogPost | undefined => {

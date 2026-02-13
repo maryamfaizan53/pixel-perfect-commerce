@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { getBlogPostBySlug, blogPosts } from "@/data/blogData";
-import { Calendar, Clock, User, ArrowLeft, Share2, Tag, TrendingUp } from "lucide-react";
+import { Calendar, Clock, User, ArrowLeft, Share2, Tag, TrendingUp, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { lazy, Suspense } from "react";
 const ReactMarkdownLazy = lazy(() => import("react-markdown"));
@@ -136,7 +136,41 @@ const BlogPost = () => {
             ]
         };
 
-        script.text = JSON.stringify([blogSchema, breadcrumbSchema]);
+        // GEO: FAQ Schema Parser
+        const faqRegex = /## Frequently Asked Questions \(FAQ\)([\s\S]*)/;
+        const faqMatch = post.content.match(faqRegex);
+        let faqSchema = null;
+
+        if (faqMatch && faqMatch[1]) {
+            const faqSection = faqMatch[1];
+            const questions = faqSection.split('### ').slice(1);
+
+            const faqEntities = questions.map(q => {
+                const [question, ...answerParts] = q.split('\n');
+                const answer = answerParts.join('\n').trim();
+                return {
+                    "@type": "Question",
+                    "name": question.trim(),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": answer
+                    }
+                };
+            }).filter(e => e.name && e.acceptedAnswer.text);
+
+            if (faqEntities.length > 0) {
+                faqSchema = {
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    "mainEntity": faqEntities
+                };
+            }
+        }
+
+        const schemas = [blogSchema, breadcrumbSchema];
+        if (faqSchema) schemas.push(faqSchema);
+
+        script.text = JSON.stringify(schemas);
 
         return () => {
             const existingScript = document.getElementById(schemaId);
@@ -191,6 +225,23 @@ const BlogPost = () => {
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-6">
                                 {post.category}
                             </div>
+
+                            {/* GEO: Key Takeaways for AI Summaries */}
+                            {post.keyTakeaways && post.keyTakeaways.length > 0 && (
+                                <div className="mb-8 p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
+                                    <h3 className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-sm mb-3">
+                                        <Sparkles className="w-4 h-4" /> Key Takeaways
+                                    </h3>
+                                    <ul className="space-y-3">
+                                        {post.keyTakeaways.map((item, idx) => (
+                                            <li key={idx} className="flex items-start gap-3 text-white/90 text-sm leading-relaxed font-medium">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0 shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+                                                <span>{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-6">
                                 {post.title}

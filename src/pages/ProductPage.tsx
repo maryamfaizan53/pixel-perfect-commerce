@@ -7,6 +7,7 @@ import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight,
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout, fetchProductsByCollection } from "@/lib/shopify";
+import { blogPosts } from "@/data/blogData";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { ProductReviews } from "@/components/reviews/ProductReviews";
@@ -279,6 +280,21 @@ const ProductPage = () => {
         setRelatedProducts(filtered.slice(0, 6));
       }
     });
+  }, [product]);
+
+  // Expert SEO: Internal Linking - Find relevant blog posts (Topic Clusters)
+  const relatedPosts = useMemo(() => {
+    if (!product) return [];
+    return blogPosts.filter(post => {
+      // 1. Match by explicit tag overlap
+      const hasTagMatch = product.tags.some(tag => post.tags.includes(tag));
+      // 2. Match by category/product type
+      const hasCategoryMatch = post.category.toLowerCase().includes(product.productType.toLowerCase()) || product.productType.toLowerCase().includes(post.category.toLowerCase());
+      // 3. Match by title/content keywords (simple)
+      const hasTitleMatch = post.title.toLowerCase().includes(product.productType.toLowerCase());
+
+      return hasTagMatch || hasCategoryMatch || hasTitleMatch;
+    }).slice(0, 3);
   }, [product]);
 
   // Meta Pixel & Browser SEO: Track ViewContent and set Dynamic Title
@@ -1358,6 +1374,62 @@ const ProductPage = () => {
                     </p>
                   </div>
                 )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Expert SEO: Internal Linking - Related Knowledge Base (Topic Clusters) */}
+        {relatedPosts.length > 0 && (
+          <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-16 pb-0">
+            <div className="bg-slate-50/50 rounded-3xl border border-slate-100/50 p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-2">
+                    Expert Guides & <span className="text-primary">Usage Tips</span>
+                  </h2>
+                  <p className="text-slate-500 font-medium max-w-xl">
+                    Read our expert articles to learn more about how to get the most out of your {product?.productType || 'product'}.
+                  </p>
+                </div>
+                <Link to="/blog" className="text-sm font-bold text-primary hover:text-primary/80 flex items-center gap-2">
+                  View All Guides <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedPosts.map((post) => (
+                  <Link
+                    key={post.id}
+                    to={`/blog/${post.slug}`}
+                    className="group bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
+                  >
+                    <div className="aspect-[16/9] rounded-xl overflow-hidden bg-slate-100 mb-4 relative">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                        {post.readTime}
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col">
+                      <div className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">
+                        {post.category}
+                      </div>
+                      <h3 className="text-base font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-sm text-slate-500 line-clamp-2 mb-4 flex-1">
+                        {post.excerpt}
+                      </p>
+                      <div className="flex items-center text-xs font-bold text-slate-900 mt-auto">
+                        Read Article <div className="w-6 h-[2px] bg-slate-200 ml-2 group-hover:w-10 group-hover:bg-primary transition-all rounded-full" />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           </section>

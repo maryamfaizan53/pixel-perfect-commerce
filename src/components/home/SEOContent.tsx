@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 export const SEOContent = () => {
   return (
@@ -18,7 +19,7 @@ export const SEOContent = () => {
             </h1>
             <div className="space-y-6 text-black/70 leading-relaxed text-base md:text-lg text-justify">
               <p>
-                <strong className="text-black">AI Bazar (aibazar.pk) is the leading destination for authentic online shopping in Pakistan</strong>, offering 200+ original products across kitchen gadgets, electronics, and lifestyle essentials. Our platform combines high-quality standards with a consumer-first approach, ensuring that every purchase is backed by free express shipping and a 7-day return policy.
+                <strong className="text-black">AI Bazar (aibazar.pk) is the leading destination for <Link to="/collections/home-decoration" className="text-primary hover:underline">authentic online shopping in Pakistan</Link></strong>, offering 200+ original products across <Link to="/collections/kitchen-accessories" className="text-black hover:text-primary underline decoration-slate-300 underline-offset-4">kitchen gadgets</Link>, electronics, and lifestyle essentials. Our platform combines high-quality standards with a consumer-first approach, ensuring that every purchase is backed by free express shipping and a 7-day return policy.
               </p>
               <p>
                 Whether you are looking for the latest gadgets or essential home appliances, our store offers competitive prices that are both economical and pocket-friendly. As a specialized D2C (Direct-to-Consumer) marketplace, we eliminate middlemen to pass direct savings to our customers. Experience seamless shopping with <strong className="text-black">cash on delivery across Pakistan</strong> and join thousands of satisfied customers who trust AI Bazar for their daily needs.
@@ -36,7 +37,7 @@ export const SEOContent = () => {
                 <strong className="text-black">You can enjoy hassle-free online shopping in Pakistan by choosing AI Bazar</strong>, where we provide a streamlined multi-channel platform available via web or WhatsApp. Our logistics network ensures 1-3 business day delivery to every city, including Karachi, Lahore, Islamabad, and remote areas.
               </p>
               <p className="text-black/70 leading-relaxed">
-                Browse through our extensive catalog, featuring top brands and exclusive deals, and enjoy doorstep delivery across the country. Whether you're searching for the latest gadgets, trendy clothing, or home essentials, AIBAZAR.PK has got you covered. We stand out by offering first-hand insights on every product we sell, ensuring you receive exactly what you see on your screen.
+                Browse through our extensive catalog, featuring top brands and exclusive deals, and enjoy doorstep delivery across the country. Whether you're searching for the <Link to="/collections/gadgets-tech" className="font-bold text-black hover:text-primary">latest gadgets</Link>, trendy clothing, or <Link to="/collections/home-accessories" className="font-bold text-black hover:text-primary">home essentials</Link>, AIBAZAR.PK has got you covered. We stand out by offering first-hand insights on every product we sell, ensuring you receive exactly what you see on your screen.
               </p>
             </div>
 

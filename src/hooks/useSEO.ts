@@ -18,13 +18,16 @@ interface SEOProps {
     articleSection?: string;
     articleTags?: string[];
     schema?: any[]; // For injecting custom JSON-LD schema
+    // GSO: AI search optimization
+    entityName?: string; // For knowledge graph entity association
+    entityType?: string; // Product, Article, Store, etc.
 }
 
 /**
  * Hook to dynamically update SEO meta tags in a React application.
  * This is a lightweight alternative to react-helmet.
  */
-export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema }: SEOProps) => {
+export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema, entityName, entityType }: SEOProps) => {
     useEffect(() => {
         // Auto-generate canonical from current URL if not provided
         // Normalize duplicate routes: /product/ -> /products/, /category/ -> /collections/
@@ -176,7 +179,22 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             }
         }
 
-        // 8. Update Canonical
+        // 8. GSO: AI-specific meta tags for entity recognition
+        if (entityName || entityType) {
+            const setOrCreateMeta = (name: string, content: string) => {
+                let tag = document.querySelector(`meta[name="${name}"]`);
+                if (!tag) {
+                    tag = document.createElement('meta');
+                    tag.setAttribute('name', name);
+                    document.head.appendChild(tag);
+                }
+                tag.setAttribute('content', content);
+            };
+            if (entityName) setOrCreateMeta('citation_title', entityName);
+            if (entityType) setOrCreateMeta('citation_type', entityType);
+        }
+
+        // 9. Update Canonical
         if (canonical) {
             let linkCanonical = document.querySelector('link[rel="canonical"]');
             if (linkCanonical) {
@@ -198,7 +216,7 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             ogUrl.setAttribute('content', canonical);
         }
 
-        // 9. Inject JSON-LD Schema
+        // 10. Inject JSON-LD Schema
         const injectionTarget = document.head;
         const schemaId = 'seo-dynamic-json-ld';
         let script = document.getElementById(schemaId) as HTMLScriptElement;
@@ -245,5 +263,5 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             const cleanupScript = document.getElementById(schemaId);
             if (cleanupScript) cleanupScript.remove();
         };
-    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema]);
+    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema, entityName, entityType]);
 };

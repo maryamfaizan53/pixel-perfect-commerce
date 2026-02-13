@@ -11,19 +11,26 @@
 [build.processing.html]
   pretty_urls = true
 
+# .well-known/llms.txt redirect (standard AI agent discovery path)
+[[redirects]]
+  from = "/.well-known/llms.txt"
+  to = "/llms.txt"
+  status = 200
+
 # SPA fallback - serve index.html for all routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Custom headers for SEO and performance
+# Global headers for SEO, security, and AI crawlability
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Robots-Tag = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 
 [[headers]]
   for = "/sitemap.xml"
@@ -37,24 +44,28 @@
     Content-Type = "text/plain"
     Cache-Control = "public, max-age=3600"
 
-# AI/LLM manifest files
+# AI/LLM manifest files - discoverable by AI agents
 [[headers]]
   for = "/llms.txt"
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
+    X-Content-Purpose = "llm-context"
+    Link = '</llms-full.txt>; rel="alternate"; title="Full Context", </llms-products.txt>; rel="alternate"; title="Product Catalog"'
 
 [[headers]]
   for = "/llms-full.txt"
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
+    X-Content-Purpose = "llm-context-full"
 
 [[headers]]
   for = "/llms-products.txt"
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
+    X-Content-Purpose = "llm-product-catalog"
 
 # Cache static assets aggressively
 [[headers]]

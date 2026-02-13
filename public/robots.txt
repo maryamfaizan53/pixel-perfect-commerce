@@ -1,5 +1,6 @@
 # AI Bazar Pakistan - Robots.txt
 # https://www.aibazar.pk
+# Last Updated: 2026-02-13
 
 # === Traditional Search Engines ===
 
@@ -21,9 +22,27 @@ Disallow: /orders
 Disallow: /auth
 Disallow: /wishlist
 
+User-agent: Yandex
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
 # === AI / LLM Search Crawlers ===
 
-# OpenAI (ChatGPT Search & Browsing)
+# OpenAI (ChatGPT Search, Browsing, Plugins)
 User-agent: GPTBot
 Allow: /
 Disallow: /checkout
@@ -42,8 +61,20 @@ Disallow: /orders
 Disallow: /auth
 Disallow: /wishlist
 
-# Google Gemini / AI Overviews
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Google Gemini / AI Overviews / SGE
 User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
 Allow: /
 
 # Perplexity AI
@@ -76,8 +107,37 @@ Disallow: /auth
 Disallow: /wishlist
 
 # Apple Intelligence / Siri
+User-agent: Applebot
+Allow: /
+
 User-agent: Applebot-Extended
 Allow: /
+
+# Microsoft Copilot / Bing Chat
+User-agent: BingPreview
+Allow: /
+
+User-agent: MicrosoftPreview
+Allow: /
+
+# Meta AI (Llama)
+User-agent: FacebookBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+User-agent: meta-externalagent
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
 
 # TikTok Search
 User-agent: Bytespider
@@ -99,8 +159,8 @@ Disallow: /orders
 Disallow: /auth
 Disallow: /wishlist
 
-# Meta AI
-User-agent: FacebookBot
+# DeepSeek AI
+User-agent: Deepseek
 Allow: /
 Disallow: /checkout
 Disallow: /cart
@@ -108,6 +168,40 @@ Disallow: /account
 Disallow: /orders
 Disallow: /auth
 Disallow: /wishlist
+
+# Mistral AI
+User-agent: MistralBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# You.com
+User-agent: YouBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Common Crawl (used by many AI training sets)
+User-agent: CCBot
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+Disallow: /auth
+Disallow: /wishlist
+
+# Brave Search
+User-agent: Brave
+Allow: /
 
 # === Default (All Other Crawlers) ===
 
@@ -123,7 +217,12 @@ Disallow: /wishlist
 # Sitemaps
 Sitemap: https://www.aibazar.pk/sitemap.xml
 
-# AI/LLM Manifests
+# AI/LLM Manifests (Generative Search Optimization)
+# These files help AI agents understand our store, products, and content
+# llms.txt - Brief overview for AI agents
+# llms-full.txt - Comprehensive context manifest
+# llms-products.txt - Complete 208-product catalog in AI-readable format
 # https://www.aibazar.pk/llms.txt
 # https://www.aibazar.pk/llms-full.txt
 # https://www.aibazar.pk/llms-products.txt
+# https://www.aibazar.pk/.well-known/llms.txt

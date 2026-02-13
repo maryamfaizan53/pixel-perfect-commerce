@@ -493,16 +493,33 @@ const ProductPage = () => {
         };
       }
 
+      // GSO-optimized FAQ with self-contained, extractable answers
       const faqSchema = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
           {
             "@type": "Question",
-            "name": `Is this ${product.title} genuine?`,
+            "name": `Is this ${product.title} genuine and original?`,
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, AI Bazar guarantees 100% genuine products directly from verified vendors and original brands."
+              "text": `Yes, the ${product.title} sold at AI Bazar (aibazar.pk) is 100% genuine and original. AI Bazar is a verified direct-to-consumer retailer in Pakistan that sources all products directly from verified vendors and original brands. No counterfeits or replicas.`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `What is the price of ${product.title} in Pakistan?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `The ${product.title} is available at AI Bazar for Rs. ${parseFloat(price).toLocaleString()} PKR. This is the lowest price available online in Pakistan with free express shipping and cash on delivery included.`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `Where can I buy ${product.title} online in Pakistan?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `You can buy the ${product.title} online at AI Bazar (aibazar.pk), Pakistan's most affordable online store. Visit https://www.aibazar.pk/products/${product.handle} to order with free express shipping and cash on delivery nationwide.`
             }
           },
           {
@@ -510,15 +527,15 @@ const ProductPage = () => {
             "name": `What is the return policy for ${product.title}?`,
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "We offer a 7-day easy return policy for this product. If you're not satisfied, you can return it for a full refund or exchange."
+              "text": `AI Bazar offers a 7-day hassle-free return policy for the ${product.title}. If you're not satisfied or the product has any quality issues, you can return it for a full refund or replacement. Contact WhatsApp +92 332 8222026 for return authorization.`
             }
           },
           {
             "@type": "Question",
-            "name": `What is the delivery time for ${product.title} in Pakistan?`,
+            "name": `How fast is delivery for ${product.title} in Pakistan?`,
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "We offer fast delivery across Pakistan. Most orders are delivered within 1-3 business days. Free shipping is available on this product."
+              "text": `AI Bazar dispatches the ${product.title} within 24 hours of ordering. Delivery takes 1-3 business days nationwide across Pakistan including Karachi, Lahore, Islamabad, and all other cities. Shipping is completely free.`
             }
           },
           {
@@ -526,10 +543,26 @@ const ProductPage = () => {
             "name": `Can I pay cash on delivery for ${product.title}?`,
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, AI Bazar offers Cash on Delivery (COD) across Pakistan. You can also pay online via credit/debit card or bank transfer."
+              "text": `Yes, Cash on Delivery (COD) is available for the ${product.title} at AI Bazar. You pay only when you receive your order. COD is available across all cities and towns in Pakistan.`
             }
           }
         ]
+      };
+
+      // Speakable schema for voice assistant optimization (GSO)
+      const speakableSchema = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": product.title,
+        "url": canonicalUrl || `https://www.aibazar.pk/products/${product.handle}`,
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".product-title", ".product-price", ".product-description", ".product-faq"]
+        },
+        "mainEntity": {
+          "@type": "Product",
+          "@id": canonicalUrl || `https://www.aibazar.pk/products/${product.handle}#product`
+        }
       };
 
       const siteUrl = 'https://www.aibazar.pk';
@@ -564,7 +597,7 @@ const ProductPage = () => {
 
       const script = document.createElement('script');
       script.type = 'application/ld+json';
-      script.text = JSON.stringify([productSchema, faqSchema, breadcrumbSchema]);
+      script.text = JSON.stringify([productSchema, faqSchema, breadcrumbSchema, speakableSchema]);
       script.id = 'product-seo-json-ld';
 
       // Remove existing script if any
@@ -929,7 +962,7 @@ const ProductPage = () => {
                     <span className="w-10 h-[2px] bg-primary/30" />
                     <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/60">Boutique Exclusive</span>
                   </div>
-                  <h1 className="text-2xl md:text-3xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] lg:max-w-[90%]">
+                  <h1 className="product-title text-2xl md:text-3xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] lg:max-w-[90%]">
                     {product.title}
                   </h1>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
@@ -943,7 +976,7 @@ const ProductPage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                     <div className="flex items-baseline gap-4">
                       <span className="text-2xl font-bold text-slate-400">{currencyCode}</span>
-                      <span className="text-5xl lg:text-7xl font-black text-slate-950 tracking-tighter">
+                      <span className="product-price text-5xl lg:text-7xl font-black text-slate-950 tracking-tighter">
                         {price.toLocaleString()}
                       </span>
                     </div>
@@ -1125,11 +1158,11 @@ const ProductPage = () => {
                     </div>
                     {product.descriptionHtml ? (
                       <div
-                        className="text-lg text-slate-600 leading-relaxed font-medium prose prose-slate max-w-none prose-headings:text-slate-900 prose-strong:text-slate-800 prose-a:text-primary"
+                        className="product-description text-lg text-slate-600 leading-relaxed font-medium prose prose-slate max-w-none prose-headings:text-slate-900 prose-strong:text-slate-800 prose-a:text-primary"
                         dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
                       />
                     ) : (
-                      <p className="text-lg text-slate-600 leading-relaxed font-medium">
+                      <p className="product-description text-lg text-slate-600 leading-relaxed font-medium">
                         {product.description}
                       </p>
                     )}
@@ -1254,7 +1287,7 @@ const ProductPage = () => {
           </motion.div>
         </article>
 
-        {/* Product SEO Content Block - Keyword-rich crawlable content */}
+        {/* Product SEO Content Block - GSO-optimized self-contained extractable content */}
         {product && (
           <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-16">
             <div className="bg-white rounded-3xl border border-slate-100 p-8 md:p-12">
@@ -1268,6 +1301,44 @@ const ProductPage = () => {
                 <p>
                   At <strong>aibazar.pk</strong>, we guarantee 100% genuine products with a 7-day easy return policy. Whether you're in Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, or anywhere across Pakistan, enjoy hassle-free online shopping with our secure payment options including cash on delivery (COD).
                 </p>
+
+                {/* GSO: Self-contained product summary for AI extraction */}
+                <div className="product-summary mt-6 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                  <h3 className="text-base font-bold text-slate-800 mb-3">{product.title} - Quick Summary</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    The {product.title} is available at AI Bazar (aibazar.pk) for Rs. {parseFloat(product.priceRange.minVariantPrice.amount).toLocaleString()} PKR.
+                    {product.availableForSale ? ' This product is currently in stock and ready for dispatch.' : ' This product is currently out of stock.'}
+                    {' '}AI Bazar offers free express shipping across Pakistan with delivery in 1-3 business days.
+                    Cash on delivery (COD) is available in all cities.
+                    {product.productType ? ` Category: ${product.productType}.` : ''}
+                    {product.vendor && product.vendor !== 'AI Bazar' ? ` Brand: ${product.vendor}.` : ''}
+                    {' '}All products at AI Bazar are 100% original with a 7-day return policy.
+                  </p>
+                </div>
+
+                {/* GSO: FAQ section visible on page for AI crawlers */}
+                <div className="product-faq mt-6">
+                  <h3 className="text-base font-bold text-slate-800 mb-3">Frequently Asked Questions</h3>
+                  <dl className="space-y-3">
+                    <div>
+                      <dt className="text-sm font-semibold text-slate-700">Is this {product.title} original?</dt>
+                      <dd className="text-sm text-slate-500 mt-1">Yes, the {product.title} sold at AI Bazar (aibazar.pk) is 100% genuine and original, sourced directly from verified vendors.</dd>
+                    </div>
+                    <div>
+                      <dt className="text-sm font-semibold text-slate-700">What is the price of {product.title} in Pakistan?</dt>
+                      <dd className="text-sm text-slate-500 mt-1">The {product.title} costs Rs. {parseFloat(product.priceRange.minVariantPrice.amount).toLocaleString()} PKR at AI Bazar, the lowest price available online in Pakistan with free shipping included.</dd>
+                    </div>
+                    <div>
+                      <dt className="text-sm font-semibold text-slate-700">Does AI Bazar offer cash on delivery for this product?</dt>
+                      <dd className="text-sm text-slate-500 mt-1">Yes, Cash on Delivery (COD) is available for the {product.title} across all cities and towns in Pakistan. You pay only when you receive your order.</dd>
+                    </div>
+                    <div>
+                      <dt className="text-sm font-semibold text-slate-700">How long does delivery take?</dt>
+                      <dd className="text-sm text-slate-500 mt-1">AI Bazar dispatches orders within 24 hours. The {product.title} is delivered in 1-3 business days nationwide with free express shipping.</dd>
+                    </div>
+                  </dl>
+                </div>
+
                 {product.tags && product.tags.length > 0 && (
                   <div className="pt-4 border-t border-slate-100">
                     <p className="text-xs text-slate-400">
@@ -1279,6 +1350,9 @@ const ProductPage = () => {
                         `${product.productType} online shopping Pakistan`,
                         `best ${product.productType} in Pakistan`,
                         `${product.title} free shipping`,
+                        `${product.title} review`,
+                        `${product.title} vs alternatives`,
+                        `best ${product.productType} to buy in Pakistan`,
                         ...product.tags.slice(0, 5).map(t => `${t} Pakistan`),
                       ].filter(Boolean).join(' | ')}
                     </p>

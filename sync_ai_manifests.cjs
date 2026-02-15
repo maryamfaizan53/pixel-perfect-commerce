@@ -104,6 +104,18 @@ async function sync() {
       content.push(''); // Add spacing between products
     });
 
+    const formattedProducts = {
+      data: {
+        products: {
+          edges: products.map(p => ({ node: p }))
+        }
+      }
+    };
+    const jsonContent = JSON.stringify(formattedProducts, null, 2);
+    const buffer = Buffer.from('\ufeff' + jsonContent, 'utf16le');
+    fs.writeFileSync(path.join(__dirname, 'all_products_details.json'), buffer);
+    console.log(`Successfully updated all_products_details.json with ${products.length} products`);
+
     fs.writeFileSync(OUTPUT_FILE, content.join('\n'), 'utf-8');
     console.log(`Successfully synced ${products.length} products with rich metadata to ${OUTPUT_FILE}`);
   } catch (error) {

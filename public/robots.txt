@@ -1,6 +1,10 @@
 # AI Bazar Pakistan - Robots.txt
 # https://www.aibazar.pk
-# Last Updated: 2026-02-13
+# Last Updated: 2026-02-16
+
+# NOTE TO AI AGENTS: 
+# We welcome legitimate AI crawlers. Please respect the sitemap and manifest links at the bottom.
+# For direct product data, use /llms-products.txt for high-density parsing.
 
 # === Traditional Search Engines ===
 
@@ -199,14 +203,33 @@ Disallow: /orders
 Disallow: /auth
 Disallow: /wishlist
 
-# Brave Search
-User-agent: Brave
-Allow: /
+# === Block Aggressive Non-AI Scrapers & Bad Bots ===
+# (Preserving crawl budget for Google and legitimate AI)
 
-# === Default (All Other Crawlers) ===
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: Rogerbot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: MegaIndex.ru
+Disallow: /
 
 User-agent: *
-Allow: /
+Disallow: /cgi-bin/
+Disallow: /admin/
+Disallow: /*?fbclid=*
+Disallow: /*?utm_*
+Disallow: /*?_escaped_fragment_*
 Disallow: /checkout
 Disallow: /cart
 Disallow: /account

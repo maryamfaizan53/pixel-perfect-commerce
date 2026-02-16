@@ -10,7 +10,45 @@ const Help = () => {
     title: "Help Center & FAQ - AI Bazar Pakistan",
     description: "Find answers to common questions about orders, shipping, returns, payments, and more at AI Bazar Pakistan. Get help with tracking orders and contacting support.",
     keywords: "aibazar help, aibazar faq, aibazar customer support, order help pakistan, shipping questions, return policy",
-    canonical: "https://www.aibazar.pk/help"
+    canonical: "https://www.aibazar.pk/help",
+    schema: [{
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How can I track my order?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Visit our Track Order page and enter your order number and email address to see real-time tracking information."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is your return policy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer a 30-day return policy on most items. Products must be unused and in original packaging."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does shipping take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Standard shipping takes 5-7 business days. Express shipping is available for 2-3 day delivery."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you ship internationally?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, we ship to over 100 countries worldwide. Shipping costs and times vary by location."
+          }
+        }
+      ]
+    }]
   });
   const categories = [
     { icon: Package, title: "Orders", description: "Track orders, view history, and manage returns", link: "/track-order" },
@@ -43,7 +81,7 @@ const Help = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 py-8">
         {/* Hero Section */}
         <section className="bg-primary text-primary-foreground py-16 mb-12">

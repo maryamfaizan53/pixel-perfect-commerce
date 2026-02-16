@@ -337,6 +337,12 @@ const ProductPage = () => {
       'aibazar',
       'cash on delivery pakistan',
       'free shipping pakistan',
+      // LSI Keywords for better ranking
+      `${product.title.toLowerCase()} deals`,
+      `${product.title.toLowerCase()} offers`,
+      `${product.title.toLowerCase()} specification`,
+      `${product.title.toLowerCase()} reviews pakistan`,
+      `best ${product.productType?.toLowerCase()} 2026`,
       ...product.tags.map(t => t.toLowerCase()),
     ].filter(Boolean).join(', ')
     : "aibazar shopping, online shopping pakistan, lowest price online";
@@ -489,10 +495,10 @@ const ProductPage = () => {
           },
           "author": {
             "@type": "Person",
-            "name": r.user_name || "Anonymous"
+            "name": r.profile?.full_name || "Anonymous"
           },
           "datePublished": r.created_at,
-          "reviewBody": r.comment
+          "reviewBody": r.content || ""
         })),
         "offers": hasMultipleVariants ? { "@type": "AggregateOffer", "lowPrice": product.priceRange.minVariantPrice.amount, "highPrice": product.priceRange.maxVariantPrice.amount, "priceCurrency": currency, "offerCount": product.variants.edges.length, "offers": offers } : offers[0]
       } as any;
@@ -540,26 +546,34 @@ const ProductPage = () => {
           },
           {
             "@type": "Question",
+            "name": `Does the ${product.title} come with a warranty or guarantee?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `Yes, every ${product.title} sold at AI Bazar comes with a 7-day quality guarantee and a 100% authenticity assurance. If you find any manufacturing defect, we provide replacement or full refund.`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `Why is the ${product.title} price so low at AI Bazar?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `We source ${product.title} directly from manufacturers and large-scale vendors, eliminating middleman costs. Our mission is to provide the most affordable online shopping experience for Pakistanis without compromising on quality.`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `How to use or care for this ${product.title}?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `To ensure the longevity of your ${product.title}, we recommend following the instructions provided in the description. Generally, keep it clean and handle with care. For specific usage tips, contact our WhatsApp support.`
+            }
+          },
+          {
+            "@type": "Question",
             "name": `What is the return policy for ${product.title}?`,
             "acceptedAnswer": {
               "@type": "Answer",
               "text": `AI Bazar offers a 7-day hassle-free return policy for the ${product.title}. If you're not satisfied or the product has any quality issues, you can return it for a full refund or replacement. Contact WhatsApp +92 332 8222026 for return authorization.`
-            }
-          },
-          {
-            "@type": "Question",
-            "name": `How fast is delivery for ${product.title} in Pakistan?`,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": `AI Bazar dispatches the ${product.title} within 24 hours of ordering. Delivery takes 1-3 business days nationwide across Pakistan including Karachi, Lahore, Islamabad, and all other cities. Shipping is completely free.`
-            }
-          },
-          {
-            "@type": "Question",
-            "name": `Can I pay cash on delivery for ${product.title}?`,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": `Yes, Cash on Delivery (COD) is available for the ${product.title} at AI Bazar. You pay only when you receive your order. COD is available across all cities and towns in Pakistan.`
             }
           }
         ]

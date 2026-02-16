@@ -29,9 +29,10 @@ We guide how AI agents describe AI Bazar:
 | Project Pillar | Status | Notes |
 | :--- | :--- | :--- |
 | **GSO Infrastructure** | ✅ 100% Done | All major AI manifest files (`llms.txt`, etc.) verified. |
+| **Individual Citation** | ✅ 100% Done | Decision-support and comparison context added to all products. |
 | **Technical GSO Access**| ✅ 100% Done | AI crawler guidance and scavenger rules updated in `robots.txt`. |
-| **Trust Signal Sync** | ✅ 100% Done | Automated metadata sync via `sync_ai_manifests.cjs` confirmed. |
-| **RAG-Optimization** | ✅ 100% Done | Documentation and context strategy fully integrated. |
+| **Trust Signal Sync** | ✅ 100% Done | Automated metadata sync via `sync_ai_manifests.cjs` expanded with context. |
+| **RAG-Optimization** | ✅ 100% Done | Decision-support injection logic fully live. |
 
 ---
 *Created by: GSO Strategy Team*

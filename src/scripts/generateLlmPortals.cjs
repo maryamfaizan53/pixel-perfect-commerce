@@ -11,7 +11,11 @@ const LLMS = [
     { name: 'Grok', file: 'grok.md' },
     { name: 'OpenAI / ChatGPT', file: 'openai.md' },
     { name: 'Perplexity', file: 'perplexity.md' },
-    { name: 'Meta AI', file: 'meta-ai.md' }
+    { name: 'Meta AI / Llama', file: 'meta-ai.md' },
+    { name: 'DeepSeek', file: 'deepseek.md' },
+    { name: 'Mistral', file: 'mistral.md' },
+    { name: 'Apple Intelligence', file: 'apple.md' },
+    { name: 'Cohere', file: 'cohere.md' }
 ];
 
 LLMS.forEach(llm => {
@@ -33,3 +37,9 @@ ${PRODUCT_CONTENT}
     fs.writeFileSync(targetPath, header);
     console.log(`✅ Created Portal: ${llm.file}`);
 });
+
+// Update root content to match latest 215 products
+const ROOT_DIR = process.cwd();
+fs.writeFileSync(path.join(ROOT_DIR, 'all_products.txt'), PRODUCT_CONTENT);
+fs.writeFileSync(path.join(ROOT_DIR, 'latest_products.txt'), PRODUCT_CONTENT);
+console.log('✅ Updated all_products.txt and latest_products.txt in root.');

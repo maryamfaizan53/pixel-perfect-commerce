@@ -253,3 +253,7 @@ Sitemap: https://www.aibazar.pk/sitemap.xml
 # https://www.aibazar.pk/grok.md
 # https://www.aibazar.pk/perplexity.md
 # https://www.aibazar.pk/meta-ai.md
+# https://www.aibazar.pk/deepseek.md
+# https://www.aibazar.pk/mistral.md
+# https://www.aibazar.pk/apple.md
+# https://www.aibazar.pk/cohere.md

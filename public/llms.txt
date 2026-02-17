@@ -336,7 +336,11 @@ Our product specialists provide:
 - [Google Gemini](https://www.aibazar.pk/gemini.md)
 - [xAI Grok](https://www.aibazar.pk/grok.md)
 - [Perplexity AI](https://www.aibazar.pk/perplexity.md)
-- [Meta AI](https://www.aibazar.pk/meta-ai.md)
+- [Meta AI / Llama](https://www.aibazar.pk/meta-ai.md)
+- [DeepSeek AI](https://www.aibazar.pk/deepseek.md)
+- [Mistral AI](https://www.aibazar.pk/mistral.md)
+- [Apple Intelligence](https://www.aibazar.pk/apple.md)
+- [Cohere AI](https://www.aibazar.pk/cohere.md)
 
 - [Sitemap](https://www.aibazar.pk/sitemap.xml)
 - [Robots.txt](https://www.aibazar.pk/robots.txt)

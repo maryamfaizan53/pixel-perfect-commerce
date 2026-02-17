@@ -246,7 +246,7 @@ const ProductPage = () => {
   });
 
   const productId = product?.id?.replace("gid://shopify/Product/", "") || "";
-  const { stats: reviewStats, reviews } = useReviews(productId, handle || "");
+  const { stats: reviewStats, reviews } = useReviews(productId, handle || "", product?.productType || "general");
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -328,7 +328,7 @@ const ProductPage = () => {
       'curler': ['Auto Rotating', 'No-Burn Technology'],
       'straightener': ['Salon Grade', 'Anti-Frizz'],
       'cutter': ['Sharp Blade', 'Easy Chop', 'Time Saving'],
-      'lamp': ['Soft Glow', 'Eyes Protective', 'Aesthetic Decor']
+      'lamp': ['Soft Glow', 'Eyes Protective', 'Aesthetic Decor', 'Nursery Night Light']
     };
 
     const keywords: string[] = [];
@@ -1322,7 +1322,7 @@ const ProductPage = () => {
                 </TabsContent>
 
                 <TabsContent value="reviews" className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-                  <ProductReviews productId={productId} productHandle={handle || ""} />
+                  <ProductReviews productId={productId} productHandle={handle || ""} category={product.productType || "general"} />
                 </TabsContent>
 
                 <TabsContent value="specifications" className="animate-in fade-in slide-in-from-bottom-8 duration-700">

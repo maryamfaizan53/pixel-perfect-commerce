@@ -23,6 +23,7 @@ const TOP_SELLING_HANDLES = [
     '2-in-1-electric-eyebrow-trimmer',
     'flawless-facial-hair-remover-machine-for-women-high-quality-pocket-size-painless-face-hair-removing-machine-cell-operated',
     'instant-electric-hot-water-heater-faucet-with-hand-shower-fast-heating-easy-installation',
+    'cute-rabbit-silicone-lamp',
 ];
 
 // Helper to format date
@@ -78,43 +79,60 @@ async function generateSitemap() {
 
     // 2. Products from all_products.txt
     try {
-        const productsContent = fs.readFileSync(PRODUCTS_FILE, 'utf16le');
-        const productHandles = productsContent.split('\n')
+        // Automatically detect and handle encoding (trying utf8 first as it's the new standard)
+        let productsContent = fs.readFileSync(PRODUCTS_FILE, 'utf8');
+
+        // If it looks like UTF-16, re-read (safety fallback)
+        if (productsContent.includes('\u0000')) {
+            productsContent = fs.readFileSync(PRODUCTS_FILE, 'utf16le');
+        }
+
+        const lines = productsContent.split('\n')
             .map(line => line.trim())
-            .filter(line => line && !line.startsWith('#'));
+            .filter(line => line);
 
-        console.log(`Found ${productHandles.length} product lines.`);
+        console.log(`Analyzing ${lines.length} lines from catalog...`);
 
-        productHandles.forEach(handle => {
+        lines.forEach(line => {
             let cleanHandle = null;
 
-            const match = handle.match(/\(([^)]+)\)\s*$/);
-
-            if (match) {
-                cleanHandle = match[1];
-            } else {
-                if (handle.includes('Total Products:')) return;
-                cleanHandle = handle;
-                if (handle.includes('product/')) {
-                    cleanHandle = handle.split('product/')[1];
-                }
+            // Pattern 1: Enhanced format "## [Title](https://.../products/handle)"
+            if (line.startsWith('## [')) {
+                const match = line.match(/\/products\/([^)]+)/);
+                if (match) cleanHandle = match[1];
             }
-
-            if (cleanHandle && cleanHandle.includes('?')) {
-                cleanHandle = cleanHandle.split('?')[0];
+            // Pattern 2: Legacy format "- product-handle"
+            else if (line.startsWith('- ')) {
+                cleanHandle = line.substring(2).trim();
             }
 
             if (cleanHandle) {
-                // Top-selling products get highest priority
-                const isTopSeller = TOP_SELLING_HANDLES.includes(cleanHandle);
-                urls.push({
-                    loc: `${BASE_URL}/products/${escapeXml(cleanHandle)}`,
-                    lastmod: today,
-                    changefreq: 'daily',
-                    priority: isTopSeller ? '1.0' : '0.8'
-                });
+                // Remove trailing syntax or quotes if any
+                cleanHandle = cleanHandle.split(')')[0].split('?')[0].trim();
+
+                if (cleanHandle && cleanHandle !== 'handle') { // Avoid placeholders
+                    const isTopSeller = TOP_SELLING_HANDLES.includes(cleanHandle);
+                    urls.push({
+                        loc: `${BASE_URL}/products/${escapeXml(cleanHandle)}`,
+                        lastmod: today,
+                        changefreq: 'daily',
+                        priority: isTopSeller ? '1.0' : '0.8'
+                    });
+                }
             }
         });
+
+        // Deduplicate URLs
+        const uniqueUrls = [];
+        const seen = new Set();
+        urls.forEach(u => {
+            if (!seen.has(u.loc)) {
+                seen.add(u.loc);
+                uniqueUrls.push(u);
+            }
+        });
+        urls = uniqueUrls;
+
     } catch (error) {
         console.error('Error reading products file:', error);
     }

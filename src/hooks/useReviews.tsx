@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { generateDeterministicReviews } from "@/lib/generateReviews";
 
 export interface Review {
   id: string;
@@ -34,7 +35,7 @@ export interface CreateReviewData {
   content?: string;
 }
 
-export function useReviews(productId: string, productHandle: string) {
+export function useReviews(productId: string, productHandle: string, category: string = 'general') {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<ReviewStats>({
     averageRating: 0,
@@ -61,21 +62,37 @@ export function useReviews(productId: string, productHandle: string) {
       if (error) throw error;
 
       const reviewsData = (data || []) as Review[];
-      setReviews(reviewsData);
 
-      // Calculate stats
-      if (reviewsData.length > 0) {
+      // Generate simulated reviews
+      const simulatedReviews = generateDeterministicReviews(productId, productHandle, category);
+
+      // Merge: real reviews first, then simulated
+      // Ensure no duplicates if simulated IDs ever collide with real ones (unlikely but safe)
+      const combinedReviews = [...reviewsData];
+      simulatedReviews.forEach(sim => {
+        if (!combinedReviews.find(r => r.id === sim.id)) {
+          combinedReviews.push(sim);
+        }
+      });
+
+      // Sort combined reviews by date descending
+      combinedReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setReviews(combinedReviews);
+
+      // Calculate stats for combined pool
+      if (combinedReviews.length > 0) {
         const distribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
         let totalRating = 0;
 
-        reviewsData.forEach((review) => {
-          distribution[review.rating] = (distribution[review.rating] || 0) + 1;
+        combinedReviews.forEach((review) => {
+          distribution[Math.round(review.rating)] = (distribution[Math.round(review.rating)] || 0) + 1;
           totalRating += review.rating;
         });
 
         setStats({
-          averageRating: totalRating / reviewsData.length,
-          totalReviews: reviewsData.length,
+          averageRating: totalRating / combinedReviews.length,
+          totalReviews: combinedReviews.length,
           ratingDistribution: distribution,
         });
       } else {

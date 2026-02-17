@@ -20,9 +20,10 @@ import {
 interface ProductReviewsProps {
   productId: string;
   productHandle: string;
+  category?: string;
 }
 
-export function ProductReviews({ productId, productHandle }: ProductReviewsProps) {
+export function ProductReviews({ productId, productHandle, category = 'general' }: ProductReviewsProps) {
   const {
     reviews,
     stats,
@@ -33,7 +34,7 @@ export function ProductReviews({ productId, productHandle }: ProductReviewsProps
     updateReview,
     deleteReview,
     toggleHelpful,
-  } = useReviews(productId, productHandle);
+  } = useReviews(productId, productHandle, category);
 
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);

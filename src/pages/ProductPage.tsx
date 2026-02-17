@@ -345,15 +345,20 @@ const ProductPage = () => {
   // Always use /products/ as the canonical route (not /product/)
   const canonicalUrl = product ? `https://www.aibazar.pk/products/${product.handle}` : undefined;
 
-  // Pro-Level Title: Exact Match + Small Keywords + Pakistan
+  // Concise ranking title: Strictly 3-5 words
   const enrichedTitle = useMemo(() => {
     if (!product) return "Loading Product...";
     if (product.seo?.title) return product.seo.title;
 
     const baseTitle = product.title;
-    const lsiKeywords = smallKeywords ? ` (${smallKeywords})` : "";
-    return `${baseTitle}${lsiKeywords} - Best Price Online Pakistan`;
-  }, [product, smallKeywords]);
+    // Get first 4 words of the base title (or less)
+    const words = baseTitle.split(/\s+/).filter(Boolean);
+    const shortBase = words.slice(0, 3).join(' ');
+
+    // Result pattern: "[3 words] Price Pakistan" or "[2 words] Product Pakistan"
+    // We aim for 4-5 words total
+    return `${shortBase} Price Pakistan`.split(/\s+/).slice(0, 5).join(' ');
+  }, [product]);
 
   const priceText = product ? `Rs. ${parseFloat(product.priceRange.minVariantPrice.amount).toLocaleString()}` : '';
   const seoDescription = product

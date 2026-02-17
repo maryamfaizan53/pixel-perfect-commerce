@@ -178,19 +178,10 @@ const CategoryPage = () => {
   const localizedTitle = useMemo(() => {
     if (collectionData) {
       const base = collectionData.title;
-      const mapping: Record<string, string> = {
-        'household': 'Electronics & Gadgets',
-        'kitchen': 'Kitchen Gadgets & Tools',
-        'health-and-beauty': 'Skin Care & Beauty Tools',
-        'hair-straightener-1': 'Professional Hair Styling',
-        'heaters': 'Winter Essentials & Geysers',
-        'top-selling-products': 'Trending Best Sellers'
-      };
-      const longTail = mapping[category] || 'Original Quality Products';
-      return `${base} (${longTail}) | Lowest Price Pakistan - AI Bazar`;
+      return `${base} Sale Pakistan`.split(/\s+/).slice(0, 5).join(' ');
     }
-    return "Lowest Prices Online Store Pakistan | AI Bazar";
-  }, [collectionData, category]);
+    return "Online Store Pakistan";
+  }, [collectionData]);
 
   useSEO({
     title: localizedTitle,

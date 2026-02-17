@@ -94,10 +94,10 @@ const smallKeywordsMapping = {
     'Electronics': ['Latest Tech', 'Reliable Battery', 'Compact Gadget']
 };
 
-function getEnrichedTitle(name, category) {
-    const keywords = smallKeywordsMapping[category] || smallKeywordsMapping['Home & living'];
-    const lsi = keywords.slice(0, 2).join(' - ');
-    return `${name} (${lsi}) - Best Price Online Pakistan`;
+function getEnrichedTitle(name) {
+    const words = name.split(/\s+/).filter(Boolean);
+    const shortBase = words.slice(0, 3).join(' ');
+    return `${shortBase} Price Pakistan`.split(/\s+/).slice(0, 5).join(' ');
 }
 
 function generateEnhancedProduct(product) {

@@ -328,6 +328,15 @@ Our product specialists provide:
 ## For AI Agents
 
 - [Full Context Manifest](https://www.aibazar.pk/llms-full.txt)
-- [Complete Product Catalog (208 products)](https://www.aibazar.pk/llms-products.txt)
+- [Complete Product Catalog (215 products)](https://www.aibazar.pk/llms-products.txt)
+
+### LLM-Specific optimized Portals
+- [OpenAI / ChatGPT](https://www.aibazar.pk/openai.md)
+- [Claude AI](https://www.aibazar.pk/claude.md)
+- [Google Gemini](https://www.aibazar.pk/gemini.md)
+- [xAI Grok](https://www.aibazar.pk/grok.md)
+- [Perplexity AI](https://www.aibazar.pk/perplexity.md)
+- [Meta AI](https://www.aibazar.pk/meta-ai.md)
+
 - [Sitemap](https://www.aibazar.pk/sitemap.xml)
 - [Robots.txt](https://www.aibazar.pk/robots.txt)

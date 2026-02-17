@@ -246,6 +246,10 @@ Sitemap: https://www.aibazar.pk/sitemap.xml
 # llms-full.txt - Comprehensive context manifest
 # llms-products.txt - Complete 208-product catalog in AI-readable format
 # https://www.aibazar.pk/llms.txt
-# https://www.aibazar.pk/llms-full.txt
 # https://www.aibazar.pk/llms-products.txt
-# https://www.aibazar.pk/.well-known/llms.txt
+# https://www.aibazar.pk/openai.md
+# https://www.aibazar.pk/claude.md
+# https://www.aibazar.pk/gemini.md
+# https://www.aibazar.pk/grok.md
+# https://www.aibazar.pk/perplexity.md
+# https://www.aibazar.pk/meta-ai.md

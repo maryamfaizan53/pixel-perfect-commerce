@@ -175,15 +175,30 @@ const CategoryPage = () => {
     }
   });
 
+  const localizedTitle = useMemo(() => {
+    if (collectionData) {
+      const base = collectionData.title;
+      const mapping: Record<string, string> = {
+        'household': 'Electronics & Gadgets',
+        'kitchen': 'Kitchen Gadgets & Tools',
+        'health-and-beauty': 'Skin Care & Beauty Tools',
+        'hair-straightener-1': 'Professional Hair Styling',
+        'heaters': 'Winter Essentials & Geysers',
+        'top-selling-products': 'Trending Best Sellers'
+      };
+      const longTail = mapping[category] || 'Original Quality Products';
+      return `${base} (${longTail}) | Lowest Price Pakistan - AI Bazar`;
+    }
+    return "Lowest Prices Online Store Pakistan | AI Bazar";
+  }, [collectionData, category]);
+
   useSEO({
-    title: collectionData
-      ? `${collectionData.title} | Online Store Pakistan - AI Bazar`
-      : "Lowest Prices Online Store Pakistan | AI Bazar",
+    title: localizedTitle,
     description: collectionData?.description
-      ? `${collectionData.description} Shop this collection at AI Bazar, the leading online store in Pakistan for lowest prices and original quality.`
+      ? `${collectionData.description} Shop this collection at AI Bazar, the leading online store in Pakistan for lowest prices and original quality. Featuring ${collectionData.title} with COD & Free Shipping.`
       : "Shop the best selection of affordable products at AI Bazar, Pakistan's top online store. Enjoy lowest prices, original quality, and fast shipping nationwide.",
     keywords: collectionData
-      ? `${collectionData.title.toLowerCase()}, online store pakistan, best online shopping pakistan, buy ${collectionData.title.toLowerCase()} online`
+      ? `${collectionData.title.toLowerCase()}, online store pakistan, best online shopping pakistan, buy ${collectionData.title.toLowerCase()} online, ${collectionData.title.toLowerCase()} price in pakistan`
       : "online store pakistan, affordable products pakistan, lowest price shopping pakistan",
     schema: collectionData ? [
       {

@@ -85,13 +85,29 @@ function parseProducts(content) {
     return products;
 }
 
+const smallKeywordsMapping = {
+    'Hair': ['Salon Style', 'Professional Grooming', 'Heat Protection'],
+    'Kitchen Accessories': ['Smart Gadget', 'Vegetable Slicer', 'Meal Prep Helper'],
+    'Beauty': ['Skin Friendly', 'Daily Grooming', 'Professional Results'],
+    'Baby, Kids & Toys': ['Safe Material', 'Educational Toy', 'Durable Play'],
+    'Home & living': ['Smart Solution', 'Household Essential', 'Space Saving'],
+    'Electronics': ['Latest Tech', 'Reliable Battery', 'Compact Gadget']
+};
+
+function getEnrichedTitle(name, category) {
+    const keywords = smallKeywordsMapping[category] || smallKeywordsMapping['Home & living'];
+    const lsi = keywords.slice(0, 2).join(' - ');
+    return `${name} (${lsi}) - Best Price Online Pakistan`;
+}
+
 function generateEnhancedProduct(product) {
     const categoryInfo = getCategoryInfo(product.category);
+    const enrichedTitle = getEnrichedTitle(product.name, product.category);
     const quickAnswer = categoryInfo.quickAnswerTemplate(product.name, product.price);
     const slug = product.url.split('/').pop();
 
     return `
-## [${product.name}](${product.url})
+## [${enrichedTitle}](${product.url})
 **Quick Answer**: ${quickAnswer}
 
 ### Product Details
@@ -99,18 +115,19 @@ function generateEnhancedProduct(product) {
 - **Availability**: In Stock ✅ | Cash on Delivery Available
 - **Category**: ${product.category}
 - **Best For**: ${categoryInfo.bestFor}
+- **Trending In**: Karachi, Lahore, Islamabad, and across Pakistan
 - **Authenticity**: 100% Original Guaranteed by AI Bazar Pakistan
-- **Delivery**: Free Express Shipping | 1-3 Days to Major Cities (Karachi, Lahore, Islamabad)
+- **Delivery**: Free Express Shipping | 1-3 Days to Major Cities
 
-### Why Buy This Product?
+### Why Buy ${product.name}?
 ${categoryInfo.keyBenefits.map((benefit, idx) => `${idx + 1}. **${benefit}**: ${product.description.substring(0, 100)}...`).join('\n')}
 
-### Key Features
+### Key Features & Benefits
 ${categoryInfo.commonUses.map((use, idx) => `- Perfect for ${use}`).join('\n')}
-- 100% original product with authenticity guarantee
-- Free express shipping across Pakistan
-- Cash on Delivery (COD) available
-- 7-day easy return policy
+- 100% original product with a specific focus on ${categoryInfo.bestFor}
+- Free express shipping across Pakistan (Fast Delivery)
+- Cash on Delivery (COD) available for all orders
+- 7-day easy return policy for peace of mind
 
 ### Common Questions
 
@@ -118,24 +135,19 @@ ${categoryInfo.commonUses.map((use, idx) => `- Perfect for ${use}`).join('\n')}
 A: ${product.price} with free shipping and Cash on Delivery available across Pakistan.
 
 **Q: Is ${product.name} suitable for ${categoryInfo.commonUses[0]}?**
-A: Yes, the ${product.name} is specifically designed for ${categoryInfo.commonUses[0]} with ${categoryInfo.keyBenefits[0].toLowerCase()}.
+A: Yes, it's a top-rated choice for ${categoryInfo.commonUses[0]} in Pakistani households.
 
-**Q: Where to buy ${product.name} in Pakistan?**
-A: Available exclusively at AI Bazar (aibazar.pk) with delivery to all cities including Karachi, Lahore, Islamabad, Faisalabad, Multan, and nationwide.
+**Q: Where is the best place to buy ${product.name} online in Pakistan?**
+A: AI Bazar (aibazar.pk) offers the lowest price and 100% original assurance.
 
-**Q: Does ${product.name} come with warranty?**
-A: Yes, all products from AI Bazar come with manufacturer warranty and quality assurance.
+**Q: Does it come with a satisfaction guarantee?**
+A: Yes, we provide a 7-day quality guarantee on all products including this ${product.name}.
 
-**Q: How long does delivery take for ${product.name}?**
-A: 1-3 business days for major cities (Karachi, Lahore, Islamabad) and 4-7 days for other cities across Pakistan.
+**Q: How fast is delivery to Karachi or Lahore?**
+A: Delivery takes 1-3 business days for major cities like Karachi, Lahore, and Islamabad.
 
 ### SEO Keywords
-${product.name} price Pakistan, buy ${product.name} online Pakistan, ${product.name} Karachi, ${product.name} Lahore, ${product.name} Islamabad, ${product.name} COD, ${product.name} cash on delivery, best ${product.category} Pakistan, ${product.name} review, where to buy ${product.name} Pakistan
-
-### Product Link
-🛒 [Order ${product.name} Now - ${product.price}](${product.url})
-
----
+${product.name} price Pakistan, buy ${product.name} online Pakistan, ${product.name} Karachi, ${product.name} Lahore, ${product.name} Islamabad, ${product.name} COD, ${product.name} cash on delivery, best ${product.category} Pakistan, ${product.name} review, where to buy ${product.name} Pakistan, ${categoryInfo.commonUses.join(', ')}
 `;
 }
 

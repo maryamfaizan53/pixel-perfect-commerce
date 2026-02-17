@@ -311,18 +311,53 @@ const ProductPage = () => {
     }
   }, [product]);
 
+  // Professional Level Enrichment: Mapping of product types/tags to long-tail "small" keywords
+  const smallKeywords = useMemo(() => {
+    if (!product) return "";
+    const type = product.productType?.toLowerCase() || "";
+    const tags = product.tags.map(t => t.toLowerCase());
+
+    const mappings: Record<string, string[]> = {
+      'hair': ['Salon Style', 'Professional Grooming', 'Heat Protection'],
+      'kitchen': ['Smart Gadget', 'Vegetable Slicer', 'Meal Prep Helper'],
+      'beauty': ['Skin Friendly', 'Daily Grooming', 'Professional Results'],
+      'kids': ['Safe Material', 'Educational Toy', 'Durable Play'],
+      'baby': ['Safe Material', 'Newborn Essential', 'Gentle Care'],
+      'home': ['Smart Solution', 'Household Essential', 'Space Saving'],
+      'electronic': ['Latest Tech', 'Reliable Battery', 'Compact Gadget'],
+      'curler': ['Auto Rotating', 'No-Burn Technology'],
+      'straightener': ['Salon Grade', 'Anti-Frizz'],
+      'cutter': ['Sharp Blade', 'Easy Chop', 'Time Saving'],
+      'lamp': ['Soft Glow', 'Eyes Protective', 'Aesthetic Decor']
+    };
+
+    const keywords: string[] = [];
+    Object.entries(mappings).forEach(([key, values]) => {
+      if (type.includes(key) || tags.some(t => t.includes(key))) {
+        keywords.push(...values);
+      }
+    });
+
+    return [...new Set(keywords)].slice(0, 3).join(' - ');
+  }, [product]);
+
   // Expert Level SEO: Set Dynamic Metadata and JSON-LD
   // Always use /products/ as the canonical route (not /product/)
   const canonicalUrl = product ? `https://www.aibazar.pk/products/${product.handle}` : undefined;
 
-  // Use Shopify SEO fields if available, otherwise generate optimized ones
-  const seoTitle = product
-    ? (product.seo?.title || `${product.title} - Best Price Online Shopping Pakistan`)
-    : "Loading Product...";
+  // Pro-Level Title: Exact Match + Small Keywords + Pakistan
+  const enrichedTitle = useMemo(() => {
+    if (!product) return "Loading Product...";
+    if (product.seo?.title) return product.seo.title;
+
+    const baseTitle = product.title;
+    const lsiKeywords = smallKeywords ? ` (${smallKeywords})` : "";
+    return `${baseTitle}${lsiKeywords} - Best Price Online Pakistan`;
+  }, [product, smallKeywords]);
 
   const priceText = product ? `Rs. ${parseFloat(product.priceRange.minVariantPrice.amount).toLocaleString()}` : '';
   const seoDescription = product
-    ? (product.seo?.description || `Buy ${product.title} from AI Bazar at only ${priceText}. Enjoy Free Express Shipping & Cash on Delivery across Pakistan. 100% Original Quality. Order now!`)
+    ? (product.seo?.description || `Buy ${product.title} from AI Bazar at only ${priceText}. Featuring ${smallKeywords || 'premium quality'}. Enjoy Free Express Shipping & Cash on Delivery across Pakistan. 100% Original Quality. Order now!`)
     : "Shop premium products at AI Bazar Pakistan. Lowest prices, free shipping, and 100% original quality guaranteed.";
 
   const seoKeywords = product
@@ -338,6 +373,7 @@ const ProductPage = () => {
       'cash on delivery pakistan',
       'free shipping pakistan',
       // LSI Keywords for better ranking
+      ...(smallKeywords ? smallKeywords.split(' - ').map(k => k.toLowerCase()) : []),
       `${product.title.toLowerCase()} deals`,
       `${product.title.toLowerCase()} offers`,
       `${product.title.toLowerCase()} specification`,
@@ -348,7 +384,7 @@ const ProductPage = () => {
     : "aibazar shopping, online shopping pakistan, lowest price online";
 
   useSEO({
-    title: seoTitle,
+    title: enrichedTitle,
     description: seoDescription,
     keywords: seoKeywords,
     ogImage: product?.media.edges[0]?.node.previewImage?.url || product?.media.edges[0]?.node.image?.url,

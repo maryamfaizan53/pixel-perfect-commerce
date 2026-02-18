@@ -240,11 +240,8 @@ Disallow: /wishlist
 # Sitemaps
 Sitemap: https://www.aibazar.pk/sitemap.xml
 
-# AI/LLM Manifests (Generative Search Optimization)
-# These files help AI agents understand our store, products, and content
-# llms.txt - Brief overview for AI agents
-# llms-full.txt - Comprehensive context manifest
-# llms-products.txt - Complete 208-product catalog in AI-readable format
+# AI/LLM Manifest Discovery
+# Note: These are for AI agents and LLM crawlers
 Sitemap: https://www.aibazar.pk/llms.txt
 Sitemap: https://www.aibazar.pk/llms-full.txt
 Sitemap: https://www.aibazar.pk/llms-products.txt

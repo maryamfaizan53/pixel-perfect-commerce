@@ -97,23 +97,21 @@ async function generateSitemap() {
             let cleanHandle = null;
 
             // Pattern 1: Enhanced format "## [Title](https://.../products/handle)"
+            // Improved regex to capture handle exactly and ignore trailing content
             if (line.startsWith('## [')) {
-                const match = line.match(/\/products\/([^)]+)/);
-                if (match) cleanHandle = match[1];
+                const match = line.match(/https:\/\/www\.aibazar\.pk\/products\/([^)\s?#]+)/);
+                if (match) {
+                    cleanHandle = match[1];
+                }
             }
-            // Pattern 2: Legacy format "- product-handle"
-            else if (line.startsWith('- ')) {
-                cleanHandle = line.substring(2).trim();
-            }
+            // Note: Legacy "- handle" pattern removed as it causes corruption by matching bulleted content
 
             if (cleanHandle) {
-                // Remove trailing syntax or quotes if any
-                cleanHandle = cleanHandle.split(')')[0].split('?')[0].trim();
-
-                if (cleanHandle && cleanHandle !== 'handle') { // Avoid placeholders
+                // Double-check handle validity: no spaces, no asterisks, no special chars that don't belong in a slug
+                if (/^[a-z0-9-]+$/.test(cleanHandle) && cleanHandle !== 'handle') {
                     const isTopSeller = TOP_SELLING_HANDLES.includes(cleanHandle);
                     urls.push({
-                        loc: `${BASE_URL}/products/${escapeXml(cleanHandle)}`,
+                        loc: `${BASE_URL}/products/${cleanHandle}`, // already escaped inloc if needed, but our slugs are safe
                         lastmod: today,
                         changefreq: 'daily',
                         priority: isTopSeller ? '1.0' : '0.8'

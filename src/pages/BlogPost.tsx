@@ -28,7 +28,10 @@ const BlogPost = () => {
         articleModifiedTime: post?.publishDate,
         articleAuthor: post?.author,
         articleSection: post?.category,
-        articleTags: post?.tags
+        articleTags: post?.tags,
+        geoRegion: "PK-PB",
+        geoPlacename: "Lahore",
+        geoPosition: "31.5204;74.3587"
     });
 
     useEffect(() => {
@@ -107,7 +110,7 @@ const BlogPost = () => {
             "keywords": post.tags.join(", "),
             "speakable": {
                 "@type": "SpeakableSpecification",
-                "cssSelector": ["article h1", "article .prose"]
+                "cssSelector": ["article h1", "article h2", "article .prose p", "article .prose li", "article .faq-section"]
             }
         };
 

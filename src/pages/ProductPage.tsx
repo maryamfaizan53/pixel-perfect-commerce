@@ -17,6 +17,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent }
 import { useInView } from "react-intersection-observer";
 import { formatProductId, trackMetaEvent } from "@/lib/meta-pixel";
 import { useSEO } from "@/hooks/useSEO";
+import { OptimizedImage } from "@/components/common/OptimizedImage";
 
 
 interface ProductMedia {
@@ -398,7 +399,10 @@ const ProductPage = () => {
     priceCurrency: product?.priceRange.minVariantPrice.currencyCode || 'PKR',
     canonical: canonicalUrl,
     availability: product ? (product.availableForSale ? 'instock' : 'outofstock') : undefined,
-    retailerItemId: product ? formatProductId(product.id) : undefined
+    retailerItemId: product ? formatProductId(product.id) : undefined,
+    geoRegion: "PK-PB",
+    geoPlacename: "Lahore",
+    geoPosition: "31.5204;74.3587"
   });
 
   // Inject JSON-LD for Search Rich Results
@@ -628,7 +632,7 @@ const ProductPage = () => {
         "url": canonicalUrl || `https://www.aibazar.pk/products/${product.handle}`,
         "speakable": {
           "@type": "SpeakableSpecification",
-          "cssSelector": [".product-title", ".product-price", ".product-description", ".product-faq"]
+          "cssSelector": [".product-title", ".product-price", ".product-description", ".product-faq", ".feature-item"]
         },
         "mainEntity": {
           "@type": "Product",
@@ -945,16 +949,17 @@ const ProductPage = () => {
                         const imageUrl = mediaNode.image?.url || mediaNode.previewImage?.url || "/placeholder.svg";
 
                         return (
-                          <motion.img
-                            src={imageUrl}
-                            alt={`${product.title} - ${product.vendor} original product image`}
-                            animate={{
-                              scale: isInspecting ? 2 : 1,
-                              transformOrigin: `${mousePos.x}% ${mousePos.y}%`
-                            }}
-                            transition={{ duration: 0.1, ease: "linear" }}
-                            className="w-full h-full object-cover"
-                          />
+                          <div className="w-full h-full overflow-hidden">
+                            <OptimizedImage
+                              src={imageUrl}
+                              alt={`${product.title} - ${product.vendor} original product image`}
+                              className="w-full h-full object-cover transition-transform duration-500"
+                              style={{
+                                transform: isInspecting ? `scale(2)` : 'scale(1)',
+                                transformOrigin: `${mousePos.x}% ${mousePos.y}%`
+                              }}
+                            />
+                          </div>
                         );
                       })()}
                     </motion.div>
@@ -1002,7 +1007,7 @@ const ProductPage = () => {
                       : "border-transparent opacity-60 hover:opacity-100"
                       }`}
                   >
-                    <img
+                    <OptimizedImage
                       src={media.node.previewImage?.url || media.node.image?.url || "/placeholder.svg"}
                       alt={`${product.title} - View ${index + 1}`}
                       className="w-full h-full object-cover"
@@ -1205,7 +1210,7 @@ const ProductPage = () => {
                       <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 group-hover:scale-110 transition-all duration-500">
                         <Shield className="w-7 h-7 text-slate-900 group-hover:text-primary transition-colors" />
                       </div>
-                      <div>
+                      <div className="feature-item">
                         <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-950 mb-1">Authentic</p>
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Certified Source</p>
                       </div>
@@ -1214,7 +1219,7 @@ const ProductPage = () => {
                       <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 group-hover:scale-110 transition-all duration-500">
                         <RotateCcw className="w-7 h-7 text-slate-900 group-hover:text-primary transition-colors" />
                       </div>
-                      <div>
+                      <div className="feature-item">
                         <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-950 mb-1">Exchange</p>
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">7-Day Return</p>
                       </div>
@@ -1279,7 +1284,7 @@ const ProductPage = () => {
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-premium flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
-                <div className="space-y-1">
+                <div className="feature-item space-y-1">
                   <h5 className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-900">{item.title}</h5>
                   <p className="text-[9px] text-slate-400 font-medium">{item.desc}</p>
                 </div>

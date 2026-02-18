@@ -21,13 +21,17 @@ interface SEOProps {
     // GSO: AI search optimization
     entityName?: string; // For knowledge graph entity association
     entityType?: string; // Product, Article, Store, etc.
+    // GEO: Local/Geographic entity recognition
+    geoRegion?: string; // e.g., 'PK-PB'
+    geoPlacename?: string; // e.g., 'Lahore'
+    geoPosition?: string; // e.g., '31.5204;74.3587'
 }
 
 /**
  * Hook to dynamically update SEO meta tags in a React application.
  * This is a lightweight alternative to react-helmet.
  */
-export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema, entityName, entityType }: SEOProps) => {
+export const useSEO = ({ title, description, keywords, ogImage, canonical, ogType = 'website', priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema, entityName, entityType, geoRegion, geoPlacename, geoPosition }: SEOProps) => {
     useEffect(() => {
         // Auto-generate canonical from current URL if not provided
         // Normalize duplicate routes: /product/ -> /products/, /category/ -> /collections/
@@ -194,7 +198,23 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             if (entityType) setOrCreateMeta('citation_type', entityType);
         }
 
-        // 9. Update Canonical
+        // 9. GEO: Local SEO meta tags
+        if (geoRegion || geoPlacename || geoPosition) {
+            const setOrCreateGeo = (name: string, content: string) => {
+                let tag = document.querySelector(`meta[name="${name}"]`);
+                if (!tag) {
+                    tag = document.createElement('meta');
+                    tag.setAttribute('name', name);
+                    document.head.appendChild(tag);
+                }
+                tag.setAttribute('content', content);
+            };
+            if (geoRegion) setOrCreateGeo('geo.region', geoRegion);
+            if (geoPlacename) setOrCreateGeo('geo.placename', geoPlacename);
+            if (geoPosition) setOrCreateGeo('geo.position', geoPosition);
+        }
+
+        // 10. Update Canonical
         if (canonical) {
             let linkCanonical = document.querySelector('link[rel="canonical"]');
             if (linkCanonical) {
@@ -263,5 +283,5 @@ export const useSEO = ({ title, description, keywords, ogImage, canonical, ogTyp
             const cleanupScript = document.getElementById(schemaId);
             if (cleanupScript) cleanupScript.remove();
         };
-    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema, entityName, entityType]);
+    }, [title, description, keywords, ogImage, canonical, ogType, priceAmount, priceCurrency, availability, retailerItemId, articlePublishedTime, articleModifiedTime, articleAuthor, articleSection, articleTags, schema, entityName, entityType, geoRegion, geoPlacename, geoPosition]);
 };

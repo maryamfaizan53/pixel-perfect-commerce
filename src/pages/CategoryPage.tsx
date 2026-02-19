@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -247,7 +247,7 @@ const CategoryPage = () => {
             "position": index + 1,
             "url": `${siteUrl}/products/${product.node.handle}`,
             "name": product.node.title,
-            "image": product.node.featuredImage?.url
+            "image": product.node.media?.edges?.[0]?.node?.image?.url || product.node.media?.edges?.[0]?.node?.previewImage?.url
           }))
         }
       };
@@ -330,7 +330,7 @@ const CategoryPage = () => {
                       <Sparkles className="w-4 h-4" /> AI Summary & Expert Guide
                     </p>
                     <p className="text-sm text-white/80 leading-relaxed italic">
-                      Looking for the best <strong className="text-primary">{collectionData.title}</strong> in Pakistan? Our experts recommend prioritizing {products[0]?.node.productType?.toLowerCase() || 'these items'} for their verified quality and lowest available pricing. All products in this collection are eligible for free 24-hour dispatch.
+                      Looking for the best <strong className="text-primary">{collectionData.title}</strong> in Pakistan? Our experts recommend prioritizing these items for their verified quality and lowest available pricing. All products in this collection are eligible for free 24-hour dispatch.
                     </p>
                   </div>
                 </div>

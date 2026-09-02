@@ -30,3 +30,4 @@ shopify_products_export.csv
 .env
 .env.local
 .env.*.local
+chatbot/.env

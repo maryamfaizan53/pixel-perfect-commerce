@@ -1,0 +1,56 @@
+# Free deploy target for the FastAPI backend.
+#
+# Railway no longer has a free tier ($5 trial credit, then $5/mo). Render's
+# free web service IS free but sleeps after ~15 min idle (≈50s cold start).
+# For an always-on catalog API, upgrade to Render Starter ($7) or Railway Hobby.
+#
+#   render deploy         (with the Render CLI, after `render login`)
+#   — or connect the repo at dashboard.render.com and it auto-detects this file.
+services:
+  - type: web
+    name: aibazar-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: ALLOWED_ORIGINS
+        value: https://www.aibazar.pk,https://aibazar.pk
+      - key: SANITY_PROJECT_ID
+        value: c9sl2l96
+      - key: SANITY_DATASET
+        value: production
+      - key: SANITY_USE_CDN
+        value: "true"
+      # secrets — set in the Render dashboard, not here:
+      - key: ADMIN_API_TOKEN
+        sync: false
+      - key: SANITY_READ_TOKEN
+        sync: false
+      - key: SANITY_WRITE_TOKEN
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: SAFEPAY_ENVIRONMENT
+        value: sandbox
+      - key: SAFEPAY_API_KEY
+        sync: false
+      - key: SAFEPAY_SECRET_KEY
+        sync: false
+      - key: SAFEPAY_WEBHOOK_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false

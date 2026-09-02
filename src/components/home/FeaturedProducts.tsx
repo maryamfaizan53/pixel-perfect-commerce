@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProductCard } from "@/components/product/ProductCard";
-import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
+import { getProducts } from "@/lib/api";
+import type { ProductCard as ProductCardType } from "@/types/catalog";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,22 +9,14 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 export const FeaturedProducts = () => {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [products, setProducts] = useState<ProductCardType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const data = await fetchProducts(12);
-        setProducts(data);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
+    getProducts(0, 12)
+      .then((data) => setProducts(data.items))
+      .catch((error) => console.error("Failed to fetch products:", error))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -88,7 +81,7 @@ export const FeaturedProducts = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
           {products.slice(0, 12).map((product, index) => (
             <motion.div
-              key={product.node.id}
+              key={product.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

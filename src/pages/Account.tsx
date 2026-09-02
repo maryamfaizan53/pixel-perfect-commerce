@@ -14,13 +14,14 @@ import { ProfileSettings } from "@/components/account/ProfileSettings";
 import { AddressManager } from "@/components/account/AddressManager";
 import { AccountSettings } from "@/components/account/AccountSettings";
 import { ProductCard } from "@/components/product/ProductCard";
-import { fetchProductByHandle, ShopifyProduct } from "@/lib/shopify";
+import { getProduct } from "@/lib/api";
+import type { Product } from "@/types/catalog";
 
 const Account = () => {
   const { user, loading: authLoading } = useAuth();
   const { orders, loading: ordersLoading } = useOrders();
   const { wishlistItems, loading: wishlistLoading } = useWishlist();
-  const [wishlistProducts, setWishlistProducts] = useState<ShopifyProduct[]>([]);
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
   const navigate = useNavigate();
 
@@ -35,9 +36,9 @@ const Account = () => {
       setLoadingProducts(true);
       try {
         const products = await Promise.all(
-          wishlistItems.map(item => fetchProductByHandle(item.product_handle))
+          wishlistItems.map(item => getProduct(item.product_handle).catch(() => null))
         );
-        setWishlistProducts(products.filter((p): p is ShopifyProduct => p !== null));
+        setWishlistProducts(products.filter((p): p is Product => p !== null));
       } catch (error) {
         console.error("Error fetching wishlist products:", error);
       } finally {
@@ -150,7 +151,7 @@ const Account = () => {
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {wishlistProducts.map((product) => (
-                    <ProductCard key={product.node.id} product={product} />
+                    <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
               )}

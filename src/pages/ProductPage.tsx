@@ -1,12 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight, Tag, ArrowLeft, Share2, Star, ShoppingBag, CreditCard, Play, RotateCcw, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout, fetchProductsByCollection } from "@/lib/shopify";
+import type { ShopifyProduct } from "@/lib/shopify";
+import { getProduct, getRelatedProducts } from "@/lib/api";
+import { toShopifyShape } from "@/lib/compat";
 import type { BlogPostMeta } from "@/data/blogIndex";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
@@ -224,6 +226,7 @@ const PRODUCT_QUERY = `
 
 const ProductPage = () => {
   const { handle } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -247,16 +250,15 @@ const ProductPage = () => {
     }
   });
 
-  const productId = product?.id?.replace("gid://shopify/Product/", "") || "";
+  const productId = product?.id || "";
   const { stats: reviewStats, reviews } = useReviews(productId, handle || "", product?.productType || "general");
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const data = await storefrontApiRequest(PRODUCT_QUERY, { handle });
-        if (data.data.product) {
-          setProduct(data.data.product);
-          setSelectedVariant(data.data.product.variants.edges[0]?.node);
-        }
+        const dto = await getProduct(handle!);
+        const node = toShopifyShape(dto).node as unknown as Product;
+        setProduct(node);
+        setSelectedVariant(node.variants.edges[0]?.node);
       } catch (error) {
         console.error('Failed to fetch product:', error);
       } finally {
@@ -272,16 +274,9 @@ const ProductPage = () => {
   // Fetch related products from same collection for internal linking
   useEffect(() => {
     if (!product) return;
-    const collectionHandle = product.collections.edges[0]?.node?.handle;
-    if (!collectionHandle) return;
-
-    fetchProductsByCollection(collectionHandle, 8).then(data => {
-      if (data?.products) {
-        // Filter out current product
-        const filtered = data.products.filter((p: ShopifyProduct) => p.node.handle !== product.handle);
-        setRelatedProducts(filtered.slice(0, 6));
-      }
-    });
+    getRelatedProducts(product.handle)
+      .then((cards) => setRelatedProducts(cards.map(toShopifyShape).filter((p) => p.node.handle !== product.handle).slice(0, 6)))
+      .catch(() => {});
   }, [product]);
 
   // Expert SEO: Internal Linking - Find relevant blog posts (Topic Clusters).
@@ -722,16 +717,17 @@ const ProductPage = () => {
   const handleAddToCart = () => {
     if (!product || !selectedVariant) return;
 
-    const cartItem = {
-      product: { node: product as unknown as ShopifyProduct['node'] },
-      variantId: selectedVariant.id,
-      variantTitle: selectedVariant.title,
-      price: selectedVariant.price,
+    addItem({
+      productId: product.id,
+      slug: product.handle,
+      title: product.title,
+      image: product.media?.edges?.[0]?.node?.image?.url ?? null,
+      variantKey: selectedVariant.title === 'Default Title' ? null : selectedVariant.id,
+      variantTitle: selectedVariant.title === 'Default Title' ? null : selectedVariant.title,
+      price: parseFloat(selectedVariant.price.amount),
+      currency: selectedVariant.price.currencyCode || 'PKR',
       quantity,
-      selectedOptions: selectedVariant.selectedOptions || []
-    };
-
-    addItem(cartItem);
+    });
 
     // Meta Pixel: Track AddToCart
     trackMetaEvent('AddToCart', {
@@ -752,18 +748,17 @@ const ProductPage = () => {
 
     setCheckoutLoading(true);
     try {
-      const cartItem = {
-        product: { node: product as unknown as ShopifyProduct['node'] },
-        variantId: selectedVariant.id,
-        variantTitle: selectedVariant.title,
-        price: selectedVariant.price,
+      addItem({
+        productId: product.id,
+        slug: product.handle,
+        title: product.title,
+        image: product.media?.edges?.[0]?.node?.image?.url ?? null,
+        variantKey: selectedVariant.title === 'Default Title' ? null : selectedVariant.id,
+        variantTitle: selectedVariant.title === 'Default Title' ? null : selectedVariant.title,
+        price: parseFloat(selectedVariant.price.amount),
+        currency: selectedVariant.price.currencyCode || 'PKR',
         quantity,
-        selectedOptions: selectedVariant.selectedOptions || []
-      };
-
-      const checkoutUrl = await createStorefrontCheckout([cartItem]);
-
-      // Meta Pixel: Track AddToCart (for Buy Now)
+      });
       trackMetaEvent('AddToCart', {
         content_ids: [formatProductId(product.id)],
         content_name: product.title,
@@ -771,13 +766,10 @@ const ProductPage = () => {
         value: parseFloat(selectedVariant.price.amount) * quantity,
         currency: selectedVariant.price.currencyCode || 'PKR'
       });
-
-      window.location.href = checkoutUrl;
+      navigate('/checkout');
     } catch (error) {
       console.error('Checkout failed:', error);
-      toast.error("Checkout failed", {
-        description: "Please try again later.",
-      });
+      toast.error("Checkout failed", { description: "Please try again later." });
     } finally {
       setCheckoutLoading(false);
     }

@@ -10,7 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SlidersHorizontal, Loader2, Search, X, Grid, List, Sparkles, Filter, LayoutGrid } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { fetchProducts, fetchProductsByCollection, ShopifyProduct, CollectionData } from "@/lib/shopify";
+import type { ShopifyProduct, CollectionData } from "@/lib/shopify";
+import { getProducts, searchProducts, getCategory } from "@/lib/api";
+import { toShopifyShape, fromShopifyShape } from "@/lib/compat";
 import { motion, AnimatePresence } from "framer-motion";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { useSEO } from "@/hooks/useSEO";
@@ -66,30 +68,21 @@ const CategoryPage = () => {
       try {
         let list: ShopifyProduct[] = [];
 
-        // If we have a search query, prioritize that (Server-Side Search)
         if (searchQuery.trim()) {
-          // We pass the raw query, fetchProducts handles the smart query building now
-          list = await fetchProducts(50, searchQuery.trim());
-          // If we are also in a category, we might ideally want to filter by category AND search
-          // But Shopify Storefront API 'query' arg is powerful. 
-          // If we want to restrict search to a collection, we'd need a more complex query like `product_type:X AND title:Y` 
-          // or post-filter. For now, matching the SearchOverlay behavior (global search) is usually expected 
-          // unless "Search within category" is explicitly desired. 
-          // Given the user wants "29 matches" (global), we'll do global search here.
-        }
-        else if (category && category !== "all") {
-          const collection = await fetchProductsByCollection(category, 50);
-          if (collection && collection.products && collection.products.length > 0) {
-            setCollectionData(collection);
-            list = collection.products;
-          } else {
-            if (collection) {
-              setCollectionData(collection);
-            }
-            list = await fetchProducts(50);
-          }
+          const cards = await searchProducts(searchQuery.trim(), 50);
+          list = cards.map(toShopifyShape);
+        } else if (category && category !== "all") {
+          const data = await getCategory(category, 60);
+          setCollectionData({
+            title: data.category.title,
+            description: data.category.description,
+            handle: data.category.slug,
+            image: data.category.image ? { url: data.category.image.url, altText: data.category.image.alt } : undefined,
+            products: [],
+          });
+          list = data.products.map(toShopifyShape);
         } else {
-          list = await fetchProducts(50);
+          list = (await getProducts(0, 60)).items.map(toShopifyShape);
         }
 
         setProducts(list);
@@ -585,7 +578,7 @@ const CategoryPage = () => {
                         transition={{ duration: 0.5, delay: index * 0.05 }}
                       >
                         <ProductCard
-                          product={product}
+                          product={fromShopifyShape(product)}
                         />
                       </motion.div>
                     ))}

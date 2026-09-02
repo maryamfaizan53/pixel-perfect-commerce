@@ -1,94 +1,85 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { CartItem, createStorefrontCheckout } from '@/lib/shopify';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import type { CartLineInput } from "@/types/catalog";
+
+export interface CartItem {
+  productId: string; // Sanity _id
+  slug: string;
+  title: string;
+  image: string | null;
+  variantKey: string | null;
+  variantTitle: string | null;
+  price: number; // unit price PKR at add time — re-validated at /checkout/quote
+  currency: string;
+  quantity: number;
+}
+
+/** Stable identity for a line = product + chosen variant. */
+export const lineKey = (i: Pick<CartItem, "productId" | "variantKey">) =>
+  `${i.productId}::${i.variantKey ?? ""}`;
 
 interface CartStore {
   items: CartItem[];
-  cartId: string | null;
-  checkoutUrl: string | null;
-  isLoading: boolean;
-  
   addItem: (item: CartItem) => void;
-  updateQuantity: (variantId: string, quantity: number) => void;
-  removeItem: (variantId: string) => void;
+  updateQuantity: (key: string, quantity: number) => void;
+  removeItem: (key: string) => void;
   clearCart: () => void;
-  setCartId: (cartId: string) => void;
-  setCheckoutUrl: (url: string) => void;
-  setLoading: (loading: boolean) => void;
-  createCheckout: () => Promise<void>;
+  totalItems: () => number;
+  subtotal: () => number;
+  toLines: () => CartLineInput[];
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      cartId: null,
-      checkoutUrl: null,
-      isLoading: false,
 
       addItem: (item) => {
-        const { items } = get();
-        const existingItem = items.find(i => i.variantId === item.variantId);
-        
-        if (existingItem) {
+        const key = lineKey(item);
+        const existing = get().items.find((i) => lineKey(i) === key);
+        if (existing) {
           set({
-            items: items.map(i =>
-              i.variantId === item.variantId
-                ? { ...i, quantity: i.quantity + item.quantity }
-                : i
-            )
+            items: get().items.map((i) =>
+              lineKey(i) === key ? { ...i, quantity: i.quantity + item.quantity } : i,
+            ),
           });
         } else {
-          set({ items: [...items, item] });
+          set({ items: [...get().items, item] });
         }
       },
 
-      updateQuantity: (variantId, quantity) => {
+      updateQuantity: (key, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(variantId);
+          get().removeItem(key);
           return;
         }
-        
         set({
-          items: get().items.map(item =>
-            item.variantId === variantId ? { ...item, quantity } : item
-          )
+          items: get().items.map((i) => (lineKey(i) === key ? { ...i, quantity } : i)),
         });
       },
 
-      removeItem: (variantId) => {
-        set({
-          items: get().items.filter(item => item.variantId !== variantId)
-        });
-      },
+      removeItem: (key) => set({ items: get().items.filter((i) => lineKey(i) !== key) }),
 
-      clearCart: () => {
-        set({ items: [], cartId: null, checkoutUrl: null });
-      },
+      clearCart: () => set({ items: [] }),
 
-      setCartId: (cartId) => set({ cartId }),
-      setCheckoutUrl: (checkoutUrl) => set({ checkoutUrl }),
-      setLoading: (isLoading) => set({ isLoading }),
+      totalItems: () => get().items.reduce((n, i) => n + i.quantity, 0),
 
-      createCheckout: async () => {
-        const { items, setLoading, setCheckoutUrl } = get();
-        if (items.length === 0) return;
+      subtotal: () => get().items.reduce((s, i) => s + i.price * i.quantity, 0),
 
-        setLoading(true);
-        try {
-          const checkoutUrl = await createStorefrontCheckout(items);
-          setCheckoutUrl(checkoutUrl);
-        } catch (error) {
-          console.error('Failed to create checkout:', error);
-          throw error;
-        } finally {
-          setLoading(false);
-        }
-      }
+      toLines: () =>
+        get().items.map((i) => ({
+          productId: i.productId,
+          slug: i.slug,
+          variantKey: i.variantKey,
+          quantity: i.quantity,
+        })),
     }),
     {
-      name: 'shopify-cart',
+      name: "aibazar-cart",
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+      version: 2,
+      // v1 (Shopify) carts are incompatible — drop them.
+      migrate: () => ({ items: [] }),
+    },
+  ),
 );

@@ -3,48 +3,39 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Heart, Loader2 } from "lucide-react";
-import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
+import { getProduct } from "@/lib/api";
+import type { Product } from "@/types/catalog";
 import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const Wishlist = () => {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { wishlistItems } = useWishlist();
   const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadWishlistProducts = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      if (wishlistItems.length === 0) {
-        setProducts([]);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        // Fetch all products and filter to only show wishlisted ones
-        const allProducts = await fetchProducts(50);
-        const wishlistProductIds = wishlistItems.map(item => item.product_id);
-        const filtered = allProducts.filter(product => 
-          wishlistProductIds.includes(product.node.id)
-        );
-        setProducts(filtered);
-      } catch (error) {
-        console.error('Failed to fetch wishlist products:', error);
-      } finally {
-        setLoading(false);
-      }
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    if (wishlistItems.length === 0) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    Promise.all(wishlistItems.map((i) => getProduct(i.product_handle).catch(() => null)))
+      .then((results) => {
+        if (!cancelled) setProducts(results.filter((p): p is Product => p !== null));
+      })
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
     };
-
-    loadWishlistProducts();
   }, [wishlistItems, user]);
 
   if (!user) {
@@ -94,7 +85,7 @@ const Wishlist = () => {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {products.map((product) => (
-                  <ProductCard key={product.node.id} product={product} />
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             </>

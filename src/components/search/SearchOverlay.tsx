@@ -6,7 +6,9 @@ import {
     ChevronRight, ArrowUpDown, ShoppingBag, Check, SlidersHorizontal, Package, Info,
     Zap, Bookmark, Eye, Trophy, Layers, CreditCard
 } from "lucide-react";
-import { fetchProducts, ShopifyProduct } from "@/lib/shopify";
+import type { ShopifyProduct } from "@/lib/shopify";
+import { getProducts, searchProducts } from "@/lib/api";
+import { toShopifyShape, fromShopifyShape } from "@/lib/compat";
 import { debounce } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -112,11 +114,11 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                 // If search has text, fetch matches from Shopify (query provided)
                 // We pass the raw trimmed term to fetchProducts, which now handles query construction (singular/plural, multi-field)
                 const trimmed = search.trim();
-                const query = trimmed ? trimmed : undefined;
-                const limit = query ? 50 : 20; // 50 results for full search visibility to match category page size
-
-                const data = await fetchProducts(limit, query);
-                setProducts(data);
+                const query = trimmed || undefined;
+                const cards = query
+                    ? await searchProducts(query, 50)
+                    : (await getProducts(0, 20)).items;
+                setProducts(cards.map(toShopifyShape));
 
                 // Meta Pixel: Track Search
                 if (query) {
@@ -273,19 +275,20 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
 
     const handleQuickAdd = (e: React.MouseEvent, p: ShopifyProduct) => {
         e.stopPropagation();
-        const variant = p.node.variants.edges[0]?.node;
-        if (!variant) return;
-
+        const n = p.node;
         addItem({
-            product: p,
-            variantId: variant.id,
-            variantTitle: variant.title,
-            price: variant.price,
+            productId: n.id,
+            slug: n.handle,
+            title: n.title,
+            image: n.media?.edges?.[0]?.node?.image?.url ?? null,
+            variantKey: null,
+            variantTitle: null,
+            price: parseFloat(n.priceRange.minVariantPrice.amount),
+            currency: n.priceRange.minVariantPrice.currencyCode || "PKR",
             quantity: 1,
-            selectedOptions: variant.selectedOptions || []
         });
 
-        toast.success("Added to collection", {
+        toast.success("Added to cart", {
             description: p.node.title,
             icon: <ShoppingBag className="w-4 h-4" />
         });
@@ -606,7 +609,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Fresh Arrivals</h3>
                                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                                                     {filteredResults.slice(5).map((p, i) => (
-                                                        <ProductCard key={p.node.id} product={p} index={i} />
+                                                        <ProductCard key={p.node.id} product={fromShopifyShape(p)} index={i} />
                                                     ))}
                                                 </div>
                                             </div>
@@ -624,7 +627,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                             exit={{ opacity: 0, scale: 0.9 }}
                                                             transition={{ duration: 0.3, delay: i * 0.05 }}
                                                         >
-                                                            <ProductCard product={p} index={i} />
+                                                            <ProductCard product={fromShopifyShape(p)} index={i} />
                                                         </motion.div>
                                                     ))}
                                                 </AnimatePresence>

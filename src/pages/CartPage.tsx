@@ -3,8 +3,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Truck, Shield, Package, Tag, Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useCartStore } from "@/stores/cartStore";
+import { Link, useNavigate } from "react-router-dom";
+import { useCartStore, lineKey } from "@/stores/cartStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -12,45 +12,29 @@ import { trackMetaEvent, formatProductId } from "@/lib/meta-pixel";
 import { cdnImage } from "@/lib/imageUrl";
 
 const CartPage = () => {
-  const {
-    items,
-    isLoading,
-    updateQuantity,
-    removeItem,
-    createCheckout
-  } = useCartStore();
+  const navigate = useNavigate();
+  const { items, updateQuantity, removeItem } = useCartStore();
 
   const [promoCode, setPromoCode] = useState("");
   const [applyingPromo, setApplyingPromo] = useState(false);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
-  const currencyCode = items[0]?.price.currencyCode || 'PKR';
+  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const currencyCode = items[0]?.currency || 'PKR';
   const freeShippingThreshold = 5000;
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - totalPrice);
-  const shipping = remainingForFreeShipping <= 0 ? 0 : 250;
+  const shipping = remainingForFreeShipping <= 0 ? 0 : 200;
   const total = totalPrice + shipping;
 
-  const handleCheckout = async () => {
-    try {
-      // Meta Pixel: Track InitiateCheckout
-      trackMetaEvent('InitiateCheckout', {
-        content_ids: items.map(item => formatProductId(item.product.node.id)),
-        content_type: 'product',
-        value: total,
-        currency: currencyCode,
-        num_items: totalItems
-      });
-
-      await createCheckout();
-      const checkoutUrl = useCartStore.getState().checkoutUrl;
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-      }
-    } catch (error) {
-      console.error('Checkout failed:', error);
-      toast.error('Failed to create checkout. Please try again.');
-    }
+  const handleCheckout = () => {
+    trackMetaEvent('InitiateCheckout', {
+      content_ids: items.map(item => formatProductId(item.productId)),
+      content_type: 'product',
+      value: total,
+      currency: currencyCode,
+      num_items: totalItems,
+    });
+    navigate("/checkout");
   };
 
   const handleApplyPromo = () => {
@@ -156,7 +140,7 @@ const CartPage = () => {
               <AnimatePresence mode="popLayout">
                 {items.map((item, index) => (
                   <motion.div
-                    key={item.variantId}
+                    key={lineKey(item)}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -100 }}
@@ -168,10 +152,10 @@ const CartPage = () => {
                       <div className="flex gap-3 sm:gap-4">
                         {/* Image */}
                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-muted rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
-                          {item.product.node.media?.edges?.[0]?.node ? (
+                          {item.image ? (
                             <img
-                              src={cdnImage(item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url, 200)}
-                              alt={item.product.node.title}
+                              src={cdnImage(item.image, 200)}
+                              alt={item.title}
                               loading="lazy"
                               decoding="async"
                               className="w-full h-full object-cover"
@@ -187,8 +171,8 @@ const CartPage = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start gap-2">
                             <div className="min-w-0">
-                              <h3 className="font-semibold text-sm sm:text-base line-clamp-2 leading-tight">{item.product.node.title}</h3>
-                              {item.variantTitle !== 'Default Title' && (
+                              <h3 className="font-semibold text-sm sm:text-base line-clamp-2 leading-tight">{item.title}</h3>
+                              {item.variantTitle && (
                                 <p className="text-xs text-muted-foreground mt-0.5">{item.variantTitle}</p>
                               )}
                             </div>
@@ -196,7 +180,7 @@ const CartPage = () => {
                               variant="ghost"
                               size="icon"
                               className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
-                              onClick={() => removeItem(item.variantId)}
+                              onClick={() => removeItem(lineKey(item))}
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -209,7 +193,7 @@ const CartPage = () => {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 rounded-none"
-                                onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                                onClick={() => updateQuantity(lineKey(item), item.quantity - 1)}
                               >
                                 <Minus className="w-3.5 h-3.5" />
                               </Button>
@@ -218,7 +202,7 @@ const CartPage = () => {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 rounded-none"
-                                onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                                onClick={() => updateQuantity(lineKey(item), item.quantity + 1)}
                               >
                                 <Plus className="w-3.5 h-3.5" />
                               </Button>
@@ -226,7 +210,7 @@ const CartPage = () => {
 
                             {/* Price */}
                             <p className="text-base sm:text-lg font-bold">
-                              {currencyCode} {(parseFloat(item.price.amount) * item.quantity).toLocaleString('en-PK')}
+                              {currencyCode} {(item.price * item.quantity).toLocaleString('en-PK')}
                             </p>
                           </div>
                         </div>
@@ -238,10 +222,10 @@ const CartPage = () => {
                       {/* Product */}
                       <div className="col-span-6 flex gap-4">
                         <div className="w-20 h-20 bg-muted rounded-xl overflow-hidden flex-shrink-0">
-                          {item.product.node.media?.edges?.[0]?.node ? (
+                          {item.image ? (
                             <img
-                              src={cdnImage(item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url, 200)}
-                              alt={item.product.node.title}
+                              src={cdnImage(item.image, 200)}
+                              alt={item.title}
                               loading="lazy"
                               decoding="async"
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
@@ -253,15 +237,15 @@ const CartPage = () => {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-semibold line-clamp-2 leading-tight">{item.product.node.title}</h3>
-                          {item.variantTitle !== 'Default Title' && (
+                          <h3 className="font-semibold line-clamp-2 leading-tight">{item.title}</h3>
+                          {item.variantTitle && (
                             <p className="text-sm text-muted-foreground mt-1">{item.variantTitle}</p>
                           )}
                           <Button
                             variant="ghost"
                             size="sm"
                             className="text-muted-foreground hover:text-destructive mt-2 p-0 h-auto"
-                            onClick={() => removeItem(item.variantId)}
+                            onClick={() => removeItem(lineKey(item))}
                           >
                             <Trash2 className="w-3.5 h-3.5 mr-1" />
                             Remove
@@ -271,7 +255,7 @@ const CartPage = () => {
 
                       {/* Price */}
                       <div className="col-span-2 text-center font-medium">
-                        {currencyCode} {parseFloat(item.price.amount).toLocaleString('en-PK')}
+                        {currencyCode} {item.price.toLocaleString('en-PK')}
                       </div>
 
                       {/* Quantity */}
@@ -281,7 +265,7 @@ const CartPage = () => {
                             variant="ghost"
                             size="icon"
                             className="h-9 w-9 rounded-none"
-                            onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                            onClick={() => updateQuantity(lineKey(item), item.quantity - 1)}
                           >
                             <Minus className="w-4 h-4" />
                           </Button>
@@ -290,7 +274,7 @@ const CartPage = () => {
                             variant="ghost"
                             size="icon"
                             className="h-9 w-9 rounded-none"
-                            onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                            onClick={() => updateQuantity(lineKey(item), item.quantity + 1)}
                           >
                             <Plus className="w-4 h-4" />
                           </Button>
@@ -299,7 +283,7 @@ const CartPage = () => {
 
                       {/* Total */}
                       <div className="col-span-2 text-right font-bold text-lg">
-                        {currencyCode} {(parseFloat(item.price.amount) * item.quantity).toLocaleString('en-PK')}
+                        {currencyCode} {(item.price * item.quantity).toLocaleString('en-PK')}
                       </div>
                     </div>
                   </motion.div>
@@ -366,19 +350,9 @@ const CartPage = () => {
                   size="lg"
                   className="w-full h-12 sm:h-14 bg-primary hover:bg-primary/90 text-white font-bold text-sm sm:text-base rounded-xl"
                   onClick={handleCheckout}
-                  disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      Proceed to Checkout
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </>
-                  )}
+                  Proceed to Checkout
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
 
                 <Button

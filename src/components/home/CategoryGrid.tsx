@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { fetchCollections } from "@/lib/shopify";
+import { getCategories } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Sparkles, TrendingUp, Star, Zap, Crown, Gift, Heart, ShoppingBag } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -140,8 +140,8 @@ interface CategoryGridProps {
 
 export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProps) => {
   const { data: collections = [], isLoading } = useQuery({
-    queryKey: ['collections', 50],
-    queryFn: () => fetchCollections(50),
+    queryKey: ['categories'],
+    queryFn: getCategories,
   });
 
   if (isLoading) {
@@ -167,19 +167,8 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
 
   if (collections.length === 0) return null;
 
-  const orderedHandles = ['top-selling-products', 'household', 'heaters', 'health-and-beauty', 'hair-straightener-1', 'kitchen'];
-
-  const sortedCollections = [...collections].sort((a, b) => {
-    const indexA = orderedHandles.indexOf(a.node.handle);
-    const indexB = orderedHandles.indexOf(b.node.handle);
-
-    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-    if (indexA !== -1) return -1;
-    if (indexB !== -1) return 1;
-    return 0;
-  });
-
-  const displayCollections = sortedCollections.slice(0, limit);
+  // API already returns categories ordered by `order`
+  const displayCollections = collections.slice(0, limit);
 
   return (
     <section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
@@ -236,20 +225,20 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
 
             return (
               <motion.div
-                key={col.node.id}
+                key={col.id}
                 variants={itemVariants}
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
                 className="group"
               >
                 <Link
-                  to={`/category/${col.node.handle}`}
+                  to={`/category/${col.slug}`}
                   className={`relative block aspect-[1/2] rounded-md sm:rounded-lg overflow-hidden shadow-sm hover:shadow-md ${theme.glow} transition-all duration-500`}
                 >
                   {/* Background Image */}
                   <div className="absolute inset-0">
                     <img
-                      src={getCategoryImage(col.node.handle, col.node.image?.url)}
-                      alt={col.node.title}
+                      src={getCategoryImage(col.slug, col.image?.url)}
+                      alt={col.title}
                       width={240}
                       height={480}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -292,12 +281,12 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
 
                     {/* Title */}
                     <h3 className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-white leading-tight mb-0.5 group-hover:translate-x-0.5 transition-transform duration-300 line-clamp-2">
-                      {col.node.title}
+                      {col.title}
                     </h3>
 
                     {/* Description - Hidden on small mobile */}
                     <p className="text-white/70 text-[7px] line-clamp-1 mb-0.5 hidden xl:block">
-                      {col.node.description || "Explore our amazing collection"}
+                      {col.description || "Explore our amazing collection"}
                     </p>
 
                     {/* Shop Now Button */}

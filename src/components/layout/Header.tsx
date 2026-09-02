@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { useAuth } from "@/hooks/useAuth";
-import { fetchCollections } from "@/lib/shopify";
+import { getCategories } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import {
   DropdownMenu,
@@ -41,13 +41,13 @@ export const Header = () => {
   };
 
   const { data: collections = [] } = useQuery({
-    queryKey: ['collections'],
-    queryFn: () => fetchCollections(10),
+    queryKey: ['categories'],
+    queryFn: getCategories,
   });
 
   const categories = collections.map(col => ({
-    name: col.node.title,
-    path: `/category/${col.node.handle}`
+    name: col.title,
+    path: `/category/${col.slug}`
   }));
 
   return (

@@ -1,19 +1,23 @@
 """Cart quote + order creation (COD and Safepay online)."""
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.config import settings
 from app.deps import optional_user
-from fastapi import Depends
 from app.sanity import queries as Q
 from app.sanity.client import query
-from app.schemas.checkout import CreateOrderIn, CreateOrderOut, QuoteOut
+from app.schemas.checkout import CartLineIn, CreateOrderIn, CreateOrderOut, QuoteOut
 from app.services import safepay
 from app.services.pricing import quote as build_quote
 from app.services.supabase_client import get_client
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/api/checkout", tags=["checkout"])
+
+
+class QuoteIn(BaseModel):
+    lines: list[CartLineIn]
 
 
 async def _settings_row() -> dict:
@@ -21,14 +25,10 @@ async def _settings_row() -> dict:
 
 
 @router.post("/quote", response_model=QuoteOut)
-async def quote(body: CreateOrderIn | None = None, *, request: Request) -> QuoteOut:
-    payload = await request.json()
-    lines = payload.get("lines", [])
-    from app.schemas.checkout import CartLineIn
-
+async def quote(body: QuoteIn) -> QuoteOut:
     s = await _settings_row()
     return await build_quote(
-        [CartLineIn(**l) for l in lines],
+        body.lines,
         delivery_charge=s.get("deliveryCharge", 200),
         free_threshold=s.get("freeShippingThreshold", 5000),
     )

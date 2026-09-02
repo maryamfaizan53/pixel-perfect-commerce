@@ -170,7 +170,8 @@ export default defineType({
     // ---- Media -------------------------------------------------------
     defineField({
       name: 'images',
-      title: 'Images',
+      title: 'Images (uploaded)',
+      description: 'Hosted in Sanity. Prefer this for hand-curated / hero products.',
       type: 'array',
       group: 'media',
       of: [
@@ -180,7 +181,14 @@ export default defineType({
           fields: [{name: 'alt', title: 'Alt text', type: 'string'}],
         },
       ],
-      validation: (r) => r.min(1).error('At least one image is required'),
+    }),
+    defineField({
+      name: 'imageUrls',
+      title: 'Image URLs (external)',
+      description: 'Referenced from the supplier CDN. Used for bulk-imported products. First URL is the primary image.',
+      type: 'array',
+      group: 'media',
+      of: [{type: 'url'}],
     }),
     defineField({
       name: 'videos',

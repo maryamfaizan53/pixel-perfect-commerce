@@ -18,14 +18,17 @@ from app.schemas.catalog import (
 from app.sanity.portable_text import to_html
 
 
-def _images(raw: list[dict[str, Any]] | None) -> list[ImageDTO]:
-    out: list[ImageDTO] = []
-    for img in raw or []:
-        url = img.get("url")
-        if not url:
-            continue
-        out.append(ImageDTO(url=url, alt=img.get("alt") or "", width=img.get("w"), height=img.get("h")))
-    return out
+def _images(doc: dict[str, Any]) -> list[ImageDTO]:
+    """Prefer Sanity-hosted images; fall back to external supplier URLs."""
+    title = doc.get("title") or ""
+    uploaded = doc.get("uploadedImages") or []
+    if uploaded:
+        return [
+            ImageDTO(url=i["url"], alt=i.get("alt") or title, width=i.get("w"), height=i.get("h"))
+            for i in uploaded
+            if i.get("url")
+        ]
+    return [ImageDTO(url=u, alt=title) for u in (doc.get("imageUrls") or []) if u]
 
 
 def _seo(raw: dict[str, Any] | None) -> SeoDTO:
@@ -53,7 +56,7 @@ def map_product_card(doc: dict[str, Any], rating: RatingDTO | None = None) -> Pr
         inStock=doc.get("inStock", True),
         featured=bool(doc.get("featured")),
         hasVideo=bool(doc.get("hasVideo")),
-        images=_images(doc.get("images")),
+        images=_images(doc),
         rating=rating,
     )
 

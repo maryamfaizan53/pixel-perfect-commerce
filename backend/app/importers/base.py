@@ -38,6 +38,10 @@ class NormalisedProduct:
     external_url: str | None = None
     options: list[dict[str, Any]] = field(default_factory=list)
     variants: list[dict[str, Any]] = field(default_factory=list)
+    weight_grams: int | None = None
+    # True  -> download + host images in Sanity (curated / small batches)
+    # False -> store image_urls as external references (bulk import)
+    upload_images: bool = False
 
     def resolved_slug(self) -> str:
         return self.slug or slugify(self.title)[:96]
@@ -114,9 +118,12 @@ async def upsert_product(np: NormalisedProduct, existing: dict | None, *, dry_ru
         "stockQuantity": np.stock_quantity,
         "sku": np.sku,
         "barcode": np.barcode,
+        "weightGrams": np.weight_grams,
         "options": np.options,
         "variants": np.variants,
     }
+    if not np.upload_images and np.image_urls:
+        fields["imageUrls"] = np.image_urls[:10]
     fields = {k: v for k, v in fields.items() if k not in locked and v not in (None, [], "")}
 
     source_block = {
@@ -138,14 +145,14 @@ async def upsert_product(np: NormalisedProduct, existing: dict | None, *, dry_ru
         await mutate([{"patch": patch}])
         return "updated"
 
-    # new document — needs at least one image
-    images = await _upload_images(np.image_urls, slug=slug) if np.image_urls else []
+    # new document
     doc = {
         "_id": _doc_id_for(slug),
         "_type": "product",
         **fields,
-        "images": images,
         "source": source_block,
     }
+    if np.upload_images and np.image_urls:
+        doc["images"] = await _upload_images(np.image_urls, slug=slug)
     await mutate([{"createOrReplace": doc}])
     return "added"

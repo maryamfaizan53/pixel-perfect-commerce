@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# large data export (kept locally, imported via backend/app/importers/hhc_csv.py)
+shopify_products_export.csv

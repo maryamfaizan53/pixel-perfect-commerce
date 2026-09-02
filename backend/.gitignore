@@ -7,3 +7,6 @@ venv/
 *.log
 .pytest_cache/
 .ruff_cache/
+
+*.ndjson
+.tmp/

@@ -22,9 +22,11 @@ def _resolve_line(doc: dict, line: CartLineIn) -> QuoteLine:
     title = doc.get("title") or ""
     variant_title = None
     image = None
-    imgs = doc.get("images") or []
-    if imgs:
-        image = imgs[0].get("url")
+    uploaded = doc.get("uploadedImages") or []
+    if uploaded:
+        image = uploaded[0].get("url")
+    elif doc.get("imageUrls"):
+        image = doc["imageUrls"][0]
 
     if line.variantKey:
         for i, v in enumerate(doc.get("variants") or []):

@@ -14,7 +14,8 @@ PRODUCT_CARD_PROJECTION = """
   inStock,
   featured,
   "categories": categories[]->{ "slug": slug.current, title },
-  "images": images[]{ "url": asset->url, "alt": coalesce(alt, ^.title), "w": asset->metadata.dimensions.width, "h": asset->metadata.dimensions.height },
+  "uploadedImages": images[]{ "url": asset->url, "alt": alt, "w": asset->metadata.dimensions.width, "h": asset->metadata.dimensions.height },
+  "imageUrls": imageUrls,
   "hasVideo": count(videos) > 0
 """
 

@@ -25,12 +25,16 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
-from collections import OrderedDict
+import time
+from collections import Counter, OrderedDict
 from pathlib import Path
 from typing import Any, Iterator
 
 from slugify import slugify
+
+from app.importers.categories import categorise, category_seed_docs
 
 csv.field_size_limit(10**7)
 
@@ -39,6 +43,7 @@ CSV_PATH = REPO_ROOT / "shopify_products_export.csv"
 PORTAL = "hhc"
 
 _ID_SUFFIX = re.compile(r"-(\d{4,})$")
+_VIDEO_EXT = re.compile(r"\.(mp4|webm|mov|m4v)(\?|$)", re.I)
 _OPTION_NAME_FIX = {
     "colour": "Colour", "color": "Colour", "colors": "Colour", "colours": "Colour",
     "colourss": "Colour", "colours": "Colour", "shade": "Shade", "shades": "Shade",
@@ -150,8 +155,11 @@ def to_sanity_doc(p: dict[str, Any]) -> dict[str, Any] | None:
                 title = title[: -len(suffix)].rstrip(" -")
                 break
 
-    images = [p["images"][k] for k in sorted(p["images"])]
+    media = [p["images"][k] for k in sorted(p["images"])]
+    images = [u for u in media if not _VIDEO_EXT.search(u)]
+    videos = [u for u in media if _VIDEO_EXT.search(u)]
     excerpt = p["excerpt"] or _first_sentences(p["body"])
+    cat_slugs = categorise(title, excerpt, p["body"])
 
     doc: dict[str, Any] = {
         "_id": _doc_id(slug),
@@ -163,6 +171,14 @@ def to_sanity_doc(p: dict[str, Any]) -> dict[str, Any] | None:
         "inStock": True,
         "vendor": "AI Bazar",
         "imageUrls": images[:10],
+        "videos": [
+            {"_type": "productVideo", "_key": f"vid{i}", "kind": "file", "url": v}
+            for i, v in enumerate(videos[:3])
+        ],
+        "categories": [
+            {"_type": "reference", "_key": f"cat{i}", "_ref": f"category.{s}"}
+            for i, s in enumerate(cat_slugs)
+        ],
         "source": {
             "_type": "externalSource",
             "portal": PORTAL,
@@ -201,44 +217,106 @@ def to_sanity_doc(p: dict[str, Any]) -> dict[str, Any] | None:
     return doc
 
 
-def generate(limit: int | None = None) -> Iterator[dict[str, Any]]:
-    for i, p in enumerate(read_grouped().values()):
-        if limit and i >= limit:
+def generate(limit: int | None = None, *, require_image: bool = True) -> Iterator[dict[str, Any]]:
+    n = 0
+    for p in read_grouped().values():
+        if limit and n >= limit:
             break
         doc = to_sanity_doc(p)
-        if doc:
-            yield doc
+        if not doc:
+            continue
+        if require_image and not doc.get("imageUrls"):
+            continue
+        n += 1
+        yield doc
+
+
+# --------------------------------------------------------------------------
+# Push to Sanity (batched createOrReplace mutations)
+# --------------------------------------------------------------------------
+def _sanity_conf() -> tuple[str, str, str]:
+    pid = os.getenv("SANITY_PROJECT_ID") or os.getenv("SANITY_STUDIO_PROJECT_ID", "")
+    dataset = os.getenv("SANITY_DATASET", "production")
+    token = os.getenv("SANITY_WRITE_TOKEN") or os.getenv("SANITY_TOKEN", "")
+    if not pid or not token:
+        raise SystemExit("Set SANITY_PROJECT_ID and SANITY_WRITE_TOKEN (or SANITY_TOKEN) in the env")
+    return pid, dataset, token
+
+
+def push(docs: list[dict[str, Any]], *, batch: int = 50) -> dict[str, int]:
+    import httpx
+
+    pid, dataset, token = _sanity_conf()
+    url = f"https://{pid}.api.sanity.io/v2024-10-01/data/mutate/{dataset}"
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    created = 0
+    with httpx.Client(timeout=60, headers=headers) as client:
+        for i in range(0, len(docs), batch):
+            chunk = docs[i : i + batch]
+            mutations = [{"createOrReplace": d} for d in chunk]
+            for attempt in range(4):
+                r = client.post(url, json={"mutations": mutations})
+                if r.status_code == 200:
+                    created += len(chunk)
+                    break
+                if r.status_code in (429, 502, 503):
+                    time.sleep(2 * (attempt + 1))
+                    continue
+                raise SystemExit(f"Sanity {r.status_code}: {r.text[:400]}")
+            print(f"  pushed {created}/{len(docs)}")
+    return {"created": created}
 
 
 def _stats() -> None:
     products = read_grouped()
     total = len(products)
-    with_variants = sum(1 for p in products.values() if len(p["variants"]) > 1)
-    with_multi_img = sum(1 for p in products.values() if len(p["images"]) > 1)
-    emitted = sum(1 for _ in generate())
+    cat_counts: Counter[str] = Counter()
+    emitted = 0
+    for doc in generate():
+        emitted += 1
+        for c in doc.get("categories", []):
+            cat_counts[c["_ref"].removeprefix("category.")] += 1
     print(json.dumps({
-        "csv_rows_grouped_to_products": total,
-        "products_with_variants": with_variants,
-        "products_with_multiple_images": with_multi_img,
-        "documents_that_would_be_created": emitted,
-        "skipped_zero_price": total - emitted,
+        "grouped_products": total,
+        "with_variants": sum(1 for p in products.values() if len(p["variants"]) > 1),
+        "with_multiple_images": sum(1 for p in products.values() if len(p["images"]) > 1),
+        "importable_documents": emitted,
+        "category_distribution": dict(cat_counts.most_common()),
     }, indent=2))
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ndjson", type=str, help="write NDJSON to this path")
+    ap.add_argument("--push", action="store_true", help="push to Sanity via mutate API")
+    ap.add_argument("--categories-only", action="store_true")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--stats", action="store_true")
     args = ap.parse_args()
 
-    if args.stats or not args.ndjson:
+    if args.stats:
+        _stats()
+        return
+
+    cats = category_seed_docs()
+
+    if args.push:
+        print(f"seeding {len(cats)} categories…")
+        push(cats)
+        if not args.categories_only:
+            docs = list(generate(args.limit))
+            print(f"pushing {len(docs)} products…")
+            push(docs)
+        print("done.")
+        return
+
+    if not args.ndjson:
         _stats()
         return
 
     n = 0
     with open(args.ndjson, "w", encoding="utf-8") as out:
-        for doc in generate(args.limit):
+        for doc in [*cats, *generate(args.limit)]:
             out.write(json.dumps(doc, ensure_ascii=False) + "\n")
             n += 1
     print(f"wrote {n} documents -> {args.ndjson}")

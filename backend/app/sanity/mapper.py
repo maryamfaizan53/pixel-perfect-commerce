@@ -66,8 +66,10 @@ def map_product(doc: dict[str, Any], rating: RatingDTO | None = None) -> Product
 
     videos: list[VideoDTO] = []
     for v in doc.get("videos") or []:
-        if v.get("kind") == "file" and v.get("fileUrl"):
-            videos.append(VideoDTO(kind="file", url=v["fileUrl"], poster=v.get("poster")))
+        if v.get("kind") == "file":
+            src = v.get("fileUrl") or v.get("url")
+            if src:
+                videos.append(VideoDTO(kind="file", url=src, poster=v.get("poster")))
         elif v.get("url"):
             videos.append(VideoDTO(kind="external", url=v["url"], poster=v.get("poster")))
 

@@ -25,7 +25,7 @@ PRODUCT_FULL_PROJECTION = PRODUCT_CARD_PROJECTION + """,
   sku,
   barcode,
   weightGrams,
-  "videos": videos[]{ kind, url, "fileUrl": file.asset->url, "poster": poster.asset->url },
+  "videos": videos[]{ kind, url, "fileUrl": coalesce(file.asset->url, url), "poster": poster.asset->url },
   options[]{ name, values },
   variants[]{
     title, sku, price, compareAtPrice, inStock, stockQuantity,
@@ -53,7 +53,7 @@ LIST_PRODUCTS = f"""
   [$offset...$end] {{ {PRODUCT_CARD_PROJECTION} }}
 """
 
-COUNT_PRODUCTS = '*[_type == "product" && !(_id in path("drafts.**"))]{_id} | length(@)'
+COUNT_PRODUCTS = 'count(*[_type == "product" && !(_id in path("drafts.**"))])'
 
 PRODUCT_BY_SLUG = f"""
 *[_type == "product" && slug.current == $slug && !(_id in path("drafts.**"))][0]

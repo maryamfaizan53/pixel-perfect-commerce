@@ -15,6 +15,7 @@ from app.config import settings
 from app.routers import admin, catalog, checkout, seo
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 app = FastAPI(
     title="AI Bazar API",

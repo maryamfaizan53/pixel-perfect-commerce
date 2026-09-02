@@ -138,8 +138,14 @@ def read_grouped() -> "OrderedDict[str, dict[str, Any]]":
     return products
 
 
-def to_sanity_doc(p: dict[str, Any]) -> dict[str, Any] | None:
+def to_sanity_doc(p: dict[str, Any], seen_slugs: set[str] | None = None) -> dict[str, Any] | None:
+    external_id = _external_id(p["handle"])
     slug = _clean_slug(p["handle"])
+    if seen_slugs is not None:
+        # keep slugs globally unique — fall back to the raw handle (has the HHC id)
+        if slug in seen_slugs:
+            slug = p["handle"] if p["handle"] not in seen_slugs else f"{slug}-{external_id}"
+        seen_slugs.add(slug)
     variants_raw = p["variants"]
     prices = [v for v in variants_raw.values() if v > 0]
     base_price = p.get("base_price") or (min(prices) if prices else 0.0)
@@ -219,10 +225,11 @@ def to_sanity_doc(p: dict[str, Any]) -> dict[str, Any] | None:
 
 def generate(limit: int | None = None, *, require_image: bool = True) -> Iterator[dict[str, Any]]:
     n = 0
+    seen_slugs: set[str] = set()
     for p in read_grouped().values():
         if limit and n >= limit:
             break
-        doc = to_sanity_doc(p)
+        doc = to_sanity_doc(p, seen_slugs)
         if not doc:
             continue
         if require_image and not doc.get("imageUrls"):

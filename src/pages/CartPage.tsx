@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useState } from "react";
 import { trackMetaEvent, formatProductId } from "@/lib/meta-pixel";
+import { cdnImage } from "@/lib/imageUrl";
 
 const CartPage = () => {
   const {
@@ -169,8 +170,10 @@ const CartPage = () => {
                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-muted rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0">
                           {item.product.node.media?.edges?.[0]?.node ? (
                             <img
-                              src={item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url}
+                              src={cdnImage(item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url, 200)}
                               alt={item.product.node.title}
+                              loading="lazy"
+                              decoding="async"
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -237,8 +240,10 @@ const CartPage = () => {
                         <div className="w-20 h-20 bg-muted rounded-xl overflow-hidden flex-shrink-0">
                           {item.product.node.media?.edges?.[0]?.node ? (
                             <img
-                              src={item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url}
+                              src={cdnImage(item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url, 200)}
                               alt={item.product.node.title}
+                              loading="lazy"
+                              decoding="async"
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             />
                           ) : (

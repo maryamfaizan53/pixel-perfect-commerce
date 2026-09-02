@@ -298,7 +298,10 @@ const CategoryPage = () => {
             <div className="absolute inset-0 z-0">
               <img
                 src={collectionData.image.url}
-                alt={collectionData.image.altText || collectionData.title}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover opacity-20"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/70" />
@@ -531,10 +534,10 @@ const CategoryPage = () => {
             {/* Elite Products Grid */}
             <div className="lg:col-span-3">
               {loading ? (
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-10">
+                <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 xl:gap-8">
                   {[...Array(6)].map((_, i) => (
                     <div key={i} className="space-y-6">
-                      <div className="aspect-[4/5] rounded-[2.5rem] bg-slate-200 animate-pulse" />
+                      <div className="aspect-[4/5] rounded-2xl sm:rounded-[2.5rem] bg-slate-200 animate-pulse" />
                       <div className="h-6 w-2/3 bg-slate-200 rounded-full animate-pulse" />
                       <div className="h-4 w-1/3 bg-slate-200 rounded-full animate-pulse" />
                     </div>
@@ -569,7 +572,7 @@ const CategoryPage = () => {
               ) : (
                 <motion.div
                   layout
-                  className={`grid ${viewMode === 'grid' ? 'sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'} gap-10`}
+                  className={`grid ${viewMode === 'grid' ? 'grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'} gap-4 sm:gap-6 xl:gap-8`}
                 >
                   <AnimatePresence>
                     {sortedProducts.map((product, index) => (

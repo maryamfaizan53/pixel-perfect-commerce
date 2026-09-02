@@ -73,20 +73,38 @@ const categoryBadges = [
   { label: "Exclusive", icon: ShoppingBag, color: "bg-gradient-to-r from-indigo-500 to-purple-600" },
 ];
 
+// These cards render as narrow vertical slivers – request a small image, not 800x1000.
+const slimImage = (url: string): string => {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('images.unsplash.com')) {
+      u.searchParams.set('w', '240');
+      u.searchParams.set('h', '480');
+      u.searchParams.set('q', '70');
+      u.searchParams.set('auto', 'format');
+    } else if (u.hostname.includes('cdn.shopify.com')) {
+      u.searchParams.set('width', '300');
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+};
+
 const getCategoryImage = (handle: string, fallbackUrl?: string): string => {
   const normalizedHandle = handle.toLowerCase().replace(/\s+/g, '-');
 
   if (categoryImages[normalizedHandle]) {
-    return categoryImages[normalizedHandle];
+    return slimImage(categoryImages[normalizedHandle]);
   }
 
   for (const key of Object.keys(categoryImages)) {
     if (normalizedHandle.includes(key) || key.includes(normalizedHandle)) {
-      return categoryImages[key];
+      return slimImage(categoryImages[key]);
     }
   }
 
-  return fallbackUrl || categoryImages.default;
+  return slimImage(fallbackUrl || categoryImages.default);
 };
 
 // Animation variants
@@ -232,8 +250,11 @@ export const CategoryGrid = ({ limit = 8, showHeading = true }: CategoryGridProp
                     <img
                       src={getCategoryImage(col.node.handle, col.node.image?.url)}
                       alt={col.node.title}
+                      width={240}
+                      height={480}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
 

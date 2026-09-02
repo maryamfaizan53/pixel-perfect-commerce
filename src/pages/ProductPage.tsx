@@ -7,7 +7,7 @@ import { ShoppingCart, Heart, Minus, Plus, Truck, Shield, Loader2, ChevronRight,
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { storefrontApiRequest, ShopifyProduct, createStorefrontCheckout, fetchProductsByCollection } from "@/lib/shopify";
-import { blogPosts } from "@/data/blogData";
+import type { BlogPostMeta } from "@/data/blogIndex";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { ProductReviews } from "@/components/reviews/ProductReviews";
@@ -18,6 +18,7 @@ import { useInView } from "react-intersection-observer";
 import { formatProductId, trackMetaEvent } from "@/lib/meta-pixel";
 import { useSEO } from "@/hooks/useSEO";
 import { OptimizedImage } from "@/components/common/OptimizedImage";
+import { cdnImage } from "@/lib/imageUrl";
 
 
 interface ProductMedia {
@@ -283,19 +284,24 @@ const ProductPage = () => {
     });
   }, [product]);
 
-  // Expert SEO: Internal Linking - Find relevant blog posts (Topic Clusters)
-  const relatedPosts = useMemo(() => {
-    if (!product) return [];
-    return blogPosts.filter(post => {
-      // 1. Match by explicit tag overlap
-      const hasTagMatch = product.tags.some(tag => post.tags.includes(tag));
-      // 2. Match by category/product type
-      const hasCategoryMatch = post.category.toLowerCase().includes(product.productType.toLowerCase()) || product.productType.toLowerCase().includes(post.category.toLowerCase());
-      // 3. Match by title/content keywords (simple)
-      const hasTitleMatch = post.title.toLowerCase().includes(product.productType.toLowerCase());
-
-      return hasTagMatch || hasCategoryMatch || hasTitleMatch;
-    }).slice(0, 3);
+  // Expert SEO: Internal Linking - Find relevant blog posts (Topic Clusters).
+  // The blog index is ~70KB gzipped, so load it lazily rather than in the page bundle.
+  const [relatedPosts, setRelatedPosts] = useState<BlogPostMeta[]>([]);
+  useEffect(() => {
+    if (!product) return;
+    let cancelled = false;
+    import("@/data/blogIndex").then(({ blogIndex }) => {
+      if (cancelled) return;
+      const pt = product.productType.toLowerCase();
+      const matches = blogIndex.filter(post => {
+        const hasTagMatch = product.tags.some(tag => post.tags.includes(tag));
+        const hasCategoryMatch = post.category.toLowerCase().includes(pt) || pt.includes(post.category.toLowerCase());
+        const hasTitleMatch = post.title.toLowerCase().includes(pt);
+        return hasTagMatch || hasCategoryMatch || hasTitleMatch;
+      }).slice(0, 3);
+      setRelatedPosts(matches);
+    });
+    return () => { cancelled = true; };
   }, [product]);
 
   // Meta Pixel & Browser SEO: Track ViewContent and set Dynamic Title
@@ -953,6 +959,10 @@ const ProductPage = () => {
                             <OptimizedImage
                               src={imageUrl}
                               alt={`${product.title} - ${product.vendor} original product image`}
+                              width={900}
+                              quality={85}
+                              priority={selectedImage === 0}
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 40vw"
                               className="w-full h-full object-cover transition-transform duration-500"
                               style={{
                                 transform: isInspecting ? `scale(2)` : 'scale(1)',
@@ -1010,6 +1020,9 @@ const ProductPage = () => {
                     <OptimizedImage
                       src={media.node.previewImage?.url || media.node.image?.url || "/placeholder.svg"}
                       alt={`${product.title} - View ${index + 1}`}
+                      width={140}
+                      quality={70}
+                      sizes="96px"
                       className="w-full h-full object-cover"
                     />
                     {(media.node.mediaContentType === 'VIDEO' || media.node.mediaContentType === 'EXTERNAL_VIDEO') && (
@@ -1468,6 +1481,8 @@ const ProductPage = () => {
                       <img
                         src={post.image}
                         alt={post.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
@@ -1509,7 +1524,7 @@ const ProductPage = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
               {relatedProducts.map((rp) => {
                 const rpPrice = parseFloat(rp.node.priceRange.minVariantPrice.amount);
-                const rpImage = rp.node.media?.edges?.[0]?.node?.previewImage?.url || rp.node.media?.edges?.[0]?.node?.image?.url;
+                const rpImage = cdnImage(rp.node.media?.edges?.[0]?.node?.previewImage?.url || rp.node.media?.edges?.[0]?.node?.image?.url, 400);
                 return (
                   <Link
                     key={rp.node.id}
@@ -1522,6 +1537,7 @@ const ProductPage = () => {
                         alt={`${rp.node.title} - Buy online at AI Bazar Pakistan`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
                     <div className="p-3">

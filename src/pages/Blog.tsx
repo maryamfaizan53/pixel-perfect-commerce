@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { blogPosts, getAllCategories } from "@/data/blogData";
+import { blogIndex as blogPosts, getAllBlogCategories as getAllCategories } from "@/data/blogIndex";
 import { Calendar, Clock, User, Search, Tag, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 

@@ -3,18 +3,50 @@ import { useInView } from 'react-intersection-observer';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface OptimizedImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'width' | 'height'> {
     src: string;
     alt: string;
     className?: string;
     containerClassName?: string;
     aspectRatio?: "square" | "video" | "wide" | "auto";
+    /** Intrinsic display width used to size the CDN request / srcSet. */
     width?: number;
     mobileWidth?: number;
     quality?: number;
     priority?: boolean;
+    /** Passed straight through to the <img sizes> attribute. */
+    sizes?: string;
+    /** Optional pre-generated WebP source (e.g. a /public sibling). Rendered via <picture>. */
+    webpSrc?: string;
     fallbackSrc?: string;
 }
+
+const RESPONSIVE_WIDTHS = [320, 480, 640, 768, 960, 1280, 1600];
+
+/** Build a resized CDN URL for the providers we know how to talk to. */
+const buildCdnUrl = (src: string, w: number, q: number): string => {
+    try {
+        const url = new URL(src, typeof window !== 'undefined' ? window.location.origin : 'https://a.b');
+
+        if (url.hostname.includes('cdn.shopify.com')) {
+            url.searchParams.set('width', String(w));
+            if (!url.searchParams.has('quality')) url.searchParams.set('quality', String(q));
+            return url.toString();
+        }
+        if (url.hostname.includes('images.unsplash.com')) {
+            url.searchParams.set('w', String(w));
+            url.searchParams.set('q', String(q));
+            if (!url.searchParams.has('auto')) url.searchParams.set('auto', 'format');
+            return url.toString();
+        }
+        return src;
+    } catch {
+        return src;
+    }
+};
+
+const isResizable = (src: string) =>
+    !!src && (src.includes('cdn.shopify.com') || src.includes('images.unsplash.com'));
 
 export const OptimizedImage = ({
     src,
@@ -22,19 +54,21 @@ export const OptimizedImage = ({
     className,
     containerClassName,
     aspectRatio = "auto",
-    width,
+    width = 800,
     mobileWidth,
-    quality = 80,
+    quality = 78,
     priority = false,
-    fallbackSrc = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
+    sizes,
+    webpSrc,
+    fallbackSrc = "/placeholder.svg",
     ...props
 }: OptimizedImageProps) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
     const { ref, inView } = useInView({
         triggerOnce: true,
-        rootMargin: typeof window !== 'undefined' && window.innerWidth < 768 ? '100px 0px' : '300px 0px',
-        skip: priority, // Don't skip if priority is needed immediately
+        rootMargin: '400px 0px',
+        skip: priority,
     });
 
     const getAspectRatioClass = () => {
@@ -46,29 +80,44 @@ export const OptimizedImage = ({
         }
     };
 
-    // Optimize Shopify or Unsplash URLs
-    const optimizedSrc = React.useMemo(() => {
-        if (!src) return src;
+    const resizable = isResizable(src);
 
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-        const targetWidth = isMobile && mobileWidth ? mobileWidth : width;
-        const targetQuality = isMobile ? Math.min(quality, 75) : quality;
+    const mainSrc = resizable ? buildCdnUrl(src, width, quality) : src;
 
-        let url = src;
-        if (src.includes('cdn.shopify.com')) {
-            const separator = url.includes('?') ? '&' : '?';
-            if (targetWidth) url += `${separator}width=${targetWidth}`;
-            if (targetQuality) url += `${url.includes('quality') ? '' : `&quality=${targetQuality}`}`;
-        } else if (src.includes('images.unsplash.com')) {
-            const separator = url.includes('?') ? '&' : '?';
-            if (targetWidth) url += `${separator}w=${targetWidth}`;
-            if (targetQuality) url += `&q=${targetQuality}`;
-            if (!url.includes('auto=format')) url += '&auto=format';
-        }
-        return url;
-    }, [src, width, mobileWidth, quality]);
+    const srcSet = resizable
+        ? RESPONSIVE_WIDTHS
+            .filter((w) => w <= width * 2)
+            .map((w) => `${buildCdnUrl(src, w, quality)} ${w}w`)
+            .join(', ')
+        : undefined;
+
+    const resolvedSizes =
+        sizes ?? (resizable ? `(max-width: 768px) ${mobileWidth ?? Math.min(width, 640)}px, ${width}px` : undefined);
 
     const shouldShow = priority || inView;
+
+    const imgEl = (
+        <img
+            src={error ? fallbackSrc : mainSrc}
+            srcSet={error ? undefined : srcSet}
+            sizes={error ? undefined : resolvedSizes}
+            alt={alt}
+            onLoad={() => setIsLoaded(true)}
+            onError={() => {
+                setError(true);
+                setIsLoaded(true);
+            }}
+            className={cn(
+                "w-full h-full object-cover transition-opacity duration-500",
+                isLoaded ? "opacity-100" : "opacity-0",
+                className
+            )}
+            loading={priority ? "eager" : "lazy"}
+            decoding={priority ? "auto" : "async"}
+            {...(priority ? { fetchpriority: "high" } : {})}
+            {...props}
+        />
+    );
 
     return (
         <div
@@ -79,28 +128,17 @@ export const OptimizedImage = ({
                 containerClassName
             )}
         >
-            {!isLoaded && (
-                <Skeleton className="absolute inset-0 z-0" />
-            )}
+            {!isLoaded && <Skeleton className="absolute inset-0 z-0" />}
 
             {shouldShow && (
-                <img
-                    src={error ? fallbackSrc : optimizedSrc}
-                    alt={alt}
-                    onLoad={() => setIsLoaded(true)}
-                    onError={() => {
-                        setError(true);
-                        setIsLoaded(true);
-                    }}
-                    className={cn(
-                        "w-full h-full object-cover transition-opacity duration-500",
-                        isLoaded ? "opacity-100" : "opacity-0",
-                        className
-                    )}
-                    loading={priority ? "eager" : "lazy"}
-                    {...(priority ? { fetchpriority: "high" } : {})}
-                    {...props}
-                />
+                webpSrc && !error ? (
+                    <picture>
+                        <source srcSet={webpSrc} type="image/webp" />
+                        {imgEl}
+                    </picture>
+                ) : (
+                    imgEl
+                )
             )}
         </div>
     );

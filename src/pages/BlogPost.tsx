@@ -2,10 +2,11 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { getBlogPostBySlug, blogPosts } from "@/data/blogData";
-import { Calendar, Clock, User, ArrowLeft, Share2, Tag, TrendingUp, Sparkles } from "lucide-react";
+import { blogIndex } from "@/data/blogIndex";
+import type { BlogPost as BlogPostType } from "@/data/blogTypes";
+import { Calendar, Clock, User, ArrowLeft, Share2, Tag, TrendingUp, Sparkles, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 const ReactMarkdownLazy = lazy(() => import("react-markdown"));
 
 import { useSEO } from "@/hooks/useSEO";
@@ -13,7 +14,23 @@ import { useEffect } from "react";
 
 const BlogPost = () => {
     const { slug } = useParams<{ slug: string }>();
-    const post = slug ? getBlogPostBySlug(slug) : undefined;
+    const [post, setPost] = useState<BlogPostType | undefined>(undefined);
+    const [status, setStatus] = useState<"loading" | "ready" | "missing">("loading");
+
+    // The full blog dataset is large – pull it in only when an article is opened.
+    useEffect(() => {
+        if (!slug) { setStatus("missing"); return; }
+        let cancelled = false;
+        setStatus("loading");
+        setPost(undefined);
+        import("@/data/blogData").then(({ getBlogPostBySlug }) => {
+            if (cancelled) return;
+            const found = getBlogPostBySlug(slug);
+            setPost(found);
+            setStatus(found ? "ready" : "missing");
+        });
+        return () => { cancelled = true; };
+    }, [slug]);
 
     const canonicalUrl = post ? `https://www.aibazar.pk/blog/${post.slug}` : undefined;
 
@@ -181,12 +198,24 @@ const BlogPost = () => {
         };
     }, [post]);
 
-    if (!post) {
+    if (status === "missing") {
         return <Navigate to="/blog" replace />;
     }
 
+    if (status === "loading" || !post) {
+        return (
+            <div className="min-h-screen flex flex-col bg-slate-50">
+                <Header />
+                <main className="flex-1 flex items-center justify-center py-32">
+                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+
     // Get related posts (same category, excluding current post)
-    const relatedPosts = blogPosts
+    const relatedPosts = blogIndex
         .filter(p => p.category === post.category && p.id !== post.id)
         .slice(0, 3);
 

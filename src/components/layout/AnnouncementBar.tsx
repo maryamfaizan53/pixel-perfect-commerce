@@ -22,7 +22,7 @@ export const AnnouncementBar = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="flex items-center gap-2 text-primary-foreground font-medium text-xs sm:text-sm tracking-tight"
+                        className="hidden xs:flex items-center gap-2 text-primary-foreground font-medium text-xs sm:text-sm tracking-tight"
                     >
                         <Info className="w-4 h-4" />
                         <span className="font-bold">ALLOWED TO OPEN PARCEL BEFORE PAYMENT</span>

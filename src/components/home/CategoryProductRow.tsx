@@ -25,19 +25,13 @@ export const CategoryProductRow = ({ title, handle, description, forceLoad = fal
     });
 
     useEffect(() => {
-        console.log(`CategoryProductRow [${handle}]: inView=${inView}, forceLoad=${forceLoad}`);
         if (!inView && !forceLoad) return;
 
         const loadProducts = async () => {
             try {
-                console.log(`CategoryProductRow [${handle}]: fetching products...`);
                 const data = await fetchProductsByCollection(handle, 12);
-                console.log(`CategoryProductRow [${handle}]: received data:`, data);
                 if (data) {
                     setProducts(data.products);
-                    console.log(`[DEBUG] CategoryProductRow [${handle}]: fetched ${data.products.length} products`);
-                } else {
-                    console.log(`[DEBUG] CategoryProductRow [${handle}]: no data returned`);
                 }
             } catch (error) {
                 console.error(`Failed to fetch products for collection ${handle}:`, error);
@@ -65,11 +59,7 @@ export const CategoryProductRow = ({ title, handle, description, forceLoad = fal
     }
 
     if (products.length === 0) {
-        return (
-            <div className="container-custom py-4 text-slate-400 text-xs italic">
-                Row "{title}" (handle: {handle}) skipped because it has 0 products.
-            </div>
-        );
+        return null;
     }
 
     return (

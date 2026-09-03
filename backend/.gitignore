@@ -10,3 +10,7 @@ venv/
 
 *.ndjson
 .tmp/
+.render-admin-token.txt
+
+.vercel
+.env*

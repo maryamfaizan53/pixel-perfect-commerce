@@ -31,3 +31,6 @@ shopify_products_export.csv
 .env.local
 .env.*.local
 chatbot/.env
+
+.vercel
+.env*

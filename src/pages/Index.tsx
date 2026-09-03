@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
+import { HomeHero } from "@/components/home/HomeHero";
 import { HeroCategories } from "@/components/home/HeroCategories";
 import { CategoryProductRow } from "@/components/home/CategoryProductRow";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
@@ -338,7 +339,7 @@ const Index = () => {
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* Hero Section - Display Categories Grid */}
+        <HomeHero />
         <HeroCategories />
 
         {/* Featured category rows */}

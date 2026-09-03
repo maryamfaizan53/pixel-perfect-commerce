@@ -34,3 +34,4 @@ chatbot/.env
 
 .vercel
 .env*
+.netlify/

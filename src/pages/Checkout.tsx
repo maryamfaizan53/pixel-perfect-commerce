@@ -106,7 +106,7 @@ const Checkout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Header />
-      <main className="flex-1 pt-32 sm:pt-36 pb-16">
+      <main className="flex-1 pt-28 sm:pt-32 pb-16">
         <div className="container-custom max-w-5xl">
           <Link to="/cart" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to cart

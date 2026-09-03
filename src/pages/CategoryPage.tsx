@@ -14,7 +14,9 @@ import type { ShopifyProduct, CollectionData } from "@/lib/shopify";
 import { getProducts, searchProducts, getCategory } from "@/lib/api";
 import { toShopifyShape, fromShopifyShape } from "@/lib/compat";
 import { motion, AnimatePresence } from "framer-motion";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { useQuery } from "@tanstack/react-query";
+import { CategoryCards } from "@/components/common/CategoryCards";
+import { getCategories } from "@/lib/api";
 import { useSEO } from "@/hooks/useSEO";
 import { trackMetaEvent } from "@/lib/meta-pixel";
 
@@ -36,6 +38,7 @@ const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
 const CategoryPage = () => {
   const { category = "all" } = useParams();
 
+  const { data: allCategories = [] } = useQuery({ queryKey: ["categories"], queryFn: getCategories });
   const [priceRange, setPriceRange] = useState([0, 0]);
   const [maxPrice, setMaxPrice] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
@@ -285,7 +288,7 @@ const CategoryPage = () => {
 
       <main className="flex-1">
         {/* Dynamic Category Header */}
-        <section className="relative pt-32 pb-32 overflow-hidden bg-slate-900 border-b border-white/5">
+        <section className="relative pt-28 sm:pt-32 pb-24 overflow-hidden bg-slate-900 border-b border-white/5">
           {/* Collection Background Image */}
           {collectionData?.image?.url && (
             <div className="absolute inset-0 z-0">
@@ -355,9 +358,11 @@ const CategoryPage = () => {
           />
         </section>
 
-        {/* Categories Navigation (Requested by User) */}
-        <div className="bg-white border-b border-slate-100 pb-12">
-          <CategoryGrid limit={12} showHeading={false} />
+        {/* Categories navigation */}
+        <div className="bg-background border-b border-border py-10">
+          <div className="container-custom">
+            <CategoryCards categories={allCategories.filter((c) => c.slug !== "more")} limit={8} />
+          </div>
         </div>
 
         <div className="container-custom -mt-12 sm:-mt-16 relative z-20 pb-24">

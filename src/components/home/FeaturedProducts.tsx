@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
+import { SectionHeader } from "@/components/common/SectionHeader";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getProducts } from "@/lib/api";
 import type { ProductCard as ProductCardType } from "@/types/catalog";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 
 export const FeaturedProducts = () => {
   const [products, setProducts] = useState<ProductCardType[]>([]);
@@ -21,11 +21,12 @@ export const FeaturedProducts = () => {
 
   if (loading) {
     return (
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-14 sm:py-20 bg-muted/40">
         <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <Skeleton className="h-9 w-56 mb-8" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {[...Array(8)].map((_, i) => (
-              <Skeleton key={i} className="aspect-[4/5] rounded-xl" />
+              <Skeleton key={i} className="aspect-[4/5] rounded-[14px]" />
             ))}
           </div>
         </div>
@@ -33,81 +34,32 @@ export const FeaturedProducts = () => {
     );
   }
 
-  if (products.length === 0) {
-    return null;
-  }
+  if (products.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16 bg-muted/30">
+    <section className="py-14 sm:py-20 bg-muted/40">
       <div className="container-custom">
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="space-y-2"
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-6 bg-primary rounded-full" />
-              <span className="text-xs font-bold text-primary uppercase tracking-wider">
-                Our Collection
-              </span>
-            </div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-foreground">
-              Featured Products
-            </h2>
-            <p className="text-muted-foreground text-sm md:text-base max-w-md">
-              Explore our most popular products, handpicked for quality and value.
-            </p>
-          </motion.div>
+        <SectionHeader
+          eyebrow="Our collection"
+          title="Featured products"
+          subtitle="Our most popular picks, handpicked for quality and value."
+          viewAllHref="/category"
+        />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <Button variant="outline" asChild className="rounded-xl border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors">
-              <Link to="/category/all" className="flex items-center gap-2">
-                View All
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-
-        {/* Products Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.slice(0, 12).map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <ProductCard product={product} index={index} />
-            </motion.div>
+            <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
 
-        {/* Load More CTA */}
-        {products.length > 12 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-10"
-          >
-            <Button asChild size="lg" className="rounded-xl px-10 h-12 font-bold shadow-lg shadow-primary/20">
-              <Link to="/category/all">
-                Browse All Products
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
-          </motion.div>
-        )}
+        <div className="text-center mt-12">
+          <Button asChild size="pill" className="shadow-gold">
+            <Link to="/category">
+              Browse all products
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );

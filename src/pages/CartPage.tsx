@@ -50,7 +50,7 @@ const CartPage = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/30">
         <Header />
-        <main className="flex-1 pt-32 sm:pt-36 md:pt-40 pb-8 sm:pb-12 md:pb-16">
+        <main className="flex-1 pt-28 sm:pt-32 pb-8 sm:pb-12 md:pb-16">
           <div className="container-custom text-center px-4">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -80,7 +80,7 @@ const CartPage = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/30">
       <Header />
 
-      <main className="flex-1 pt-32 sm:pt-36 md:pt-40 pb-4 sm:pb-6 md:pb-8">
+      <main className="flex-1 pt-28 sm:pt-32 pb-4 sm:pb-6 md:pb-8">
         <div className="container-custom px-3 sm:px-4 md:px-6">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 sm:mb-6 md:mb-8">

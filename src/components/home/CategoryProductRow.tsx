@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { ProductCard } from "@/components/product/ProductCard";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import { getCategory } from "@/lib/api";
 import type { ProductCard as ProductCardType } from "@/types/catalog";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { useInView } from "react-intersection-observer";
 
 interface CategoryProductRowProps {
@@ -40,12 +37,12 @@ export const CategoryProductRow = ({ title, handle, description, forceLoad = fal
 
   if (loading) {
     return (
-      <section ref={ref} className="py-12 bg-background">
+      <section ref={ref} className="py-12 sm:py-14 bg-background">
         <div className="container-custom">
-          <Skeleton className="h-8 w-48 mb-6" />
+          <Skeleton className="h-9 w-56 mb-8" />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {[...Array(8)].map((_, i) => (
-              <Skeleton key={i} className="aspect-[4/5] rounded-xl" />
+              <Skeleton key={i} className="aspect-[4/5] rounded-[14px]" />
             ))}
           </div>
         </div>
@@ -56,37 +53,16 @@ export const CategoryProductRow = ({ title, handle, description, forceLoad = fal
   if (products.length === 0) return null;
 
   return (
-    <section ref={ref} className="py-12 bg-background">
+    <section ref={ref} className="py-12 sm:py-14 bg-background">
       <div className="container-custom">
-        <div className="flex items-center justify-between mb-8 border-l-4 border-primary pl-4">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">{title}</h2>
-            <p className="text-muted-foreground text-sm font-medium">
-              {description || `Explore our ${title.toLowerCase()} collection`}
-            </p>
-          </div>
-          <Link to={`/category/${handle}`}>
-            <Button
-              variant="ghost"
-              className="text-primary hover:text-primary hover:bg-primary/10 font-bold uppercase text-xs tracking-widest"
-            >
-              View All
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
-        </div>
-
+        <SectionHeader
+          title={title}
+          subtitle={description || `Explore our ${title.toLowerCase()} collection`}
+          viewAllHref={`/category/${handle}`}
+        />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.slice(0, 12).map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (index % 4) * 0.05 }}
-            >
-              <ProductCard product={product} index={index} />
-            </motion.div>
+            <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
       </div>

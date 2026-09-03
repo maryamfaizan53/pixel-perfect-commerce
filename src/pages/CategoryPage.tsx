@@ -19,6 +19,7 @@ import { CategoryCards } from "@/components/common/CategoryCards";
 import { getCategories } from "@/lib/api";
 import { useSEO } from "@/hooks/useSEO";
 import { trackMetaEvent } from "@/lib/meta-pixel";
+import { EASE, reduceMotion } from "@/lib/motion";
 
 const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
 
@@ -288,7 +289,7 @@ const CategoryPage = () => {
 
       <main className="flex-1">
         {/* Dynamic Category Header */}
-        <section className="relative pt-28 sm:pt-32 pb-24 overflow-hidden bg-slate-900 border-b border-white/5">
+        <section className="relative pt-28 sm:pt-32 pb-24 overflow-hidden bg-secondary border-b border-white/5">
           {/* Collection Background Image */}
           {collectionData?.image?.url && (
             <div className="absolute inset-0 z-0">
@@ -306,56 +307,35 @@ const CategoryPage = () => {
 
           <div className="container-custom relative z-10">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={reduceMotion() ? undefined : { opacity: 0, y: 24 }}
+              animate={reduceMotion() ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: EASE }}
               className="max-w-4xl"
             >
-              <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass border-white/10 text-white text-[10px] font-black uppercase tracking-[0.3em] mb-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 text-white text-[11px] font-bold uppercase tracking-[0.16em] mb-8">
                 <LayoutGrid className="w-3.5 h-3.5 text-primary" />
                 {collectionData ? 'Collection' : 'All Products'}
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight mb-6 sm:mb-8">
-                {collectionData?.title || (
-                  <>All Products</>
-                )}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight mb-4 sm:mb-6">
+                {collectionData?.title || 'All Products'}
               </h1>
               {collectionData?.description && (
-                <div className="space-y-6 max-w-2xl mb-8">
-                  <p className="text-lg text-white/60 font-medium leading-relaxed">
-                    {collectionData.description}
-                  </p>
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 glass">
-                    <p className="text-sm text-primary font-bold mb-2 uppercase tracking-widest flex items-center gap-2">
-                      <Sparkles className="w-4 h-4" /> AI Summary & Expert Guide
-                    </p>
-                    <p className="text-sm text-white/80 leading-relaxed italic">
-                      Looking for the best <strong className="text-primary">{collectionData.title}</strong> in Pakistan? Our experts recommend prioritizing these items for their verified quality and lowest available pricing. All products in this collection are eligible for free 24-hour dispatch.
-                    </p>
-                  </div>
-                </div>
+                <p className="text-base text-white/60 leading-relaxed max-w-2xl mb-8">
+                  {collectionData.description}
+                </p>
               )}
-              <div className="flex flex-wrap items-center gap-6 sm:gap-10">
+              <div className="flex flex-wrap items-center gap-8 sm:gap-10">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Products</span>
-                  <span className="text-2xl sm:text-3xl font-black text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/30">items</span></span>
+                  <span className="text-[11px] font-semibold text-white/40 uppercase tracking-[0.14em] mb-1">Products</span>
+                  <span className="text-2xl sm:text-3xl font-bold text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/40">items</span></span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Curation</span>
-                  <span className="text-2xl sm:text-3xl font-black text-white">Lowest Prices</span>
+                  <span className="text-[11px] font-semibold text-white/40 uppercase tracking-[0.14em] mb-1">Delivery</span>
+                  <span className="text-2xl sm:text-3xl font-bold text-white">1–3 days</span>
                 </div>
               </div>
             </motion.div>
           </div>
-
-          {/* Animated Background Decor */}
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.15, 0.1]
-            }}
-            transition={{ duration: 10, repeat: Infinity }}
-            className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 blur-[150px] rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none"
-          />
         </section>
 
         {/* Categories navigation */}
@@ -368,10 +348,10 @@ const CategoryPage = () => {
         <div className="container-custom -mt-12 sm:-mt-16 relative z-20 pb-24">
           {/* Action Bar */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="glass-dark border-white/5 bg-white shadow-2xl rounded-[1.5rem] sm:rounded-[2.5rem] p-3 sm:p-6 mb-8 sm:mb-12 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-8"
+            initial={reduceMotion() ? undefined : { opacity: 0, y: 16 }}
+            animate={reduceMotion() ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: EASE, delay: 0.1 }}
+            className="bg-card border border-border shadow-card rounded-2xl p-3 sm:p-5 mb-8 sm:mb-10 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6"
           >
             <div className="relative w-full lg:max-w-md">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -380,7 +360,7 @@ const CategoryPage = () => {
                 placeholder="Search collection..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 sm:pl-14 pr-10 sm:pr-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl border-none bg-slate-100/50 focus:bg-slate-100 font-bold text-base sm:text-lg placeholder:text-muted-foreground/50 transition-all"
+                className="pl-12 pr-10 h-11 sm:h-12 rounded-full border border-border bg-muted/50 focus:bg-background font-medium text-sm placeholder:text-muted-foreground/60 transition-colors"
               />
               {searchQuery && (
                 <button
@@ -393,29 +373,29 @@ const CategoryPage = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto">
-              <div className="flex bg-slate-100 p-1.5 rounded-2xl flex-1 sm:flex-initial justify-center sm:justify-start">
+              <div className="flex bg-muted p-1 rounded-full flex-1 sm:flex-initial justify-center sm:justify-start">
                 <Button
                   variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="icon"
                   onClick={() => setViewMode('grid')}
-                  className={`h-12 w-12 rounded-xl transition-all ${viewMode === 'grid' ? 'shadow-lg' : 'text-muted-foreground'}`}
+                  className={`h-9 w-9 rounded-full transition-colors ${viewMode === 'grid' ? '' : 'text-muted-foreground'}`}
                 >
-                  <Grid className="w-5 h-5" />
+                  <Grid className="w-4 h-4" />
                 </Button>
                 <Button
                   variant={viewMode === 'list' ? 'default' : 'ghost'}
                   size="icon"
                   onClick={() => setViewMode('list')}
-                  className={`h-12 w-12 rounded-xl transition-all ${viewMode === 'list' ? 'shadow-lg' : 'text-muted-foreground'}`}
+                  className={`h-9 w-9 rounded-full transition-colors ${viewMode === 'list' ? '' : 'text-muted-foreground'}`}
                 >
-                  <List className="w-5 h-5" />
+                  <List className="w-4 h-4" />
                 </Button>
               </div>
 
-              <div className="h-10 w-px bg-slate-200 hidden lg:block mx-2" />
+              <div className="h-8 w-px bg-border hidden lg:block mx-1" />
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full lg:w-[220px] h-16 rounded-2xl border-none bg-slate-100/50 hover:bg-slate-100 font-bold uppercase text-[10px] tracking-widest pl-6">
+                <SelectTrigger className="w-full lg:w-[200px] h-11 sm:h-12 rounded-full border border-border bg-muted/50 hover:bg-muted font-semibold text-xs tracking-wide pl-5">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white">
@@ -428,7 +408,7 @@ const CategoryPage = () => {
 
               <Button
                 variant="outline"
-                className="lg:hidden h-16 w-full rounded-2xl border-none bg-slate-100 hover:bg-slate-200 font-black uppercase text-[10px] tracking-widest"
+                className="lg:hidden h-11 sm:h-12 w-full rounded-full border border-border bg-muted hover:bg-muted/80 font-semibold text-xs tracking-wide"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <Filter className="w-4 h-4 mr-3 text-primary" />

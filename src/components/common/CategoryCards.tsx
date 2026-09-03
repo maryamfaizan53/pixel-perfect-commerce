@@ -9,12 +9,22 @@ import { staggerContainer, staggerItem, inView, hoverLift, reduceMotion } from "
 import { cn } from "@/lib/utils";
 import type { Category } from "@/types/catalog";
 
-/** Bundled art for a few main categories (png + webp sibling in /public). */
-const LOCAL_ART: Record<string, string> = {
-  kitchen: "/kitchen",
-  "home-living": "/home-living",
-  "health-wellness": "/health-beauty",
-  cleaning: "/household",
+/**
+ * Curated category art in /public/catagories-images.
+ * To add one: drop a file in that folder and map its category `slug` here.
+ * Slugs still missing art (they fall back to a product photo):
+ *   mobile-accessories, lighting, cleaning, jewellery, watches, fitness,
+ *   car-auto, tools, stationery, pets, seasonal
+ */
+const CATEGORY_IMAGES: Record<string, string> = {
+  kitchen: "/catagories-images/kitchen.jpg",
+  "health-wellness": "/catagories-images/health_wellness.jpg",
+  beauty: "/catagories-images/makeup_skincare.jpg",
+  hair: "/catagories-images/haircare_tools.jpg",
+  electronics: "/catagories-images/electronic_gadgets.jpg",
+  "home-living": "/catagories-images/home_living.jpg",
+  "baby-kids-toys": "/catagories-images/baby-toys.jpg",
+  fashion: "/catagories-images/fashion.jpg",
 };
 
 /** Distinct gradient per card while a real image loads (or if none exists). */
@@ -37,9 +47,7 @@ interface CategoryCardsProps {
 
 const CategoryCard = ({ c, i }: { c: Category; i: number }) => {
   const reduce = reduceMotion();
-  const art = LOCAL_ART[c.slug];
-  const fixedImg = art ? `${art}.png` : c.image?.url;
-  const webp = art ? `${art}.webp` : undefined;
+  const fixedImg = CATEGORY_IMAGES[c.slug] || c.image?.url;
 
   const { ref, inView: onScreen } = useInViewObserver({ triggerOnce: true, rootMargin: "200px" });
 
@@ -64,7 +72,6 @@ const CategoryCard = ({ c, i }: { c: Category; i: number }) => {
         {img && (
           <OptimizedImage
             src={img}
-            webpSrc={webp}
             alt={c.title}
             width={480}
             quality={72}

@@ -1,19 +1,12 @@
-# --- web ---
+# Runtime deps for the catalog + checkout API (Vercel Python function).
+# The optional /api/chat router needs `openai` + `google-generativeai` — install
+# those separately where the chatbot runs; app/main.py skips the router if absent.
 fastapi==0.115.5
-uvicorn[standard]==0.32.1
 python-dotenv==1.0.1
 pydantic[email]==2.10.3
 pydantic-settings==2.6.1
-httpx==0.28.1
+httpx==0.27.2
 tenacity==9.0.0
-
-# --- auth / data ---
 PyJWT==2.10.1
 supabase==2.10.0
-
-# --- ai chatbot (carried over from chatbot/) ---
-openai==1.57.0
-google-generativeai==0.8.3
-
-# --- imports ---
 python-slugify==8.0.4

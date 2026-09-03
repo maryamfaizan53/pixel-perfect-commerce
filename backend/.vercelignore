@@ -1,0 +1,10 @@
+.venv
+venv
+.tmp
+__pycache__
+*.pyc
+.env
+.env.*
+*.ndjson
+.render-admin-token.txt
+tests

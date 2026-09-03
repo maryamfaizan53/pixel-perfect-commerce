@@ -1,9 +1,10 @@
 import { useRef, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
+import { HomeHero } from "@/components/home/HomeHero";
 import { HeroCategories } from "@/components/home/HeroCategories";
 import { CategoryProductRow } from "@/components/home/CategoryProductRow";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { fetchCollections, fetchProductsByCollection } from "@/lib/shopify";
+import { getCategories, getCategory } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { useSEO } from "@/hooks/useSEO";
@@ -268,7 +269,7 @@ const Index = () => {
   // Fetch top-selling products for ItemList schema (Google product carousel)
   const { data: topSellingProducts } = useQuery({
     queryKey: ['top-selling-schema'],
-    queryFn: () => fetchProductsByCollection('top-selling-products', 12),
+    queryFn: () => getCategory('kitchen', 12),
   });
 
   useEffect(() => {
@@ -292,21 +293,21 @@ const Index = () => {
       "description": "Our most popular and best-selling products voted by the community at AI Bazar Pakistan",
       "url": `${siteUrl}/collections/top-selling-products`,
       "numberOfItems": topSellingProducts.products.length,
-      "itemListElement": topSellingProducts.products.map((product: any, index: number) => ({
+      "itemListElement": topSellingProducts.products.map((product, index: number) => ({
         "@type": "ListItem",
         "position": index + 1,
-        "name": product.node.title,
-        "url": `${siteUrl}/products/${product.node.handle}`,
-        "image": product.node.featuredImage?.url || product.node.media?.edges?.[0]?.node?.previewImage?.url,
+        "name": product.title,
+        "url": `${siteUrl}/products/${product.slug}`,
+        "image": product.images[0]?.url,
         "item": {
           "@type": "Product",
-          "name": product.node.title,
-          "url": `${siteUrl}/products/${product.node.handle}`,
-          "image": product.node.featuredImage?.url,
+          "name": product.title,
+          "url": `${siteUrl}/products/${product.slug}`,
+          "image": product.images[0]?.url,
           "offers": {
             "@type": "Offer",
-            "price": product.node.priceRange.minVariantPrice.amount,
-            "priceCurrency": product.node.priceRange.minVariantPrice.currencyCode || "PKR",
+            "price": String(product.price),
+            "priceCurrency": product.currency || "PKR",
             "availability": "https://schema.org/InStock",
             "seller": {
               "@type": "Organization",
@@ -325,83 +326,40 @@ const Index = () => {
     };
   }, [topSellingProducts]);
 
-  console.log("Index component rendering...");
-  const { data: collections = [], isLoading, error } = useQuery({
-    queryKey: ['all-collections-rows'],
-    queryFn: () => {
-      console.log("Fetching collections...");
-      return fetchCollections(15);
-    },
+  const { data: collections = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
   });
 
-  if (isLoading) console.log("Collections are loading...");
-  if (error) console.error("Error fetching collections:", error);
-  if (collections.length > 0) console.log(`Fetched ${collections.length} collections`);
-
-  const specificHandles = ['top-selling-products', 'household', 'heaters', 'health-and-beauty', 'hair-straightener-1', 'kitchen'];
+  const featured = collections.filter((c) => c.featured);
+  const rest = collections.filter((c) => !c.featured && c.slug !== "more");
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Header />
 
       <main className="flex-1 overflow-x-hidden">
-        {/* Hero Section - Display Categories Grid */}
+        <HomeHero />
         <HeroCategories />
 
-        {/* Home Page Collections */}
+        {/* Featured category rows */}
         <div className="space-y-0">
-          <CategoryProductRow
-            title="Top Selling Products"
-            handle="top-selling-products"
-            description="Our most popular picks voted by the community"
-            forceLoad={true}
-          />
-
-
-
-          <CategoryProductRow
-            title="Household Essentials"
-            handle="household"
-            forceLoad={true}
-          />
-
-          <CategoryProductRow
-            title="Modern Home & Living"
-            handle="heaters"
-            forceLoad={true}
-          />
-
-          <CategoryProductRow
-            title="Premium Health & Beauty"
-            handle="health-and-beauty"
-            forceLoad={true}
-          />
-
-          <CategoryProductRow
-            title="Professional Hair Straighteners"
-            handle="hair-straightener-1"
-            forceLoad={true}
-          />
-
-          <CategoryProductRow
-            title="Modern Kitchen Appliances"
-            handle="kitchen"
-            forceLoad={true}
-          />
-
+          {featured.map((c, i) => (
+            <CategoryProductRow
+              key={c.id}
+              title={c.title}
+              handle={c.slug}
+              description={c.description || undefined}
+              forceLoad={i < 3}
+            />
+          ))}
         </div>
 
-        {/* Other Dynamic collections */}
+        {/* Remaining categories */}
         <div className="space-y-4">
-          {collections
-            .filter(col => !specificHandles.includes(col.node.handle))
-            .map((col) => (
-              <CategoryProductRow
-                key={col.node.id}
-                title={col.node.title}
-                handle={col.node.handle}
-              />
-            ))}
+          {rest.map((c) => (
+            <CategoryProductRow key={c.id} title={c.title} handle={c.slug} />
+          ))}
         </div>
 
         {/* All Products Section */}

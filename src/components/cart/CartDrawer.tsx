@@ -9,40 +9,25 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2, Sparkles, ShoppingBag, Package, Truck } from "lucide-react";
-import { useCartStore } from "@/stores/cartStore";
-import { toast } from "sonner";
+import { ShoppingCart, Minus, Plus, Trash2, ArrowRight, Sparkles, ShoppingBag, Package, Truck } from "lucide-react";
+import { useCartStore, lineKey } from "@/stores/cartStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    items,
-    isLoading,
-    updateQuantity,
-    removeItem,
-    createCheckout
-  } = useCartStore();
+  const navigate = useNavigate();
+  const { items, updateQuantity, removeItem } = useCartStore();
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
-  const currencyCode = items[0]?.price.currencyCode || 'PKR';
+  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const currencyCode = items[0]?.currency || "PKR";
   const freeShippingThreshold = 5000;
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - totalPrice);
 
-  const handleCheckout = async () => {
-    try {
-      await createCheckout();
-      const checkoutUrl = useCartStore.getState().checkoutUrl;
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-        setIsOpen(false);
-      }
-    } catch (error) {
-      console.error('Checkout failed:', error);
-      toast.error('Failed to create checkout. Please try again.');
-    }
+  const handleCheckout = () => {
+    setIsOpen(false);
+    navigate("/checkout");
   };
 
   return (
@@ -135,80 +120,64 @@ export const CartDrawer = () => {
               {/* Items List */}
               <div className="flex-1 overflow-y-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 space-y-3 sm:space-y-4">
                 <AnimatePresence mode="popLayout">
-                  {items.map((item, index) => (
-                    <motion.div
-                      key={item.variantId}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, x: -100 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="group flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 hover:bg-white/10 transition-all"
-                    >
-                      {/* Product Image */}
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-slate-800 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                        {item.product.node.media?.edges?.[0]?.node ? (
-                          <img
-                            src={item.product.node.media.edges[0].node.previewImage?.url || item.product.node.media.edges[0].node.image?.url}
-                            alt={item.product.node.title}
-                            className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Package className="w-6 h-6 sm:w-8 sm:h-8 text-white/20" />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Product Details */}
-                      <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                        <div>
-                          <h4 className="font-bold text-white text-sm sm:text-base tracking-tight line-clamp-2 leading-tight">{item.product.node.title}</h4>
-                          {item.variantTitle !== 'Default Title' && (
-                            <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-primary/80 mt-0.5">{item.variantTitle}</p>
+                  {items.map((item, index) => {
+                    const key = lineKey(item);
+                    return (
+                      <motion.div
+                        key={key}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -100 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="group flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 hover:bg-white/10 transition-all"
+                      >
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-slate-800 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.title}
+                              loading="lazy"
+                              className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-white/20" />
+                            </div>
                           )}
                         </div>
 
-                        <div className="flex items-center justify-between mt-2 sm:mt-3">
-                          {/* Quantity Controls */}
-                          <div className="flex items-center gap-1 bg-black/30 rounded-lg p-0.5 border border-white/10">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 sm:h-7 sm:w-7 rounded-md text-white/60 hover:text-white hover:bg-white/10"
-                              onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                            >
-                              <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                            </Button>
-                            <span className="w-6 sm:w-8 text-center text-xs sm:text-sm font-bold text-white">{item.quantity}</span>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 sm:h-7 sm:w-7 rounded-md text-white/60 hover:text-white hover:bg-white/10"
-                              onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                            >
-                              <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                            </Button>
+                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                          <div>
+                            <h4 className="font-bold text-white text-sm sm:text-base tracking-tight line-clamp-2 leading-tight">{item.title}</h4>
+                            {item.variantTitle && (
+                              <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-primary/80 mt-0.5">{item.variantTitle}</p>
+                            )}
                           </div>
 
-                          {/* Price */}
-                          <p className="font-bold text-white text-sm sm:text-base">
-                            <span className="text-[9px] sm:text-[10px] text-white/40 mr-0.5">{currencyCode}</span>
-                            {(parseFloat(item.price.amount) * item.quantity).toLocaleString('en-PK')}
-                          </p>
-                        </div>
-                      </div>
+                          <div className="flex items-center justify-between mt-2 sm:mt-3">
+                            <div className="flex items-center gap-1 bg-black/30 rounded-lg p-0.5 border border-white/10">
+                              <Button variant="ghost" size="icon" className="h-6 w-6 sm:h-7 sm:w-7 rounded-md text-white/60 hover:text-white hover:bg-white/10" onClick={() => updateQuantity(key, item.quantity - 1)}>
+                                <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                              </Button>
+                              <span className="w-6 sm:w-8 text-center text-xs sm:text-sm font-bold text-white">{item.quantity}</span>
+                              <Button variant="ghost" size="icon" className="h-6 w-6 sm:h-7 sm:w-7 rounded-md text-white/60 hover:text-white hover:bg-white/10" onClick={() => updateQuantity(key, item.quantity + 1)}>
+                                <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                              </Button>
+                            </div>
 
-                      {/* Remove Button */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg text-white/20 hover:text-rose-500 hover:bg-rose-500/10 self-start flex-shrink-0 transition-colors"
-                        onClick={() => removeItem(item.variantId)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                      </Button>
-                    </motion.div>
-                  ))}
+                            <p className="font-bold text-white text-sm sm:text-base">
+                              <span className="text-[9px] sm:text-[10px] text-white/40 mr-0.5">{currencyCode}</span>
+                              {(item.price * item.quantity).toLocaleString("en-PK")}
+                            </p>
+                          </div>
+                        </div>
+
+                        <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg text-white/20 hover:text-rose-500 hover:bg-rose-500/10 self-start flex-shrink-0 transition-colors" onClick={() => removeItem(key)}>
+                          <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                        </Button>
+                      </motion.div>
+                    );
+                  })}
                 </AnimatePresence>
               </div>
 
@@ -240,19 +209,10 @@ export const CartDrawer = () => {
                 <Button
                   onClick={handleCheckout}
                   className="w-full h-12 sm:h-14 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold uppercase tracking-wide text-xs sm:text-sm rounded-xl shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
-                  disabled={items.length === 0 || isLoading}
+                  disabled={items.length === 0}
                 >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                      Proceed to Checkout
-                    </>
-                  )}
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  Proceed to Checkout
                 </Button>
 
                 {/* View Cart Link */}

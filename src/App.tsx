@@ -20,6 +20,7 @@ const ProductPage = lazy(() => import("./pages/ProductPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const AllCategories = lazy(() => import("./pages/AllCategories"));
 const CartPage = lazy(() => import("./pages/CartPage"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 const Account = lazy(() => import("./pages/Account"));
 const OrderDetails = lazy(() => import("./pages/OrderDetails"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
@@ -70,8 +71,10 @@ const AnimatedRoutes = () => {
           <Route path="/category/:category" element={<PageTransition><CategoryPage /></PageTransition>} />
           <Route path="/collections/:category" element={<PageTransition><CategoryPage /></PageTransition>} />
           <Route path="/cart" element={<PageTransition><CartPage /></PageTransition>} />
+          <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
           <Route path="/orders/:orderId" element={<PageTransition><OrderDetails /></PageTransition>} />
+          <Route path="/order/:orderId" element={<PageTransition><OrderDetails /></PageTransition>} />
           <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
           <Route path="/help" element={<PageTransition><Help /></PageTransition>} />
           <Route path="/track-order" element={<PageTransition><TrackOrder /></PageTransition>} />

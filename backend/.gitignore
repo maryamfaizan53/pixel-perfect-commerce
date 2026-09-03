@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.env.local
+*.log
+.pytest_cache/
+.ruff_cache/
+
+*.ndjson
+.tmp/
+.render-admin-token.txt
+
+.vercel
+.env*

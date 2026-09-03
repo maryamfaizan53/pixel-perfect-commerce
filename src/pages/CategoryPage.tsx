@@ -6,45 +6,31 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SlidersHorizontal, Loader2, Search, X, Grid, List, Sparkles, Filter, LayoutGrid } from "lucide-react";
+import { Loader2, Search, X, Grid, List, Filter, LayoutGrid } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { fetchProducts, fetchProductsByCollection, ShopifyProduct, CollectionData } from "@/lib/shopify";
-import { motion, AnimatePresence } from "framer-motion";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
+import type { ShopifyProduct, CollectionData } from "@/lib/shopify";
+import { getProducts, searchProducts, getCategory } from "@/lib/api";
+import { toShopifyShape, fromShopifyShape } from "@/lib/compat";
+import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { CategoryCards } from "@/components/common/CategoryCards";
+import { getCategories } from "@/lib/api";
 import { useSEO } from "@/hooks/useSEO";
 import { trackMetaEvent } from "@/lib/meta-pixel";
-
-const brands = ["All Brands", "KitchenPro", "CookMaster", "ChefChoice", "HomeEssentials"];
-
-const colors = [
-  { name: "Obsidian", value: "black", hex: "240 10% 4%" },
-  { name: "Cloud", value: "white", hex: "0 0% 100%" },
-  { name: "Sonic Silver", value: "gray", hex: "240 5% 65%" },
-  { name: "Electric Blue", value: "blue", hex: "217 91% 60%" },
-  { name: "Crimson", value: "red", hex: "0 84% 60%" },
-  { name: "Emerald", value: "green", hex: "142 76% 36%" },
-  { name: "Rose Quartz", value: "pink", hex: "330 81% 60%" },
-  { name: "Mystic Violet", value: "purple", hex: "271 91% 65%" },
-];
-
-const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+import { EASE, reduceMotion } from "@/lib/motion";
 
 const CategoryPage = () => {
   const { category = "all" } = useParams();
 
+  const { data: allCategories = [] } = useQuery({ queryKey: ["categories"], queryFn: getCategories });
   const [priceRange, setPriceRange] = useState([0, 0]);
   const [maxPrice, setMaxPrice] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [collectionData, setCollectionData] = useState<CollectionData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [sortBy, setSortBy] = useState("featured");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -66,30 +52,21 @@ const CategoryPage = () => {
       try {
         let list: ShopifyProduct[] = [];
 
-        // If we have a search query, prioritize that (Server-Side Search)
         if (searchQuery.trim()) {
-          // We pass the raw query, fetchProducts handles the smart query building now
-          list = await fetchProducts(50, searchQuery.trim());
-          // If we are also in a category, we might ideally want to filter by category AND search
-          // But Shopify Storefront API 'query' arg is powerful. 
-          // If we want to restrict search to a collection, we'd need a more complex query like `product_type:X AND title:Y` 
-          // or post-filter. For now, matching the SearchOverlay behavior (global search) is usually expected 
-          // unless "Search within category" is explicitly desired. 
-          // Given the user wants "29 matches" (global), we'll do global search here.
-        }
-        else if (category && category !== "all") {
-          const collection = await fetchProductsByCollection(category, 50);
-          if (collection && collection.products && collection.products.length > 0) {
-            setCollectionData(collection);
-            list = collection.products;
-          } else {
-            if (collection) {
-              setCollectionData(collection);
-            }
-            list = await fetchProducts(50);
-          }
+          const cards = await searchProducts(searchQuery.trim(), 50);
+          list = cards.map(toShopifyShape);
+        } else if (category && category !== "all") {
+          const data = await getCategory(category, 60);
+          setCollectionData({
+            title: data.category.title,
+            description: data.category.description,
+            handle: data.category.slug,
+            image: data.category.image ? { url: data.category.image.url, altText: data.category.image.alt } : undefined,
+            products: [],
+          });
+          list = data.products.map(toShopifyShape);
         } else {
-          list = await fetchProducts(50);
+          list = (await getProducts(0, 60)).items.map(toShopifyShape);
         }
 
         setProducts(list);
@@ -124,24 +101,6 @@ const CategoryPage = () => {
     const timeoutId = setTimeout(loadProducts, 300); // Debounce the effect execution
     return () => clearTimeout(timeoutId);
   }, [category, searchQuery]); // Re-run when category or search changes
-
-  const toggleColor = (color: string) => {
-    setSelectedColors(prev =>
-      prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
-    );
-  };
-
-  const toggleSize = (size: string) => {
-    setSelectedSizes(prev =>
-      prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
-    );
-  };
-
-  const toggleBrand = (brand: string) => {
-    setSelectedBrands(prev =>
-      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-    );
-  };
 
   const filteredProducts = products.filter(product => {
     const price = parseFloat(product.node.priceRange.minVariantPrice.amount);
@@ -292,7 +251,7 @@ const CategoryPage = () => {
 
       <main className="flex-1">
         {/* Dynamic Category Header */}
-        <section className="relative pt-32 pb-32 overflow-hidden bg-slate-900 border-b border-white/5">
+        <section className="relative pt-28 sm:pt-32 pb-24 overflow-hidden bg-secondary border-b border-white/5">
           {/* Collection Background Image */}
           {collectionData?.image?.url && (
             <div className="absolute inset-0 z-0">
@@ -310,70 +269,51 @@ const CategoryPage = () => {
 
           <div className="container-custom relative z-10">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={reduceMotion() ? undefined : { opacity: 0, y: 24 }}
+              animate={reduceMotion() ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: EASE }}
               className="max-w-4xl"
             >
-              <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass border-white/10 text-white text-[10px] font-black uppercase tracking-[0.3em] mb-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 text-white text-[11px] font-bold uppercase tracking-[0.16em] mb-8">
                 <LayoutGrid className="w-3.5 h-3.5 text-primary" />
                 {collectionData ? 'Collection' : 'All Products'}
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight mb-6 sm:mb-8">
-                {collectionData?.title || (
-                  <>All Products</>
-                )}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight mb-4 sm:mb-6">
+                {collectionData?.title || 'All Products'}
               </h1>
               {collectionData?.description && (
-                <div className="space-y-6 max-w-2xl mb-8">
-                  <p className="text-lg text-white/60 font-medium leading-relaxed">
-                    {collectionData.description}
-                  </p>
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 glass">
-                    <p className="text-sm text-primary font-bold mb-2 uppercase tracking-widest flex items-center gap-2">
-                      <Sparkles className="w-4 h-4" /> AI Summary & Expert Guide
-                    </p>
-                    <p className="text-sm text-white/80 leading-relaxed italic">
-                      Looking for the best <strong className="text-primary">{collectionData.title}</strong> in Pakistan? Our experts recommend prioritizing these items for their verified quality and lowest available pricing. All products in this collection are eligible for free 24-hour dispatch.
-                    </p>
-                  </div>
-                </div>
+                <p className="text-base text-white/60 leading-relaxed max-w-2xl mb-8">
+                  {collectionData.description}
+                </p>
               )}
-              <div className="flex flex-wrap items-center gap-6 sm:gap-10">
+              <div className="flex flex-wrap items-center gap-8 sm:gap-10">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Products</span>
-                  <span className="text-2xl sm:text-3xl font-black text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/30">items</span></span>
+                  <span className="text-[11px] font-semibold text-white/40 uppercase tracking-[0.14em] mb-1">Products</span>
+                  <span className="text-2xl sm:text-3xl font-bold text-white">{sortedProducts.length} <span className="text-sm font-medium text-white/40">items</span></span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Curation</span>
-                  <span className="text-2xl sm:text-3xl font-black text-white">Lowest Prices</span>
+                  <span className="text-[11px] font-semibold text-white/40 uppercase tracking-[0.14em] mb-1">Delivery</span>
+                  <span className="text-2xl sm:text-3xl font-bold text-white">1–3 days</span>
                 </div>
               </div>
             </motion.div>
           </div>
-
-          {/* Animated Background Decor */}
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.15, 0.1]
-            }}
-            transition={{ duration: 10, repeat: Infinity }}
-            className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 blur-[150px] rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none"
-          />
         </section>
 
-        {/* Categories Navigation (Requested by User) */}
-        <div className="bg-white border-b border-slate-100 pb-12">
-          <CategoryGrid limit={12} showHeading={false} />
+        {/* Categories navigation */}
+        <div className="bg-background border-b border-border py-10">
+          <div className="container-custom">
+            <CategoryCards categories={allCategories.filter((c) => c.slug !== "more")} limit={8} />
+          </div>
         </div>
 
-        <div className="container-custom -mt-12 sm:-mt-16 relative z-20 pb-24">
+        <div className="container-custom pt-10 pb-20">
           {/* Action Bar */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="glass-dark border-white/5 bg-white shadow-2xl rounded-[1.5rem] sm:rounded-[2.5rem] p-3 sm:p-6 mb-8 sm:mb-12 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-8"
+            initial={reduceMotion() ? undefined : { opacity: 0, y: 16 }}
+            animate={reduceMotion() ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: EASE, delay: 0.1 }}
+            className="bg-card border border-border shadow-card rounded-2xl p-3 sm:p-5 mb-8 sm:mb-10 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6"
           >
             <div className="relative w-full lg:max-w-md">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -382,7 +322,7 @@ const CategoryPage = () => {
                 placeholder="Search collection..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 sm:pl-14 pr-10 sm:pr-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl border-none bg-slate-100/50 focus:bg-slate-100 font-bold text-base sm:text-lg placeholder:text-muted-foreground/50 transition-all"
+                className="pl-12 pr-10 h-11 sm:h-12 rounded-full border border-border bg-muted/50 focus:bg-background font-medium text-sm placeholder:text-muted-foreground/60 transition-colors"
               />
               {searchQuery && (
                 <button
@@ -395,29 +335,29 @@ const CategoryPage = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto">
-              <div className="flex bg-slate-100 p-1.5 rounded-2xl flex-1 sm:flex-initial justify-center sm:justify-start">
+              <div className="flex bg-muted p-1 rounded-full flex-1 sm:flex-initial justify-center sm:justify-start">
                 <Button
                   variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="icon"
                   onClick={() => setViewMode('grid')}
-                  className={`h-12 w-12 rounded-xl transition-all ${viewMode === 'grid' ? 'shadow-lg' : 'text-muted-foreground'}`}
+                  className={`h-9 w-9 rounded-full transition-colors ${viewMode === 'grid' ? '' : 'text-muted-foreground'}`}
                 >
-                  <Grid className="w-5 h-5" />
+                  <Grid className="w-4 h-4" />
                 </Button>
                 <Button
                   variant={viewMode === 'list' ? 'default' : 'ghost'}
                   size="icon"
                   onClick={() => setViewMode('list')}
-                  className={`h-12 w-12 rounded-xl transition-all ${viewMode === 'list' ? 'shadow-lg' : 'text-muted-foreground'}`}
+                  className={`h-9 w-9 rounded-full transition-colors ${viewMode === 'list' ? '' : 'text-muted-foreground'}`}
                 >
-                  <List className="w-5 h-5" />
+                  <List className="w-4 h-4" />
                 </Button>
               </div>
 
-              <div className="h-10 w-px bg-slate-200 hidden lg:block mx-2" />
+              <div className="h-8 w-px bg-border hidden lg:block mx-1" />
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full lg:w-[220px] h-16 rounded-2xl border-none bg-slate-100/50 hover:bg-slate-100 font-bold uppercase text-[10px] tracking-widest pl-6">
+                <SelectTrigger className="w-full lg:w-[200px] h-11 sm:h-12 rounded-full border border-border bg-muted/50 hover:bg-muted font-semibold text-xs tracking-wide pl-5">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white">
@@ -430,7 +370,7 @@ const CategoryPage = () => {
 
               <Button
                 variant="outline"
-                className="lg:hidden h-16 w-full rounded-2xl border-none bg-slate-100 hover:bg-slate-200 font-black uppercase text-[10px] tracking-widest"
+                className="lg:hidden h-11 sm:h-12 w-full rounded-full border border-border bg-muted hover:bg-muted/80 font-semibold text-xs tracking-wide"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <Filter className="w-4 h-4 mr-3 text-primary" />
@@ -439,165 +379,85 @@ const CategoryPage = () => {
             </div>
           </motion.div>
 
-          <div className="grid lg:grid-cols-4 gap-12">
-            {/* Elite Sidebar Filters */}
-            <aside className={`lg:block ${showFilters ? 'block' : 'hidden'} space-y-8 sticky top-32 h-fit`}>
-              {/* Range Selector */}
-              <div className="premium-card p-8 bg-white shadow-xl">
-                <div className="flex items-center gap-2 mb-8">
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-primary" />
-                  </div>
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-900">Price Ceiling</h3>
-                </div>
+          <div className="grid lg:grid-cols-4 gap-8 lg:gap-10">
+            {/* Sidebar filters */}
+            <aside className={`lg:block ${showFilters ? 'block' : 'hidden'} space-y-4 lg:sticky lg:top-28 h-fit`}>
+              <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+                <h3 className="text-sm font-semibold text-foreground mb-4">Price</h3>
                 <Slider
                   value={priceRange}
                   onValueChange={setPriceRange}
                   max={maxPrice || 0}
                   step={10}
-                  className="mb-6"
+                  className="mb-4"
                 />
-                <div className="flex items-center justify-between">
-                  <div className="px-5 py-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-black text-slate-900">
+                <div className="flex items-center justify-between text-xs font-semibold text-foreground">
+                  <span className="px-3 py-1.5 rounded-lg bg-muted border border-border">
                     PKR {priceRange[0].toLocaleString('en-PK')}
-                  </div>
-                  <div className="px-5 py-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-black text-slate-900">
+                  </span>
+                  <span className="px-3 py-1.5 rounded-lg bg-muted border border-border">
                     PKR {priceRange[1].toLocaleString('en-PK')}
-                  </div>
+                  </span>
                 </div>
               </div>
 
-              {/* Chroma Filter */}
-              <div className="premium-card p-8 bg-white shadow-xl">
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-900 mb-8 ml-1">Chroma Select</h3>
-                <div className="grid grid-cols-4 gap-4">
-                  {colors.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => toggleColor(color.value)}
-                      className="group relative flex flex-col items-center gap-2"
-                    >
-                      <div
-                        className={`w-10 h-10 rounded-[12px] border-2 transition-all duration-500 group-hover:scale-110 flex items-center justify-center ${selectedColors.includes(color.value)
-                          ? 'border-primary ring-[6px] ring-primary/10'
-                          : 'border-slate-100'
-                          }`}
-                        style={{ backgroundColor: `hsl(${color.hex})` }}
-                      >
-                        {selectedColors.includes(color.value) && (
-                          <div className={`w-2 h-2 rounded-full ${color.value === 'white' ? 'bg-black' : 'bg-white'}`} />
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
+              <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <Checkbox checked={inStockOnly} onCheckedChange={(v) => setInStockOnly(v === true)} />
+                  <span className="text-sm font-medium text-foreground">In stock only</span>
+                </label>
               </div>
 
-              {/* Dimensional Filter */}
-              <div className="premium-card p-8 bg-white shadow-xl">
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-900 mb-8 ml-1">Dimensions</h3>
-                <div className="grid grid-cols-3 gap-3">
-                  {sizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => toggleSize(size)}
-                      className={`h-11 text-[10px] font-black rounded-xl border-2 transition-all duration-300 hover:border-primary ${selectedSizes.includes(size)
-                        ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                        : 'bg-white border-slate-100 text-slate-500'
-                        }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Brand Authority */}
-              <div className="premium-card p-8 bg-white shadow-xl">
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-900 mb-8 ml-1">Design House</h3>
-                <div className="space-y-4">
-                  {brands.map((brand) => (
-                    <div key={brand} className="flex items-center group cursor-pointer" onClick={() => toggleBrand(brand)}>
-                      <div className={`w-5 h-5 rounded-md border-2 transition-all mr-3 flex items-center justify-center ${selectedBrands.includes(brand) ? 'bg-primary border-primary' : 'border-slate-200 group-hover:border-primary'
-                        }`}>
-                        {selectedBrands.includes(brand) && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                      </div>
-                      <span className={`text-sm font-bold transition-colors ${selectedBrands.includes(brand) ? 'text-primary' : 'text-slate-600 group-hover:text-primary'}`}>
-                        {brand}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {(priceRange[0] > 0 || priceRange[1] < maxPrice || inStockOnly) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setPriceRange([0, maxPrice]); setInStockOnly(false); }}
+                  className="text-primary"
+                >
+                  Clear filters
+                </Button>
+              )}
             </aside>
 
-            {/* Elite Products Grid */}
+            {/* Products */}
             <div className="lg:col-span-3">
               {loading ? (
-                <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 xl:gap-8">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="space-y-6">
-                      <div className="aspect-[4/5] rounded-2xl sm:rounded-[2.5rem] bg-slate-200 animate-pulse" />
-                      <div className="h-6 w-2/3 bg-slate-200 rounded-full animate-pulse" />
-                      <div className="h-4 w-1/3 bg-slate-200 rounded-full animate-pulse" />
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="space-y-3">
+                      <div className="aspect-[4/5] rounded-[14px] bg-muted animate-pulse" />
+                      <div className="h-4 w-2/3 bg-muted rounded-full animate-pulse" />
+                      <div className="h-4 w-1/3 bg-muted rounded-full animate-pulse" />
                     </div>
                   ))}
                 </div>
               ) : sortedProducts.length === 0 ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex flex-col items-center justify-center py-32 text-center"
-                >
-                  <div className="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center mb-6">
-                    <Search className="w-10 h-10 text-slate-300" />
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <Search className="w-7 h-7 text-muted-foreground" />
                   </div>
-                  <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-4">Zero Matches found</h2>
-                  <p className="text-slate-500 font-medium max-w-sm">
-                    Our digital catalog yielded no results. Please re-adjust your parameters or search query.
+                  <h2 className="text-xl font-bold text-foreground mb-2">No products found</h2>
+                  <p className="text-sm text-muted-foreground max-w-sm">
+                    Try a different search, or clear the price and stock filters.
                   </p>
                   <Button
                     variant="link"
                     onClick={() => {
                       setSearchQuery("");
-                      setPriceRange([0, 500]);
-                      setSelectedColors([]);
-                      setSelectedSizes([]);
+                      setPriceRange([0, maxPrice]);
+                      setInStockOnly(false);
                     }}
-                    className="mt-6 text-primary font-black uppercase text-xs tracking-widest"
+                    className="mt-4 text-primary"
                   >
-                    Reset Grid
+                    Clear filters
                   </Button>
-                </motion.div>
+                </div>
               ) : (
-                <motion.div
-                  layout
-                  className={`grid ${viewMode === 'grid' ? 'grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'} gap-4 sm:gap-6 xl:gap-8`}
-                >
-                  <AnimatePresence>
-                    {sortedProducts.map((product, index) => (
-                      <motion.div
-                        key={product.node.id}
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.5, delay: index * 0.05 }}
-                      >
-                        <ProductCard
-                          product={product}
-                        />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
-              )}
-
-              {sortedProducts.length > 0 && (
-                <div className="mt-24 text-center">
-                  <Button size="lg" className="h-16 px-12 rounded-2xl bg-white border border-slate-200 text-slate-900 font-bold uppercase text-xs tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-xl">
-                    Load More
-                  </Button>
+                <div className={`grid ${viewMode === 'grid' ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 max-w-2xl'} gap-4 md:gap-6`}>
+                  {sortedProducts.map((product) => (
+                    <ProductCard key={product.node.id} product={fromShopifyShape(product)} />
+                  ))}
                 </div>
               )}
             </div>

@@ -4,19 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
  * Utility for Meta Pixel (Facebook Pixel) events
  */
 
-// Toggle this to true if your Meta Catalogue uses full Shopify GIDs (e.g., gid://shopify/Product/123456789)
-// Toggle to false if your catalogue uses only numeric IDs (e.g., 123456789)
-const USE_FULL_GID = false;
-
 /**
- * Formats a Shopify ID for Meta Pixel catalogue matching.
- * @param shopifyId The full Shopify GID (e.g., gid://shopify/Product/123456789)
- * @returns Formatted ID string
+ * Product identifier used for Meta Catalogue matching.
+ * Products come from Sanity now — the id is the doc `_id` (e.g. "product.xyz").
+ * The catalogue feed should use the same value.
  */
-export const formatProductId = (shopifyId: string): string => {
-    if (USE_FULL_GID) return shopifyId;
-    return shopifyId.split('/').pop() || '';
-};
+export const formatProductId = (id: string): string => id;
 
 /**
  * Safely tracks a Meta Pixel event across both Browser and Server (CAPI)

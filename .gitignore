@@ -22,3 +22,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# large data export (kept locally, imported via backend/app/importers/hhc_csv.py)
+shopify_products_export.csv
+
+# local env — never commit (contains secrets)
+.env
+.env.local
+.env.*.local
+chatbot/.env
+
+.vercel
+.env*
+.netlify/

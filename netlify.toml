@@ -1,100 +1,12 @@
 [build]
   publish = "dist"
-  command = "npm run build"
 
-# Enable Netlify's prerendering for search engine bots
-# This serves a pre-rendered static HTML snapshot to crawlers
-# so they see all dynamic meta tags, JSON-LD schemas, and content
-[build.processing]
-  skip_processing = false
-
-[build.processing.html]
-  pretty_urls = true
-
-# .well-known/llms.txt redirect (standard AI agent discovery path)
-[[redirects]]
-  from = "/.well-known/llms.txt"
-  to = "/llms.txt"
-  status = 200
-
-# SPA fallback - serve index.html for all routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Global headers for SEO, security, and AI crawlability
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    X-Robots-Tag = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-
-[[headers]]
-  for = "/sitemap.xml"
-  [headers.values]
-    Content-Type = "application/xml"
-    Cache-Control = "public, max-age=3600"
-
-[[headers]]
-  for = "/robots.txt"
-  [headers.values]
-    Content-Type = "text/plain"
-    Cache-Control = "public, max-age=3600"
-
-# AI/LLM manifest files - discoverable by AI agents
-[[headers]]
-  for = "/llms.txt"
-  [headers.values]
-    Content-Type = "text/plain; charset=utf-8"
-    Cache-Control = "public, max-age=86400"
-    X-Content-Purpose = "llm-context"
-    Link = '</llms-full.txt>; rel="alternate"; title="Full Context", </llms-products.txt>; rel="alternate"; title="Product Catalog"'
-
-[[headers]]
-  for = "/llms-full.txt"
-  [headers.values]
-    Content-Type = "text/plain; charset=utf-8"
-    Cache-Control = "public, max-age=86400"
-    X-Content-Purpose = "llm-context-full"
-
-[[headers]]
-  for = "/llms-products.txt"
-  [headers.values]
-    Content-Type = "text/plain; charset=utf-8"
-    Cache-Control = "public, max-age=86400"
-    X-Content-Purpose = "llm-product-catalog"
-
-# Cache static assets aggressively
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Cache images for 30 days
-[[headers]]
-  for = "/*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
-
-[[headers]]
-  for = "/*.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
-
-[[headers]]
-  for = "/*.webp"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"

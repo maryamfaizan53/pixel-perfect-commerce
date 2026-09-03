@@ -736,6 +736,8 @@ async function main() {
 }
 
 main().catch(err => {
-    console.error('❌ Fatal error:', err);
-    process.exit(1);
+    // Non-fatal: static HTML pre-gen is an SEO enhancement, not build-critical.
+    // (The legacy Shopify store this reads from is decommissioned — see backend/.)
+    console.error('⚠️  Static HTML pre-generation skipped:', err.message);
+    process.exit(0);
 });

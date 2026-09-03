@@ -26,6 +26,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.origins,
+    # also allow any Vercel preview/prod URL for this project
+    allow_origin_regex=r"https://[a-z0-9-]+(-hudafaizan93-3000s-projects)?\.vercel\.app",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["authorization", "content-type", "x-admin-token"],

@@ -4,7 +4,9 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 import {structure} from './structure'
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || ''
+// Project ID and dataset are not secrets (they ship in the frontend bundle too).
+// Hardcoded so hosted/CI Studio builds work without a .env file.
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'c9sl2l96'
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
 
 export default defineConfig({

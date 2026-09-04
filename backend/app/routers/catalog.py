@@ -65,9 +65,17 @@ async def related_products(slug: str):
     doc = await cached(f"product:{slug}", lambda: query(Q.PRODUCT_BY_SLUG, {"slug": slug}))
     if not doc:
         raise HTTPException(404, "Product not found")
+    category_slugs = [c["slug"] for c in (doc.get("categories") or []) if c.get("slug")]
     docs = await query(
         Q.RELATED_PRODUCTS,
-        {"slug": slug, "productType": doc.get("productType") or "", "tags": doc.get("tags") or []},
+        {
+            "slug": slug,
+            # Sentinel so an empty productType/tag set never trivially matches
+            # every other untyped product (most of the HHC catalog has neither set).
+            "productType": doc.get("productType") or "no-product-type-set",
+            "tags": doc.get("tags") or [],
+            "categorySlugs": category_slugs or ["no-category-set"],
+        },
     )
     return _overlay_ratings(docs or [])
 

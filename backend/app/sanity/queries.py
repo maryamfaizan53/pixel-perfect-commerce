@@ -62,8 +62,12 @@ PRODUCT_BY_SLUG = f"""
 
 RELATED_PRODUCTS = f"""
 *[_type == "product" && slug.current != $slug && !(_id in path("drafts.**"))
-  && (productType == $productType || count((tags[])[@ in $tags]) > 0)]
-  | order(featured desc)[0...12] {{ {PRODUCT_CARD_PROJECTION} }}
+  && (
+    count((categories[]->slug.current)[@ in $categorySlugs]) > 0
+    || productType == $productType
+    || count((tags[])[@ in $tags]) > 0
+  )]
+  | order(featured desc, _createdAt desc)[0...12] {{ {PRODUCT_CARD_PROJECTION} }}
 """
 
 LIST_CATEGORIES = f"""

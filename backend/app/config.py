@@ -36,6 +36,11 @@ class Settings(BaseSettings):
 
     # --- notifications ---
     whatsapp_notify_number: str = "+923328222026"
+    # Transactional email (Resend). RESEND_API_KEY is injected by the Vercel
+    # Marketplace integration; falls back to no-op if unset.
+    resend_api_key: str = ""
+    order_notification_email: str = "samad.e747@gmail.com"  # store owner — gets an alert per order
+    email_from: str = "AI Bazar <onboarding@resend.dev>"    # switch to orders@aibazar.pk once the domain is verified in Resend
 
     # --- AI chatbot (carried from chatbot/) ---
     gemini_api_key: str = ""

@@ -1,7 +1,7 @@
 """Cart quote + order creation (COD and Safepay online)."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 
 from app.config import settings
 from app.deps import optional_user
@@ -9,6 +9,7 @@ from app.sanity import queries as Q
 from app.sanity.client import query
 from app.schemas.checkout import CartLineIn, CreateOrderIn, CreateOrderOut, QuoteOut
 from app.services import safepay
+from app.services.email import order_notification_html, send_email
 from app.services.pricing import quote as build_quote
 from app.services.supabase_client import get_client
 from pydantic import BaseModel
@@ -35,7 +36,11 @@ async def quote(body: QuoteIn) -> QuoteOut:
 
 
 @router.post("/orders", response_model=CreateOrderOut)
-async def create_order(body: CreateOrderIn, user=Depends(optional_user)) -> CreateOrderOut:
+async def create_order(
+    body: CreateOrderIn,
+    background: BackgroundTasks,
+    user=Depends(optional_user),
+) -> CreateOrderOut:
     s = await _settings_row()
     q = await build_quote(
         body.lines,
@@ -94,6 +99,24 @@ async def create_order(body: CreateOrderIn, user=Depends(optional_user)) -> Crea
             email=body.email,
             redirect_ok=f"https://www.aibazar.pk/order/{order['id']}?paid=1",
             redirect_cancel=f"https://www.aibazar.pk/checkout?cancelled=1",
+        )
+
+    # Fire the owner notification after the response is sent — never delay/break
+    # checkout on a slow or failing mail provider.
+    if settings.order_notification_email:
+        background.add_task(
+            send_email,
+            to=settings.order_notification_email,
+            subject=f"New order {order_number} — {q.total:,.0f} PKR ({body.paymentMethod.upper()})",
+            html=order_notification_html(
+                order=order,
+                order_number=order_number,
+                quote=q,
+                address=body.address.model_dump(),
+                payment_method=body.paymentMethod,
+                notes=body.notes,
+            ),
+            reply_to=body.email,
         )
 
     return CreateOrderOut(

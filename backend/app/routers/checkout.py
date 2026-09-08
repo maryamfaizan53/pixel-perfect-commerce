@@ -9,7 +9,7 @@ from app.sanity import queries as Q
 from app.sanity.client import query
 from app.schemas.checkout import CartLineIn, CreateOrderIn, CreateOrderOut, QuoteOut
 from app.services import safepay
-from app.services.email import order_notification_html, send_email
+from app.services.email import customer_confirmation_html, order_notification_html, send_email
 from app.services.pricing import quote as build_quote
 from app.services.supabase_client import get_client
 from pydantic import BaseModel
@@ -101,23 +101,36 @@ async def create_order(
             redirect_cancel=f"https://www.aibazar.pk/checkout?cancelled=1",
         )
 
-    # Fire the owner notification after the response is sent — never delay/break
-    # checkout on a slow or failing mail provider.
+    # Both emails fire after the response is sent and swallow every error, so a
+    # slow or failing mail provider never delays or breaks checkout.
+    addr = body.address.model_dump()
+
+    # 1) Store owner — full fulfilment details.
     if settings.order_notification_email:
         background.add_task(
             send_email,
             to=settings.order_notification_email,
             subject=f"New order {order_number} — {q.total:,.0f} PKR ({body.paymentMethod.upper()})",
             html=order_notification_html(
-                order=order,
-                order_number=order_number,
-                quote=q,
-                address=body.address.model_dump(),
-                payment_method=body.paymentMethod,
-                notes=body.notes,
+                order=order, order_number=order_number, quote=q,
+                address=addr, payment_method=body.paymentMethod, notes=body.notes,
             ),
             reply_to=body.email,
         )
+
+    # 2) Customer — order confirmation. Requires a verified sending domain in
+    #    Resend to actually deliver (EMAIL_FROM = orders@aibazar.pk); until then
+    #    Resend rejects it and email.py just logs a warning.
+    background.add_task(
+        send_email,
+        to=body.email,
+        subject=f"Your AI Bazar order {order_number} is confirmed",
+        html=customer_confirmation_html(
+            order=order, order_number=order_number, quote=q,
+            address=addr, payment_method=body.paymentMethod,
+        ),
+        reply_to=settings.order_notification_email or None,
+    )
 
     return CreateOrderOut(
         orderId=order["id"],

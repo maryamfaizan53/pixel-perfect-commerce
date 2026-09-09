@@ -104,6 +104,30 @@ SITE_SETTINGS = """
 }
 """
 
+# ---- admin dashboard ----
+ADMIN_PRODUCT_SUMMARY = """
+{
+  "total": count(*[_type == "product" && !(_id in path("drafts.**"))]),
+  "inStock": count(*[_type == "product" && !(_id in path("drafts.**")) && inStock == true]),
+  "outOfStock": count(*[_type == "product" && !(_id in path("drafts.**")) && inStock != true]),
+  "featured": count(*[_type == "product" && !(_id in path("drafts.**")) && featured == true]),
+  "withVideo": count(*[_type == "product" && !(_id in path("drafts.**")) && count(videos) > 0]),
+  "categories": count(*[_type == "category" && !(_id in path("drafts.**"))])
+}
+"""
+
+ADMIN_PRODUCTS_OUT_OF_STOCK = f"""
+{{
+  "items": *[_type == "product" && !(_id in path("drafts.**")) && inStock != true]
+    | order(featured desc, title asc)[$offset...$end] {{ {PRODUCT_CARD_PROJECTION} }},
+  "total": count(*[_type == "product" && !(_id in path("drafts.**")) && inStock != true])
+}}
+"""
+
+ADMIN_PRODUCTS_BY_IDS = f"""
+*[_type == "product" && _id in $ids && !(_id in path("drafts.**"))] {{ {PRODUCT_CARD_PROJECTION} }}
+"""
+
 # For the import job: fetch existing products keyed by external id.
 PRODUCTS_BY_EXTERNAL_IDS = """
 *[_type == "product" && source.portal == $portal && source.externalId in $ids]{

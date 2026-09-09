@@ -58,3 +58,87 @@ class OrderPatchIn(BaseModel):
     trackingNumber: str | None = None
     note: str | None = None
     adminNotes: str | None = None
+
+
+# ---- products ----
+class ProductSummary(BaseModel):
+    total: int = 0
+    inStock: int = 0
+    outOfStock: int = 0
+    featured: int = 0
+    withVideo: int = 0
+    categories: int = 0
+
+
+class TopProduct(BaseModel):
+    id: str
+    slug: str | None = None
+    title: str
+    qtySold: int
+    revenue: float
+    price: float | None = None
+    inStock: bool | None = None
+    imageUrl: str | None = None
+
+
+class ProductRow(BaseModel):
+    id: str
+    slug: str | None = None
+    title: str
+    price: float | None = None
+    compareAtPrice: float | None = None
+    inStock: bool
+    featured: bool
+    imageUrl: str | None = None
+    categories: list[str] = []
+
+
+class ProductListOut(BaseModel):
+    items: list[ProductRow]
+    total: int
+    page: int
+    pages: int
+
+
+# ---- customers ----
+class CustomerRow(BaseModel):
+    email: str
+    name: str | None = None
+    phone: str | None = None
+    orders: int
+    spent: float
+    firstOrder: str
+    lastOrder: str
+    lastStatus: str
+
+
+class CustomerListOut(BaseModel):
+    items: list[CustomerRow]
+    total: int
+    page: int
+    pages: int
+
+
+# ---- settings ----
+class SettingsOut(BaseModel):
+    storeName: str = "AI Bazar"
+    whatsappNumber: str = ""
+    supportEmail: str | None = None
+    deliveryCharge: float = 200
+    freeShippingThreshold: float = 5000
+    codEnabled: bool = True
+    onlinePaymentEnabled: bool = False
+    announcements: list[str] = []
+    socialLinks: dict[str, str | None] = {}
+
+
+class SettingsPatchIn(BaseModel):
+    storeName: str | None = None
+    whatsappNumber: str | None = None
+    supportEmail: str | None = None
+    deliveryCharge: float | None = None
+    freeShippingThreshold: float | None = None
+    codEnabled: bool | None = None
+    onlinePaymentEnabled: bool | None = None
+    announcements: list[str] | None = None
+    socialLinks: dict[str, str | None] | None = None

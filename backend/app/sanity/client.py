@@ -15,9 +15,10 @@ class SanityError(RuntimeError):
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.3, max=3), reraise=True)
-async def query(groq: str, params: dict[str, Any] | None = None) -> Any:
-    """Run a GROQ query. Uses the CDN endpoint unless disabled."""
-    url = f"{settings.sanity_query_host}/data/query/{settings.sanity_dataset}"
+async def query(groq: str, params: dict[str, Any] | None = None, *, use_cdn: bool = True) -> Any:
+    """Run a GROQ query. Uses the CDN endpoint unless disabled (globally or per-call)."""
+    host = settings.sanity_query_host if use_cdn else settings.sanity_mutate_host
+    url = f"{host}/data/query/{settings.sanity_dataset}"
     q: dict[str, str] = {"query": groq}
     for key, value in (params or {}).items():
         q[f"${key}"] = json.dumps(value)

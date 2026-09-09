@@ -19,40 +19,30 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 const NAV = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/admin/orders", label: "Orders", icon: ShoppingBag, end: false },
-  { to: "/admin/products", label: "Products", icon: Package, end: false, soon: true },
-  { to: "/admin/customers", label: "Customers", icon: Users, end: false, soon: true },
-  { to: "/admin/settings", label: "Settings", icon: Settings, end: false, soon: true },
+  { to: "/admin/products", label: "Products", icon: Package, end: false },
+  { to: "/admin/customers", label: "Customers", icon: Users, end: false },
+  { to: "/admin/settings", label: "Settings", icon: Settings, end: false },
 ];
 
 function NavItems({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav className="space-y-1">
-      {NAV.map(({ to, label, icon: Icon, end, soon }) =>
-        soon ? (
-          <span
-            key={to}
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white/30 cursor-not-allowed"
-          >
-            <Icon className="w-4 h-4" /> {label}
-            <span className="ml-auto text-[10px] uppercase tracking-wide text-white/25">soon</span>
-          </span>
-        ) : (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            onClick={onNavigate}
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                isActive ? "bg-white/10 text-white" : "text-white/60 hover:text-white hover:bg-white/5",
-              )
-            }
-          >
-            <Icon className="w-4 h-4" /> {label}
-          </NavLink>
-        ),
-      )}
+      {NAV.map(({ to, label, icon: Icon, end }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={end}
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+              isActive ? "bg-white/10 text-white" : "text-white/60 hover:text-white hover:bg-white/5",
+            )
+          }
+        >
+          <Icon className="w-4 h-4" /> {label}
+        </NavLink>
+      ))}
     </nav>
   );
 }

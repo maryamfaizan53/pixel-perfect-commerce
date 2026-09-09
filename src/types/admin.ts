@@ -111,3 +111,77 @@ export const ORDER_STATUSES = [
 ] as const;
 
 export const PAYMENT_STATUSES = ["unpaid", "paid", "failed", "refunded"] as const;
+
+// ---- products ----
+export interface ProductSummary {
+  total: number;
+  inStock: number;
+  outOfStock: number;
+  featured: number;
+  withVideo: number;
+  categories: number;
+}
+
+export interface TopProduct {
+  id: string;
+  slug: string | null;
+  title: string;
+  qtySold: number;
+  revenue: number;
+  price: number | null;
+  inStock: boolean | null;
+  imageUrl: string | null;
+}
+
+export interface ProductRow {
+  id: string;
+  slug: string | null;
+  title: string;
+  price: number | null;
+  compareAtPrice: number | null;
+  inStock: boolean;
+  featured: boolean;
+  imageUrl: string | null;
+  categories: string[];
+}
+
+export interface ProductList {
+  items: ProductRow[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
+// ---- customers ----
+export interface CustomerRow {
+  email: string;
+  name: string | null;
+  phone: string | null;
+  orders: number;
+  spent: number;
+  firstOrder: string;
+  lastOrder: string;
+  lastStatus: string;
+}
+
+export interface CustomerList {
+  items: CustomerRow[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
+// ---- settings ----
+export interface AdminSettings {
+  storeName: string;
+  whatsappNumber: string;
+  supportEmail: string | null;
+  deliveryCharge: number;
+  freeShippingThreshold: number;
+  codEnabled: boolean;
+  onlinePaymentEnabled: boolean;
+  announcements: string[];
+  socialLinks: Record<string, string | null>;
+}
+
+export type SettingsPatch = Partial<AdminSettings>;

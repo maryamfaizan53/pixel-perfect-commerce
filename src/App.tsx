@@ -42,6 +42,9 @@ const AdminShell = lazy(() => import("./components/admin/AdminShell"));
 const AdminOverview = lazy(() => import("./pages/admin/AdminOverview"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminOrderDetail = lazy(() => import("./pages/admin/AdminOrderDetail"));
+const AdminProducts = lazy(() => import("./pages/admin/AdminProducts"));
+const AdminCustomers = lazy(() => import("./pages/admin/AdminCustomers"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 
 // Lazy load support components
 const WhatsAppSupport = lazy(() => import("@/components/common/WhatsAppSupport").then(m => ({ default: m.WhatsAppSupport })));
@@ -96,6 +99,9 @@ const AnimatedRoutes = () => {
           <Route path="/admin" element={<AdminShell><AdminOverview /></AdminShell>} />
           <Route path="/admin/orders" element={<AdminShell><AdminOrders /></AdminShell>} />
           <Route path="/admin/orders/:id" element={<AdminShell><AdminOrderDetail /></AdminShell>} />
+          <Route path="/admin/products" element={<AdminShell><AdminProducts /></AdminShell>} />
+          <Route path="/admin/customers" element={<AdminShell><AdminCustomers /></AdminShell>} />
+          <Route path="/admin/settings" element={<AdminShell><AdminSettings /></AdminShell>} />
 
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>

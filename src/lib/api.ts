@@ -9,6 +9,7 @@ import type {
   CreateOrderInput,
   CreateOrderResult,
   HomePayload,
+  OrderDetail,
   Product,
   ProductCard,
   ProductList,
@@ -75,5 +76,13 @@ export const createOrder = (input: CreateOrderInput) =>
     body: JSON.stringify(input),
     auth: true, // attaches the user session if signed in; guest checkout still allowed
   });
+
+export const getOrder = (id: string) =>
+  req<OrderDetail>(`/api/checkout/orders/${encodeURIComponent(id)}`);
+
+export const lookupOrder = (number: string, email: string) =>
+  req<OrderDetail>(
+    `/api/checkout/orders/lookup?number=${encodeURIComponent(number)}&email=${encodeURIComponent(email)}`,
+  );
 
 export { ApiError };

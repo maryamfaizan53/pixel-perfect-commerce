@@ -187,3 +187,41 @@ export interface CreateOrderResult {
   total: number;
   redirectUrl: string | null;
 }
+
+export interface OrderItemDetail {
+  productTitle: string;
+  variantTitle: string | null;
+  productSlug: string | null;
+  quantity: number;
+  price: number;
+  total: number;
+  imageUrl: string | null;
+}
+
+export interface OrderDetail {
+  id: string;
+  orderNumber: string;
+  status: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  email: string;
+  phone: string | null;
+  customerName: string | null;
+  subtotal: number;
+  shippingFee: number;
+  total: number;
+  currency: string;
+  shippingAddress: {
+    fullName?: string;
+    phone?: string;
+    line1?: string;
+    line2?: string | null;
+    city?: string;
+    province?: string;
+    postalCode?: string | null;
+    country?: string;
+  } | null;
+  notes: string | null;
+  createdAt: string;
+  items: OrderItemDetail[];
+}

@@ -7,7 +7,14 @@ from app.config import settings
 from app.deps import optional_user
 from app.sanity import queries as Q
 from app.sanity.client import query
-from app.schemas.checkout import CartLineIn, CreateOrderIn, CreateOrderOut, QuoteOut
+from app.schemas.checkout import (
+    CartLineIn,
+    CreateOrderIn,
+    CreateOrderOut,
+    OrderDetailOut,
+    OrderItemOut,
+    QuoteOut,
+)
 from app.services import safepay
 from app.services.email import customer_confirmation_html, order_notification_html, send_email
 from app.services.pricing import quote as build_quote
@@ -140,6 +147,81 @@ async def create_order(
         total=q.total,
         redirectUrl=redirect_url,
     )
+
+
+def _order_to_dto(o: dict, items: list[dict]) -> OrderDetailOut:
+    return OrderDetailOut(
+        id=o["id"],
+        orderNumber=o.get("order_number") or "",
+        status=o.get("status") or "pending",
+        paymentMethod=o.get("payment_method") or "cod",
+        paymentStatus=o.get("payment_status") or "unpaid",
+        email=o.get("email") or "",
+        phone=o.get("phone"),
+        customerName=o.get("customer_name"),
+        subtotal=float(o.get("subtotal_price") or 0),
+        shippingFee=float(o.get("shipping_fee") or 0),
+        total=float(o.get("total_price") or 0),
+        currency=o.get("currency_code") or "PKR",
+        shippingAddress=o.get("shipping_address"),
+        notes=o.get("notes"),
+        createdAt=str(o.get("created_at") or ""),
+        items=[
+            OrderItemOut(
+                productTitle=it.get("product_title") or "",
+                variantTitle=it.get("variant_title"),
+                productSlug=it.get("product_slug"),
+                quantity=int(it.get("quantity") or 1),
+                price=float(it.get("price") or 0),
+                total=float(it.get("total") or 0),
+                imageUrl=it.get("image_url"),
+            )
+            for it in items
+        ],
+    )
+
+
+@router.get("/orders/lookup", response_model=OrderDetailOut)
+async def lookup_order(number: str, email: str) -> OrderDetailOut:
+    """Track-order lookup by order number + email (both must match)."""
+    db = get_client()
+    try:
+        rows = (
+            db.table("orders")
+            .select("*")
+            .eq("order_number", number.strip().upper())
+            .ilike("email", email.strip())
+            .limit(1)
+            .execute()
+            .data
+        )
+    except Exception:
+        rows = None
+    if not rows:
+        raise HTTPException(404, "No order found for that number and email")
+    o = rows[0]
+    items = db.table("order_items").select("*").eq("order_id", o["id"]).execute().data or []
+    return _order_to_dto(o, items)
+
+
+@router.get("/orders/{order_id}", response_model=OrderDetailOut)
+async def get_order(order_id: str) -> OrderDetailOut:
+    """Fetch one order + its items for the confirmation page.
+
+    Looked up by its unguessable UUID — the same pattern as a Shopify
+    thank-you page. The frontend can't read `orders` directly (RLS only
+    exposes a logged-in user's own rows, and most orders are guest checkout).
+    """
+    db = get_client()
+    try:
+        rows = db.table("orders").select("*").eq("id", order_id).limit(1).execute().data
+    except Exception:
+        rows = None
+    if not rows:
+        raise HTTPException(404, "Order not found")
+    o = rows[0]
+    items = db.table("order_items").select("*").eq("order_id", order_id).execute().data or []
+    return _order_to_dto(o, items)
 
 
 @router.post("/webhooks/safepay")

@@ -1,151 +1,109 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Package, MapPin, Truck, CheckCircle } from "lucide-react";
-import { toast } from "sonner";
+import { Package, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { lookupOrder } from "@/lib/api";
+import { useSEO } from "@/hooks/useSEO";
 
-const trackOrderSchema = z.object({
-  orderNumber: z.string()
+const schema = z.object({
+  orderNumber: z
+    .string()
     .trim()
-    .min(5, "Order number must be at least 5 characters")
-    .max(50, "Order number must be less than 50 characters")
-    .regex(/^[A-Z0-9-]+$/i, "Order number can only contain letters, numbers, and hyphens"),
-  email: z.string().trim().email("Please enter a valid email address")
+    .min(3, "Enter your order number (e.g. AB-100001)")
+    .regex(/^[A-Za-z0-9-]+$/, "Letters, numbers and hyphens only"),
+  email: z.string().trim().email("Enter the email you used at checkout"),
 });
 
 const TrackOrder = () => {
+  const navigate = useNavigate();
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [tracking, setTracking] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleTrack = (e: React.FormEvent) => {
+  useSEO({
+    title: "Track your order | AI Bazar",
+    description: "Look up your AI Bazar order with your order number and email.",
+    canonical: "https://www.aibazar.pk/track-order",
+  });
+
+  const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError(null);
+    const parsed = schema.safeParse({ orderNumber, email });
+    if (!parsed.success) {
+      setError(parsed.error.errors[0].message);
+      return;
+    }
+    setLoading(true);
     try {
-      const validatedData = trackOrderSchema.parse({
-        orderNumber,
-        email
-      });
-      
-      setTracking(true);
-      console.log("Tracking order:", validatedData);
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        toast.error("Validation error", {
-          description: error.errors[0].message
-        });
-      }
+      const order = await lookupOrder(parsed.data.orderNumber, parsed.data.email);
+      navigate(`/order/${order.id}`);
+    } catch {
+      setError("We couldn't find an order with that number and email. Double-check both and try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const trackingSteps = [
-    { status: "Order Placed", date: "Jan 15, 2024", completed: true },
-    { status: "Processing", date: "Jan 16, 2024", completed: true },
-    { status: "Shipped", date: "Jan 17, 2024", completed: true },
-    { status: "Out for Delivery", date: "Jan 19, 2024", completed: false },
-    { status: "Delivered", date: "Estimated Jan 20, 2024", completed: false },
-  ];
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      
-      <main className="flex-1 py-8">
-        <div className="container-custom max-w-3xl">
+      <main className="flex-1 pt-24 sm:pt-28 pb-16">
+        <div className="container-custom max-w-md">
           <div className="text-center mb-8">
-            <Package className="w-16 h-16 mx-auto text-primary mb-4" />
-            <h1 className="text-3xl font-bold mb-2">Track Your Order</h1>
-            <p className="text-muted-foreground">Enter your order details to see tracking information</p>
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+              <Package className="w-7 h-7 text-primary" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Track your order</h1>
+            <p className="text-sm text-muted-foreground mt-2">
+              Enter your order number and the email you used at checkout.
+            </p>
           </div>
 
-          <form onSubmit={handleTrack} className="bg-card border border-border rounded-lg p-6 mb-8">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="order-number">Order Number</Label>
-                <Input
-                  id="order-number"
-                  placeholder="e.g., ORD-2024-1001"
-                  value={orderNumber}
-                  onChange={(e) => setOrderNumber(e.target.value)}
-                  className="mt-1"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1"
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full bg-secondary hover:bg-secondary-hover">
-                Track Order
-              </Button>
+          <form
+            onSubmit={handleTrack}
+            className="bg-card border border-border rounded-2xl p-6 shadow-soft space-y-4"
+          >
+            <div>
+              <Label htmlFor="order-number">Order number</Label>
+              <Input
+                id="order-number"
+                placeholder="AB-100001"
+                value={orderNumber}
+                onChange={(e) => setOrderNumber(e.target.value)}
+                className="mt-1.5"
+                required
+              />
             </div>
+            <div>
+              <Label htmlFor="email">Email address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1.5"
+                required
+              />
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" size="lg" className="w-full" disabled={loading}>
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Find my order"}
+            </Button>
           </form>
 
-          {tracking && (
-            <div className="bg-card border border-border rounded-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-bold">Order #{orderNumber}</h2>
-                  <p className="text-muted-foreground">Estimated delivery: Jan 20, 2024</p>
-                </div>
-                <Truck className="w-8 h-8 text-primary" />
-              </div>
-
-              <div className="space-y-6">
-                {trackingSteps.map((step, index) => (
-                  <div key={index} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          step.completed ? "bg-accent text-accent-foreground" : "bg-muted"
-                        }`}
-                      >
-                        {step.completed ? (
-                          <CheckCircle className="w-6 h-6" />
-                        ) : (
-                          <div className="w-3 h-3 rounded-full bg-muted-foreground" />
-                        )}
-                      </div>
-                      {index < trackingSteps.length - 1 && (
-                        <div className={`w-0.5 h-12 ${step.completed ? "bg-accent" : "bg-border"}`} />
-                      )}
-                    </div>
-                    <div className="flex-1 pb-6">
-                      <p className={`font-semibold ${step.completed ? "text-foreground" : "text-muted-foreground"}`}>
-                        {step.status}
-                      </p>
-                      <p className="text-sm text-muted-foreground">{step.date}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 p-4 bg-muted rounded-lg flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-primary mt-0.5" />
-                <div>
-                  <p className="font-semibold mb-1">Shipping Address</p>
-                  <p className="text-sm text-muted-foreground">123 Main Street</p>
-                  <p className="text-sm text-muted-foreground">New York, NY 10001</p>
-                  <p className="text-sm text-muted-foreground">United States</p>
-                </div>
-              </div>
-            </div>
-          )}
+          <p className="text-xs text-muted-foreground text-center mt-4">
+            Your order number is in the confirmation email we sent you.
+          </p>
         </div>
       </main>
-
       <Footer />
     </div>
   );

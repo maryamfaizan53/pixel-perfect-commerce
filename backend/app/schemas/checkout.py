@@ -61,3 +61,32 @@ class CreateOrderOut(BaseModel):
     total: float
     # present only when paymentMethod == 'online'
     redirectUrl: str | None = None
+
+
+class OrderItemOut(BaseModel):
+    productTitle: str
+    variantTitle: str | None = None
+    productSlug: str | None = None
+    quantity: int
+    price: float
+    total: float
+    imageUrl: str | None = None
+
+
+class OrderDetailOut(BaseModel):
+    id: str
+    orderNumber: str
+    status: str
+    paymentMethod: str
+    paymentStatus: str
+    email: str
+    phone: str | None = None
+    customerName: str | None = None
+    subtotal: float
+    shippingFee: float
+    total: float
+    currency: str = "PKR"
+    shippingAddress: dict | None = None
+    notes: str | None = None
+    createdAt: str
+    items: list[OrderItemOut] = []

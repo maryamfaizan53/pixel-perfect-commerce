@@ -188,19 +188,33 @@ async def patch_order(order_id: str, body: OrderPatchIn, background: BackgroundT
     status_changed = body.status is not None and body.status != o.get("status")
     tracking = body.trackingNumber.strip() if body.trackingNumber is not None else None
 
-    # One atomic RPC: updates the row and lets the DB trigger write a single
-    # order_status_history entry carrying `note`.
-    db.rpc(
-        "admin_update_order",
-        {
-            "p_id": order_id,
-            "p_status": body.status,
-            "p_payment_status": body.paymentStatus,
-            "p_tracking": tracking or None,
-            "p_admin_notes": body.adminNotes,
-            "p_note": body.note if status_changed else None,
-        },
-    ).execute()
+    try:
+        # Preferred: one atomic RPC — updates the row and lets the DB trigger
+        # write a single order_status_history entry carrying `note`.
+        db.rpc(
+            "admin_update_order",
+            {
+                "p_id": order_id,
+                "p_status": body.status,
+                "p_payment_status": body.paymentStatus,
+                "p_tracking": tracking or None,
+                "p_admin_notes": body.adminNotes,
+                "p_note": body.note if status_changed else None,
+            },
+        ).execute()
+    except Exception:
+        # Fallback if the RPC isn't deployed yet: plain update. The existing
+        # status-history trigger still records the change (generic note).
+        upd: dict = {"updated_at": datetime.now(timezone.utc).isoformat()}
+        if body.status is not None:
+            upd["status"] = body.status
+        if body.paymentStatus is not None:
+            upd["payment_status"] = body.paymentStatus
+        if body.trackingNumber is not None:
+            upd["tracking_number"] = tracking or None
+        if body.adminNotes is not None:
+            upd["admin_notes"] = body.adminNotes
+        db.table("orders").update(upd).eq("id", order_id).execute()
 
     if status_changed and body.status in _NOTIFY_ON and o.get("email"):
         subject, html = order_status_email(

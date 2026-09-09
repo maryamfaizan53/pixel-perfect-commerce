@@ -35,3 +35,5 @@ chatbot/.env
 .vercel
 .env*
 .netlify/
+order.png
+supabase/.temp/

@@ -10,7 +10,8 @@ class Settings(BaseSettings):
     # --- app ---
     environment: str = "development"
     allowed_origins: str = "http://localhost:8080,http://localhost:5173,https://www.aibazar.pk,https://aibazar.pk"
-    admin_api_token: str = ""  # guards /admin/* (set to a long random string)
+    admin_api_token: str = ""  # guards the Sanity webhook + import triggers
+    admin_emails: str = ""     # comma list — who can use the /admin dashboard (checked against the Supabase JWT)
 
     # --- Sanity ---
     sanity_project_id: str = ""
@@ -49,6 +50,10 @@ class Settings(BaseSettings):
     @property
     def origins(self) -> list[str]:
         return [o.strip() for o in self.allowed_origins.split(",") if o.strip()]
+
+    @property
+    def admin_emails_list(self) -> list[str]:
+        return [e.strip().lower() for e in self.admin_emails.split(",") if e.strip()]
 
     @property
     def sanity_query_host(self) -> str:

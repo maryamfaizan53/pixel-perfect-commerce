@@ -38,3 +38,12 @@ def optional_user(creds: HTTPAuthorizationCredentials | None = Depends(_bearer))
 def require_admin(x_admin_token: str | None = Header(default=None)) -> None:
     if not settings.admin_api_token or x_admin_token != settings.admin_api_token:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Admin token required")
+
+
+def require_dashboard_admin(user: dict = Depends(current_user)) -> dict:
+    """Gate for the /admin dashboard: a valid Supabase login whose email is on
+    the ADMIN_EMAILS allowlist."""
+    email = (user.get("email") or "").lower()
+    if not email or email not in settings.admin_emails_list:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Not an admin account")
+    return user

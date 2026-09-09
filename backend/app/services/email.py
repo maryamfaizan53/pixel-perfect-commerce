@@ -163,3 +163,38 @@ def customer_confirmation_html(*, order: dict, order_number: str, quote, address
 
   <p style="margin:20px 0 0;font-size:12px;color:#94a3b8">AI Bazar · aibazar.pk · Cash on Delivery across Pakistan</p>
 """)
+
+
+# ---------------------------------------------------------------------------
+# Status update — sent to the customer when an order ships or is delivered.
+# ---------------------------------------------------------------------------
+def order_status_email(*, order: dict, order_number: str, status: str, tracking: str | None) -> tuple[str, str]:
+    """Returns (subject, html) for a shipped/delivered notification."""
+    name = (order.get("customer_name") or "there").split(" ")[0]
+    track_url = f"https://www.aibazar.pk/order/{order.get('id', '')}"
+    if status == "shipped":
+        subject = f"Your AI Bazar order {order_number} has shipped"
+        body = (
+            f"Good news, {name} — your order is on its way and should arrive within 1–3 business days."
+            + (f"<br><br>Tracking number: <strong>{tracking}</strong>" if tracking else "")
+        )
+    else:  # delivered
+        subject = f"Your AI Bazar order {order_number} was delivered"
+        body = (
+            f"Hi {name}, your order has been marked as delivered. We hope you love it! "
+            "If anything isn't right, just reply to this email or message us on WhatsApp within 7 days."
+        )
+    html = _shell(f"""\
+  <h2 style="margin:0 0 4px">Order {order_number}</h2>
+  <p style="margin:0 0 16px;color:#64748b">{status.capitalize()}</p>
+  <p style="margin:0 0 20px">{body}</p>
+  <p style="margin:0 0 0">
+    <a href="{track_url}" style="display:inline-block;background:#f59e0b;color:#0f172a;font-weight:600;
+       text-decoration:none;padding:10px 20px;border-radius:9999px">View your order</a>
+  </p>
+  <p style="margin:14px 0 0;font-size:13px;color:#64748b">
+    Questions? <a href="{_SUPPORT_WA}" style="color:#0f172a">WhatsApp us</a> or reply to this email.
+  </p>
+  <p style="margin:20px 0 0;font-size:12px;color:#94a3b8">AI Bazar · aibazar.pk</p>
+""")
+    return subject, html

@@ -13,6 +13,7 @@ from app.schemas.checkout import (
     CreateOrderOut,
     OrderDetailOut,
     OrderItemOut,
+    OrderStatusEvent,
     QuoteOut,
 )
 from app.services import safepay
@@ -149,7 +150,7 @@ async def create_order(
     )
 
 
-def _order_to_dto(o: dict, items: list[dict]) -> OrderDetailOut:
+def _order_to_dto(o: dict, items: list[dict], history: list[dict] | None = None) -> OrderDetailOut:
     return OrderDetailOut(
         id=o["id"],
         orderNumber=o.get("order_number") or "",
@@ -165,7 +166,10 @@ def _order_to_dto(o: dict, items: list[dict]) -> OrderDetailOut:
         currency=o.get("currency_code") or "PKR",
         shippingAddress=o.get("shipping_address"),
         notes=o.get("notes"),
+        trackingNumber=o.get("tracking_number"),
+        adminNotes=o.get("admin_notes"),
         createdAt=str(o.get("created_at") or ""),
+        updatedAt=str(o["updated_at"]) if o.get("updated_at") else None,
         items=[
             OrderItemOut(
                 productTitle=it.get("product_title") or "",
@@ -177,6 +181,14 @@ def _order_to_dto(o: dict, items: list[dict]) -> OrderDetailOut:
                 imageUrl=it.get("image_url"),
             )
             for it in items
+        ],
+        statusHistory=[
+            OrderStatusEvent(
+                status=h.get("status") or "",
+                note=h.get("note"),
+                createdAt=str(h.get("created_at") or ""),
+            )
+            for h in (history or [])
         ],
     )
 

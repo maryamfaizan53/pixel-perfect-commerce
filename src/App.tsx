@@ -37,6 +37,12 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 
+// Admin dashboard (gated, own layout — no storefront shell)
+const AdminShell = lazy(() => import("./components/admin/AdminShell"));
+const AdminOverview = lazy(() => import("./pages/admin/AdminOverview"));
+const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
+const AdminOrderDetail = lazy(() => import("./pages/admin/AdminOrderDetail"));
+
 // Lazy load support components
 const WhatsAppSupport = lazy(() => import("@/components/common/WhatsAppSupport").then(m => ({ default: m.WhatsAppSupport })));
 const AIChatbot = lazy(() => import("@/components/common/AIChatbot").then(m => ({ default: m.AIChatbot })));
@@ -86,6 +92,11 @@ const AnimatedRoutes = () => {
           <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
           <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
           <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
+
+          <Route path="/admin" element={<AdminShell><AdminOverview /></AdminShell>} />
+          <Route path="/admin/orders" element={<AdminShell><AdminOrders /></AdminShell>} />
+          <Route path="/admin/orders/:id" element={<AdminShell><AdminOrderDetail /></AdminShell>} />
+
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>

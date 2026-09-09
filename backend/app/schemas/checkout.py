@@ -73,6 +73,12 @@ class OrderItemOut(BaseModel):
     imageUrl: str | None = None
 
 
+class OrderStatusEvent(BaseModel):
+    status: str
+    note: str | None = None
+    createdAt: str
+
+
 class OrderDetailOut(BaseModel):
     id: str
     orderNumber: str
@@ -88,5 +94,9 @@ class OrderDetailOut(BaseModel):
     currency: str = "PKR"
     shippingAddress: dict | None = None
     notes: str | None = None
+    trackingNumber: str | None = None
+    adminNotes: str | None = None
     createdAt: str
+    updatedAt: str | None = None
     items: list[OrderItemOut] = []
+    statusHistory: list[OrderStatusEvent] = []

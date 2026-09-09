@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import admin, catalog, checkout, seo
+from app.routers import admin, admin_dashboard, catalog, checkout, seo
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -36,6 +36,7 @@ app.add_middleware(
 app.include_router(catalog.router)
 app.include_router(checkout.router)
 app.include_router(admin.router)
+app.include_router(admin_dashboard.router)
 app.include_router(seo.router)
 
 # Optional: AI chatbot. Import lazily so a missing AI key doesn't break the app.

@@ -180,37 +180,36 @@ async def patch_order(order_id: str, body: OrderPatchIn, background: BackgroundT
     db = get_client()
     o, _, _ = _load_order(db, order_id)
 
-    update: dict = {"updated_at": datetime.now(timezone.utc).isoformat()}
-    if body.status is not None:
-        if body.status not in _STATUSES:
-            raise HTTPException(422, f"Invalid status: {body.status}")
-        update["status"] = body.status
-    if body.paymentStatus is not None:
-        if body.paymentStatus not in _PAY_STATUSES:
-            raise HTTPException(422, f"Invalid payment status: {body.paymentStatus}")
-        update["payment_status"] = body.paymentStatus
-    if body.trackingNumber is not None:
-        update["tracking_number"] = body.trackingNumber.strip() or None
-    if body.adminNotes is not None:
-        update["admin_notes"] = body.adminNotes
-
-    db.table("orders").update(update).eq("id", order_id).execute()
+    if body.status is not None and body.status not in _STATUSES:
+        raise HTTPException(422, f"Invalid status: {body.status}")
+    if body.paymentStatus is not None and body.paymentStatus not in _PAY_STATUSES:
+        raise HTTPException(422, f"Invalid payment status: {body.paymentStatus}")
 
     status_changed = body.status is not None and body.status != o.get("status")
-    if status_changed:
-        db.table("order_status_history").insert(
-            {"order_id": order_id, "status": body.status, "note": body.note}
-        ).execute()
+    tracking = body.trackingNumber.strip() if body.trackingNumber is not None else None
 
-        if body.status in _NOTIFY_ON and o.get("email"):
-            merged = {**o, **update}
-            subject, html = order_status_email(
-                order=merged,
-                order_number=o.get("order_number") or "",
-                status=body.status,
-                tracking=update.get("tracking_number") or o.get("tracking_number"),
-            )
-            background.add_task(send_email, to=o["email"], subject=subject, html=html)
+    # One atomic RPC: updates the row and lets the DB trigger write a single
+    # order_status_history entry carrying `note`.
+    db.rpc(
+        "admin_update_order",
+        {
+            "p_id": order_id,
+            "p_status": body.status,
+            "p_payment_status": body.paymentStatus,
+            "p_tracking": tracking or None,
+            "p_admin_notes": body.adminNotes,
+            "p_note": body.note if status_changed else None,
+        },
+    ).execute()
+
+    if status_changed and body.status in _NOTIFY_ON and o.get("email"):
+        subject, html = order_status_email(
+            order={**o, "tracking_number": tracking or o.get("tracking_number")},
+            order_number=o.get("order_number") or "",
+            status=body.status,
+            tracking=tracking or o.get("tracking_number"),
+        )
+        background.add_task(send_email, to=o["email"], subject=subject, html=html)
 
     bust("order")
     fresh, items, history = _load_order(db, order_id)

@@ -15,19 +15,19 @@ const Privacy = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 py-8">
+      <main className="flex-1 pt-28 sm:pt-32 pb-12 sm:pb-16">
         <div className="container-custom max-w-4xl">
           <div className="text-center mb-12">
             <Shield className="w-16 h-16 mx-auto text-primary mb-4" />
             <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
-            <p className="text-muted-foreground">Last updated: January 2024</p>
+            <p className="text-muted-foreground">Last updated: October 2026</p>
           </div>
 
           <div className="prose prose-slate max-w-none space-y-8">
             <section className="bg-card border border-border rounded-lg p-8">
               <h2 className="text-2xl font-bold mb-4">Introduction</h2>
               <p className="text-muted-foreground">
-                At ShopHub, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
+                At AI Bazar, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit aibazar.pk and use our services.
               </p>
             </section>
 
@@ -111,9 +111,9 @@ const Privacy = () => {
                 If you have questions about this Privacy Policy, please contact us at:
               </p>
               <p className="text-muted-foreground mt-4">
-                Email: privacy@shophub.com<br />
-                Phone: 1-800-SHOPHUB<br />
-                Address: 123 Commerce Street, New York, NY 10001
+                Email: aibazarad@gmail.com<br />
+                Phone: +92 332 8222026<br />
+                Address: Pakistan
               </p>
             </section>
           </div>

@@ -28,7 +28,7 @@ const Help = () => {
           "name": "What is your return policy?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "We offer a 30-day return policy on most items. Products must be unused and in original packaging."
+            "text": "We offer a 7-day return policy on most items. Products must be unused and in their original packaging."
           }
         },
         {
@@ -36,15 +36,15 @@ const Help = () => {
           "name": "How long does shipping take?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Standard shipping takes 5-7 business days. Express shipping is available for 2-3 day delivery."
+            "text": "We deliver across Pakistan, usually within 1 to 3 business days depending on your city."
           }
         },
         {
           "@type": "Question",
-          "name": "Do you ship internationally?",
+          "name": "Where do you deliver?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes, we ship to over 100 countries worldwide. Shipping costs and times vary by location."
+            "text": "We deliver nationwide across Pakistan with Cash on Delivery. Orders above PKR 5,000 ship free."
           }
         }
       ]
@@ -66,15 +66,15 @@ const Help = () => {
     },
     {
       question: "What is your return policy?",
-      answer: "We offer a 30-day return policy on most items. Products must be unused and in original packaging.",
+      answer: "We offer a 7-day return policy on most items. Products must be unused and in their original packaging.",
     },
     {
       question: "How long does shipping take?",
-      answer: "Standard shipping takes 5-7 business days. Express shipping is available for 2-3 day delivery.",
+      answer: "We deliver across Pakistan, usually within 1 to 3 business days depending on your city.",
     },
     {
-      question: "Do you ship internationally?",
-      answer: "Yes, we ship to over 100 countries worldwide. Shipping costs and times vary by location.",
+      question: "Where do you deliver?",
+      answer: "We deliver nationwide across Pakistan with Cash on Delivery. Orders above PKR 5,000 ship free.",
     },
   ];
 
@@ -82,9 +82,9 @@ const Help = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8">
+      <main className="flex-1 pb-8">
         {/* Hero Section */}
-        <section className="bg-primary text-primary-foreground py-16 mb-12">
+        <section className="bg-primary text-primary-foreground pt-32 sm:pt-36 pb-16 mb-12">
           <div className="container-custom text-center">
             <h1 className="text-4xl font-bold mb-4">How can we help you?</h1>
             <p className="text-lg mb-8 opacity-90">Search for answers or browse our help topics</p>
@@ -142,10 +142,10 @@ const Help = () => {
                 Contact Support
               </Link>
               <a
-                href="tel:1-800-SHOPHUB"
+                href="tel:+923328222026"
                 className="bg-background border border-border hover:bg-muted px-6 py-3 rounded-lg font-semibold transition-colors"
               >
-                Call: 1-800-SHOPHUB
+                Call: +92 332 8222026
               </a>
             </div>
           </section>

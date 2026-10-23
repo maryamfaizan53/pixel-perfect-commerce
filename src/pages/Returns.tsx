@@ -13,7 +13,7 @@ const Returns = () => {
   const steps = [
     { icon: Package, title: "Request Return", description: "Log into your account and select the item you wish to return" },
     { icon: RotateCcw, title: "Pack Your Item", description: "Securely pack the item in its original packaging with all accessories" },
-    { icon: Clock, title: "Ship It Back", description: "Use the prepaid return label we provide via email" },
+    { icon: Clock, title: "Send It Back", description: "We'll arrange a pickup or share return instructions on WhatsApp" },
     { icon: CheckCircle, title: "Get Your Refund", description: "Receive your refund within 5-7 business days after we receive the item" },
   ];
 
@@ -21,7 +21,7 @@ const Returns = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 py-8">
+      <main className="flex-1 pt-28 sm:pt-32 pb-12 sm:pb-16">
         <div className="container-custom max-w-4xl">
           <div className="text-center mb-12">
             <RotateCcw className="w-16 h-16 mx-auto text-primary mb-4" />
@@ -34,7 +34,7 @@ const Returns = () => {
             <h2 className="text-2xl font-bold mb-4">Our Return Policy</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                <strong className="text-foreground">30-Day Return Window:</strong> You have 30 days from the date of delivery to return most items.
+                <strong className="text-foreground">7-Day Return Window:</strong> You have 7 days from the date of delivery to return most items.
               </p>
               <p>
                 <strong className="text-foreground">Condition:</strong> Items must be unused, in original packaging, and with all tags attached.
@@ -43,7 +43,7 @@ const Returns = () => {
                 <strong className="text-foreground">Proof of Purchase:</strong> Original receipt or order confirmation email required.
               </p>
               <p>
-                <strong className="text-foreground">Free Returns:</strong> We provide prepaid return shipping labels for most items.
+                <strong className="text-foreground">Easy Returns:</strong> For damaged or incorrect items, we arrange the return pickup at no cost to you.
               </p>
             </div>
           </section>
@@ -87,7 +87,7 @@ const Returns = () => {
                 Refunds are issued to the original payment method. Depending on your bank, it may take an additional 3-5 business days for the funds to appear in your account.
               </p>
               <p className="text-foreground font-semibold">
-                Questions about returns? Contact our support team at returns@shophub.com or call 1-800-SHOPHUB.
+                Questions about returns? Contact our support team at aibazarad@gmail.com or call +92 332 8222026.
               </p>
             </div>
           </section>

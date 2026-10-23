@@ -15,19 +15,19 @@ const Terms = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 py-8">
+      <main className="flex-1 pt-28 sm:pt-32 pb-12 sm:pb-16">
         <div className="container-custom max-w-4xl">
           <div className="text-center mb-12">
             <FileText className="w-16 h-16 mx-auto text-primary mb-4" />
             <h1 className="text-4xl font-bold mb-4">Terms of Service</h1>
-            <p className="text-muted-foreground">Last updated: January 2024</p>
+            <p className="text-muted-foreground">Last updated: October 2026</p>
           </div>
 
           <div className="prose prose-slate max-w-none space-y-8">
             <section className="bg-card border border-border rounded-lg p-8">
               <h2 className="text-2xl font-bold mb-4">Agreement to Terms</h2>
               <p className="text-muted-foreground">
-                By accessing or using ShopHub, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access our services.
+                By accessing or using AI Bazar, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access our services.
               </p>
             </section>
 
@@ -80,21 +80,21 @@ const Terms = () => {
             <section className="bg-card border border-border rounded-lg p-8">
               <h2 className="text-2xl font-bold mb-4">Returns and Refunds</h2>
               <p className="text-muted-foreground">
-                Our return policy allows returns within 30 days of delivery for most items. Please refer to our Returns & Refunds page for complete details on eligibility and procedures.
+                Our return policy allows returns within 7 days of delivery for most items. Please refer to our Returns & Refunds page for complete details on eligibility and procedures.
               </p>
             </section>
 
             <section className="bg-card border border-border rounded-lg p-8">
               <h2 className="text-2xl font-bold mb-4">Intellectual Property</h2>
               <p className="text-muted-foreground">
-                All content on this website, including text, graphics, logos, images, and software, is the property of ShopHub and protected by copyright, trademark, and other intellectual property laws.
+                All content on this website, including text, graphics, logos, images, and software, is the property of AI Bazar and protected by copyright, trademark, and other intellectual property laws.
               </p>
             </section>
 
             <section className="bg-card border border-border rounded-lg p-8">
               <h2 className="text-2xl font-bold mb-4">Limitation of Liability</h2>
               <p className="text-muted-foreground">
-                To the fullest extent permitted by law, ShopHub shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of our services.
+                To the fullest extent permitted by law, AI Bazar shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of our services.
               </p>
             </section>
 
@@ -109,8 +109,8 @@ const Terms = () => {
               <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
               <p className="text-muted-foreground">
                 For questions about these Terms of Service, contact us at:<br />
-                Email: legal@shophub.com<br />
-                Phone: 1-800-SHOPHUB
+                Email: aibazarad@gmail.com<br />
+                Phone: +92 332 8222026
               </p>
             </section>
           </div>

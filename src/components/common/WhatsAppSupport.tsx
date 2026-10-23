@@ -3,7 +3,7 @@ import { MessageSquare, X } from "lucide-react";
 import { useState } from "react";
 
 const SUPPORT_NUMBER = "+923328222026"; // Update with actual support number
-const SUPPORT_MESSAGE = "Hi! I have a question about a product on PixelPerfect.";
+const SUPPORT_MESSAGE = "Hi! I have a question about a product on AI Bazar.";
 
 export const WhatsAppSupport = () => {
     const [showTooltip, setShowTooltip] = useState(false);

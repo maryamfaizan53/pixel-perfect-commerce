@@ -1,10 +1,31 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Mail, Phone, MapPin, ShoppingBag, CreditCard, Truck, Shield, ArrowRight } from "lucide-react";
+import { Facebook, Instagram, Mail, Phone, MapPin, ShoppingBag, CreditCard, Truck, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getCategories } from "@/lib/api";
+import { toast } from "sonner";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [email, setEmail] = useState("");
+
+  const { data: collections = [] } = useQuery({ queryKey: ["categories"], queryFn: getCategories });
+  const shopLinks = [
+    { name: "All Products", path: "/category/all" },
+    ...collections.slice(0, 5).map((c) => ({ name: c.title, path: `/category/${c.slug}` })),
+  ];
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.includes("@") || email.trim().length < 5) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    toast.success("You're subscribed!", { description: "We'll send you offers and new arrivals." });
+    setEmail("");
+  };
 
   return (
     <footer className="bg-secondary text-secondary-foreground">
@@ -93,10 +114,22 @@ export const Footer = () => {
 
             {/* Social Links */}
             <div className="flex gap-3 pt-2 justify-center md:justify-start">
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-300">
+              <a
+                href="https://www.facebook.com/aibazar"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="AI Bazar on Facebook"
+                className="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-300"
+              >
                 <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-300">
+              <a
+                href="https://www.instagram.com/aibazar"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="AI Bazar on Instagram"
+                className="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-300"
+              >
                 <Instagram className="w-4 h-4" />
               </a>
             </div>
@@ -106,17 +139,11 @@ export const Footer = () => {
           <div className="lg:col-span-2">
             <h3 className="font-semibold text-white mb-4">Shop Categories</h3>
             <ul className="space-y-2.5">
-              {[
-                { name: 'All Products', title: 'Browse All Online Products in Pakistan' },
-                { name: 'New Arrivals', title: 'Check Latest Products at AI Bazar' },
-                { name: 'Best Sellers', title: 'Top Selling Online Products in Pakistan' },
-                { name: 'On Sale', title: 'Best Discounts and Deals Online Pakistan' }
-              ].map((item) => (
-                <li key={item.name}>
+              {shopLinks.map((item) => (
+                <li key={item.path + item.name}>
                   <Link
-                    to={`/category/all`}
-                    title={item.title}
-                    aria-label={item.title}
+                    to={item.path}
+                    title={item.name}
                     className="text-sm text-secondary-foreground/70 hover:text-primary transition-colors"
                   >
                     {item.name}
@@ -169,16 +196,20 @@ export const Footer = () => {
             <p className="text-sm text-secondary-foreground/70 mb-4 max-w-xs mx-auto md:mx-0">
               Subscribe for exclusive offers and new arrivals.
             </p>
-            <div className="flex flex-col gap-3 w-full max-w-sm mx-auto md:mx-0">
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-3 w-full max-w-sm mx-auto md:mx-0">
+              <label htmlFor="footer-newsletter" className="sr-only">Email address</label>
               <Input
+                id="footer-newsletter"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 className="h-12 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-primary flex-1"
               />
-              <Button className="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/20">
+              <Button type="submit" className="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/20">
                 Subscribe
               </Button>
-            </div>
+            </form>
 
             {/* Payment Methods */}
             <div className="mt-8">

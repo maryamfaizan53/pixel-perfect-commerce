@@ -99,7 +99,7 @@ export default function AdminProducts() {
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
                       {p.imageUrl ? (
-                        <img src={p.imageUrl} alt="" className="w-9 h-9 rounded-lg object-cover border border-border flex-shrink-0" />
+                        <img src={p.imageUrl} alt={p.title} className="w-9 h-9 rounded-lg object-cover border border-border flex-shrink-0" />
                       ) : (
                         <div className="w-9 h-9 rounded-lg bg-muted flex-shrink-0" />
                       )}
@@ -166,7 +166,7 @@ export default function AdminProducts() {
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
                       {p.imageUrl ? (
-                        <img src={p.imageUrl} alt="" className="w-9 h-9 rounded-lg object-cover border border-border flex-shrink-0" />
+                        <img src={p.imageUrl} alt={p.title} className="w-9 h-9 rounded-lg object-cover border border-border flex-shrink-0" />
                       ) : (
                         <div className="w-9 h-9 rounded-lg bg-muted flex-shrink-0" />
                       )}

@@ -15,7 +15,6 @@ import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 
 // Lazy load pages for code splitting
 const Index = lazy(() => import("./pages/Index"));
-const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const ProductPage = lazy(() => import("./pages/ProductPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const AllCategories = lazy(() => import("./pages/AllCategories"));

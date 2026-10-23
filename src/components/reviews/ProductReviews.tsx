@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2, MessageSquarePlus } from "lucide-react";
 import { ReviewCard } from "./ReviewCard";
@@ -129,7 +130,7 @@ export function ProductReviews({ productId, productHandle, category = 'general' 
             Sign in to leave a review
           </p>
           <Button variant="outline" asChild>
-            <a href="/auth">Sign In</a>
+            <Link to="/auth">Sign In</Link>
           </Button>
         </div>
       )}

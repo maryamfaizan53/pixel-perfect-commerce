@@ -204,7 +204,7 @@ export default function AdminOrderDetail() {
         <div className="space-y-3">
           {order.items.map((it, i) => (
             <div key={i} className="flex gap-3">
-              {it.imageUrl && <img src={it.imageUrl} alt="" className="w-14 h-14 rounded-lg object-cover border border-border flex-shrink-0" />}
+              {it.imageUrl && <img src={it.imageUrl} alt={it.productTitle} className="w-14 h-14 rounded-lg object-cover border border-border flex-shrink-0" />}
               <div className="flex-1 min-w-0">
                 {it.productSlug ? (
                   <Link to={`/product/${it.productSlug}`} target="_blank" className="text-sm font-medium text-foreground hover:text-primary line-clamp-2">{it.productTitle}</Link>

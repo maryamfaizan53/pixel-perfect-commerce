@@ -819,7 +819,7 @@ const ProductPage = () => {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 flex items-center justify-center pt-24">
+        <main className="flex-1 flex items-center justify-center pt-28 sm:pt-32">
           <Loader2 className="w-8 h-8 text-primary animate-spin" />
         </main>
         <Footer />
@@ -831,7 +831,7 @@ const ProductPage = () => {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 flex items-center justify-center pt-24">
+        <main className="flex-1 flex items-center justify-center pt-28 sm:pt-32">
           <div className="text-center max-w-md mx-auto px-4">
             <h1 className="text-3xl font-bold mb-4 tracking-tight">Product not found</h1>
             <p className="text-muted-foreground mb-8">
@@ -871,7 +871,7 @@ const ProductPage = () => {
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       <Header />
 
-      <main className="flex-1 pt-24 sm:pt-28 pb-16 lg:pb-24">
+      <main className="flex-1 pt-28 sm:pt-32 pb-16 lg:pb-24">
         <article className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <nav className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground mb-6">

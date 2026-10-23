@@ -23,6 +23,7 @@ const Checkout = () => {
   const [loadingQuote, setLoadingQuote] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [onlineEnabled, setOnlineEnabled] = useState(false);
+  const [attempted, setAttempted] = useState(false);
 
   const [form, setForm] = useState({
     email: "",
@@ -59,16 +60,29 @@ const Checkout = () => {
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const canSubmit =
-    !!quote?.valid &&
-    form.email.includes("@") &&
-    form.fullName.trim().length > 2 &&
-    /^0?3\d{9}$/.test(form.phone.replace(/\s|-/g, "")) &&
-    form.line1.trim().length > 4 &&
-    form.city.trim().length > 1;
+  const invalid = {
+    email: !form.email.includes("@"),
+    fullName: form.fullName.trim().length <= 2,
+    phone: !/^0?3\d{9}$/.test(form.phone.replace(/\s|-/g, "")),
+    line1: form.line1.trim().length <= 4,
+    city: form.city.trim().length <= 1,
+  };
+  const canSubmit = !!quote?.valid && !Object.values(invalid).some(Boolean);
+
+  const missing = [
+    invalid.email && "a valid email address",
+    invalid.fullName && "your full name",
+    invalid.phone && "a valid phone number (03XXXXXXXXX)",
+    invalid.line1 && "your delivery address",
+    invalid.city && "your city",
+  ].filter(Boolean) as string[];
 
   const submit = async () => {
-    if (!canSubmit || !quote) return;
+    if (!canSubmit || !quote) {
+      setAttempted(true);
+      toast.error("Please complete the required fields to place your order.");
+      return;
+    }
     setSubmitting(true);
     try {
       trackMetaEvent("AddPaymentInfo", { value: quote.total, currency: "PKR", num_items: items.length });
@@ -119,30 +133,59 @@ const Checkout = () => {
               <section className="bg-white rounded-2xl border border-slate-100 p-5 sm:p-6 space-y-4">
                 <h2 className="font-bold text-slate-900">Contact & delivery</h2>
                 <div className="grid sm:grid-cols-2 gap-3">
-                  <Input placeholder="Email address" type="email" value={form.email} onChange={set("email")} className="sm:col-span-2" />
-                  <Input placeholder="Full name" value={form.fullName} onChange={set("fullName")} />
-                  <Input placeholder="Phone (03XXXXXXXXX)" value={form.phone} onChange={set("phone")} inputMode="tel" />
-                  <Input placeholder="Address line 1" value={form.line1} onChange={set("line1")} className="sm:col-span-2" />
-                  <Input placeholder="Address line 2 (optional)" value={form.line2} onChange={set("line2")} className="sm:col-span-2" />
-                  <Input placeholder="City" value={form.city} onChange={set("city")} />
-                  <select
-                    value={form.province}
-                    onChange={(e) => setForm((f) => ({ ...f, province: e.target.value }))}
-                    className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-                  >
-                    {PROVINCES.map((p) => (
-                      <option key={p}>{p}</option>
-                    ))}
-                  </select>
-                  <Input placeholder="Postal code (optional)" value={form.postalCode} onChange={set("postalCode")} />
+                  <div className="sm:col-span-2">
+                    <label htmlFor="co-email" className="block text-xs font-medium text-slate-600 mb-1">Email address</label>
+                    <Input id="co-email" type="email" placeholder="you@example.com" value={form.email} onChange={set("email")} aria-invalid={attempted && invalid.email} />
+                  </div>
+                  <div>
+                    <label htmlFor="co-name" className="block text-xs font-medium text-slate-600 mb-1">Full name</label>
+                    <Input id="co-name" placeholder="e.g. Ali Khan" value={form.fullName} onChange={set("fullName")} aria-invalid={attempted && invalid.fullName} />
+                  </div>
+                  <div>
+                    <label htmlFor="co-phone" className="block text-xs font-medium text-slate-600 mb-1">Phone</label>
+                    <Input id="co-phone" placeholder="03XXXXXXXXX" value={form.phone} onChange={set("phone")} inputMode="tel" aria-invalid={attempted && invalid.phone} />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="co-line1" className="block text-xs font-medium text-slate-600 mb-1">Address line 1</label>
+                    <Input id="co-line1" placeholder="House / street" value={form.line1} onChange={set("line1")} aria-invalid={attempted && invalid.line1} />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="co-line2" className="block text-xs font-medium text-slate-600 mb-1">Address line 2 <span className="text-slate-400">(optional)</span></label>
+                    <Input id="co-line2" placeholder="Area / landmark" value={form.line2} onChange={set("line2")} />
+                  </div>
+                  <div>
+                    <label htmlFor="co-city" className="block text-xs font-medium text-slate-600 mb-1">City</label>
+                    <Input id="co-city" placeholder="e.g. Karachi" value={form.city} onChange={set("city")} aria-invalid={attempted && invalid.city} />
+                  </div>
+                  <div>
+                    <label htmlFor="co-province" className="block text-xs font-medium text-slate-600 mb-1">Province</label>
+                    <select
+                      id="co-province"
+                      value={form.province}
+                      onChange={(e) => setForm((f) => ({ ...f, province: e.target.value }))}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    >
+                      {PROVINCES.map((p) => (
+                        <option key={p}>{p}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="co-postal" className="block text-xs font-medium text-slate-600 mb-1">Postal code <span className="text-slate-400">(optional)</span></label>
+                    <Input id="co-postal" placeholder="e.g. 75500" value={form.postalCode} onChange={set("postalCode")} />
+                  </div>
                 </div>
-                <textarea
-                  placeholder="Order notes (optional)"
-                  value={form.notes}
-                  onChange={set("notes")}
-                  rows={2}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                />
+                <div>
+                  <label htmlFor="co-notes" className="block text-xs font-medium text-slate-600 mb-1">Order notes <span className="text-slate-400">(optional)</span></label>
+                  <textarea
+                    id="co-notes"
+                    placeholder="Anything we should know about your delivery?"
+                    value={form.notes}
+                    onChange={set("notes")}
+                    rows={2}
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  />
+                </div>
               </section>
 
               <section className="bg-white rounded-2xl border border-slate-100 p-5 sm:p-6 space-y-3">
@@ -172,7 +215,7 @@ const Checkout = () => {
                   <div className="space-y-3 max-h-64 overflow-y-auto">
                     {quote.lines.map((l) => (
                       <div key={`${l.productId}::${l.variantKey ?? ""}`} className="flex gap-3 text-sm">
-                        {l.imageUrl && <img src={l.imageUrl} alt="" className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />}
+                        {l.imageUrl && <img src={l.imageUrl} alt={l.title} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />}
                         <div className="min-w-0 flex-1">
                           <p className="line-clamp-2 font-medium">{l.title}</p>
                           <p className="text-slate-400">
@@ -200,9 +243,14 @@ const Checkout = () => {
                 </>
               )}
 
-              <Button className="w-full h-12 font-bold" disabled={!canSubmit || submitting} onClick={submit}>
+              <Button className="w-full h-12 font-bold" disabled={submitting || loadingQuote} onClick={submit}>
                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : form.paymentMethod === "cod" ? "Place order" : "Pay now"}
               </Button>
+              {attempted && missing.length > 0 && (
+                <p className="text-xs text-destructive" role="alert">
+                  Please add {missing.join(", ")}.
+                </p>
+              )}
               <div className="flex items-center justify-center gap-4 text-[11px] text-slate-400">
                 <span className="flex items-center gap-1"><Truck className="w-3.5 h-3.5" /> 1–3 day delivery</span>
                 <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5" /> 7-day returns</span>

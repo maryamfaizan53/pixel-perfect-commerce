@@ -54,7 +54,7 @@ const TrackOrder = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 pt-24 sm:pt-28 pb-16">
+      <main className="flex-1 pt-28 sm:pt-32 pb-16">
         <div className="container-custom max-w-md">
           <div className="text-center mb-8">
             <div className="w-14 h-14 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-4">

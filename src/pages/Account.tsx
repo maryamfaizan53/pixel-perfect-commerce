@@ -71,7 +71,7 @@ const Account = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 py-8 bg-muted">
+      <main className="flex-1 pt-28 sm:pt-32 pb-12 bg-muted">
         <div className="container-custom">
           <h1 className="text-3xl font-bold mb-8">My Account</h1>
 

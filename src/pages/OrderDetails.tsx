@@ -54,7 +54,7 @@ const OrderDetails = () => {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 flex items-center justify-center pt-24">
+        <main className="flex-1 flex items-center justify-center pt-28 sm:pt-32">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
         </main>
         <Footer />
@@ -66,7 +66,7 @@ const OrderDetails = () => {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 flex items-center justify-center pt-24 pb-16">
+        <main className="flex-1 flex items-center justify-center pt-28 sm:pt-32 pb-16">
           <div className="text-center max-w-sm mx-auto px-4">
             <Package className="h-14 w-14 text-muted-foreground mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-foreground mb-2">Order not found</h1>
@@ -100,7 +100,7 @@ const OrderDetails = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 pt-24 sm:pt-28 pb-16">
+      <main className="flex-1 pt-28 sm:pt-32 pb-16">
         <div className="container-custom max-w-3xl">
           {justPlaced && (
             <div className="mb-6 flex items-start gap-3 rounded-2xl border border-trust/30 bg-trust/10 p-4">

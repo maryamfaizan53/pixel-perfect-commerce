@@ -24,7 +24,7 @@ interface Message {
 export const AIChatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
-        { role: "assistant", content: "Welcome to PixelPerfect. I am your AI Concierge. How may I assist your curation today?" }
+        { role: "assistant", content: "Hi! Welcome to AI Bazar. I'm your shopping assistant — ask me about products, prices, delivery, or your order and I'll help you out." }
     ]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -74,22 +74,26 @@ export const AIChatbot = () => {
                                     <Sparkles className="w-5 h-5 text-primary" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-black uppercase tracking-widest leading-tight">AI Concierge</h3>
+                                    <h3 className="text-sm font-black uppercase tracking-widest leading-tight">AI Bazar Assistant</h3>
                                     <div className="flex items-center gap-1.5 pt-0.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Online • {provider}</span>
+                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Online{import.meta.env.DEV ? ` • ${provider}` : ""}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setShowSettings(!showSettings)}
-                                    className="p-2 hover:bg-white/10 rounded-xl transition-colors"
-                                >
-                                    <Settings2 className="w-4 h-4 text-slate-400" />
-                                </button>
+                                {import.meta.env.DEV && (
+                                    <button
+                                        onClick={() => setShowSettings(!showSettings)}
+                                        aria-label="AI provider settings (dev only)"
+                                        className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                                    >
+                                        <Settings2 className="w-4 h-4 text-slate-400" />
+                                    </button>
+                                )}
                                 <button
                                     onClick={() => setIsOpen(false)}
+                                    aria-label="Close chat"
                                     className="p-2 hover:bg-white/10 rounded-xl transition-colors"
                                 >
                                     <X className="w-4 h-4 text-slate-400" />
@@ -185,11 +189,12 @@ export const AIChatbot = () => {
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                                    placeholder="Inquire with the concierge..."
+                                    placeholder="Ask about products, prices, delivery..."
                                     className="w-full bg-white border border-slate-200 rounded-2xl py-4 pl-4 pr-14 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
                                 />
                                 <button
                                     onClick={handleSend}
+                                    aria-label="Send message"
                                     disabled={!input.trim() || isLoading}
                                     className="absolute right-2 top-2 w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-primary transition-all disabled:opacity-50 disabled:bg-slate-200"
                                 >
@@ -197,7 +202,7 @@ export const AIChatbot = () => {
                                 </button>
                             </div>
                             <p className="text-center text-[9px] text-slate-400 pt-3 font-bold uppercase tracking-widest">
-                                Powered by Chainkit AI • Premium Assistance
+                                AI Bazar • Here to help with your shopping
                             </p>
                         </div>
                     </motion.div>
@@ -208,6 +213,8 @@ export const AIChatbot = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? "Close chat" : "Open AI Bazar chat assistant"}
+                aria-expanded={isOpen}
                 className={cn(
                     "w-16 h-16 rounded-[24px] flex items-center justify-center shadow-premium transition-all duration-500",
                     isOpen ? "bg-slate-900 rotate-90" : "bg-primary shadow-gold"

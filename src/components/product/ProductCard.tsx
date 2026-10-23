@@ -97,7 +97,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           className={`absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${
             inWishlist
               ? "bg-primary text-primary-foreground"
-              : "bg-white/85 text-foreground/70 hover:text-primary opacity-0 group-hover:opacity-100"
+              : "bg-white/85 text-foreground/70 hover:text-primary opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
           }`}
         >
           <Heart className="w-4 h-4" />
@@ -119,8 +119,8 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           <BadgeCheck className="w-3 h-3" /> COD
         </span>
 
-        {/* quick add */}
-        <div className="absolute inset-x-0 bottom-0 p-2.5 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+        {/* quick add — desktop hover reveal only (touch devices get the button in the body) */}
+        <div className="hidden lg:block absolute inset-x-0 bottom-0 p-2.5 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
           <Button
             onClick={handleAddToCart}
             disabled={!inStock}
@@ -159,6 +159,17 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             </span>
           )}
         </div>
+
+        {/* persistent add-to-cart for touch devices (desktop uses the hover overlay) */}
+        <Button
+          onClick={handleAddToCart}
+          disabled={!inStock}
+          size="sm"
+          className="w-full mt-3 lg:hidden"
+        >
+          <ShoppingBag className="w-4 h-4" />
+          {inStock ? "Add to cart" : "Sold out"}
+        </Button>
       </div>
     </motion.div>
   );

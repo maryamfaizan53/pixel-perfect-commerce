@@ -21,30 +21,18 @@ const RECENTLY_VIEWED_KEY = "recently-viewed-products";
 const MAX_HISTORY_ITEMS = 6;
 
 const trendingSearches = [
-    { term: "Luxury Kitchenware", category: "Culinary" },
-    { term: "Organic Wellness", category: "Health" },
-    { term: "Designer Fragrance", category: "Boutique" },
-    { term: "Sustainable Living", category: "Lifestyle" }
+    { term: "Kitchen gadgets", category: "Kitchen" },
+    { term: "Home organizers", category: "Home" },
+    { term: "Beauty & care", category: "Beauty" },
+    { term: "Baby & mother care", category: "Baby" }
 ];
 
 const priceRanges = [
     { label: "Under 5k", min: 0, max: 5000 },
     { label: "5k - 15k", min: 5000, max: 15000 },
     { label: "15k - 30k", min: 15000, max: 30000 },
-    { label: "Premium 30k+", min: 30000, max: Infinity }
+    { label: "30k+", min: 30000, max: Infinity }
 ];
-
-const getAILabel = (product: ShopifyProduct) => {
-    const handle = product.node.handle?.toLowerCase() || "";
-    const title = product.node.title?.toLowerCase() || "";
-    const price = parseFloat(product.node.priceRange.minVariantPrice.amount);
-
-    if (price > 40000) return { text: "Investment Grade", icon: Trophy, color: "text-amber-500 bg-amber-50" };
-    if (handle.includes('new')) return { text: "Fresh Arrival", icon: Zap, color: "text-blue-500 bg-blue-50" };
-    if (title.includes('organic') || title.includes('pure')) return { text: "Eco-Conscious", icon: Bookmark, color: "text-emerald-500 bg-emerald-50" };
-    if (product.node.availableForSale) return { text: "Highly Coveted", icon: Sparkles, color: "text-primary bg-primary/5" };
-    return { text: "Limited Edition", icon: Layers, color: "text-slate-500 bg-slate-50" };
-};
 
 interface SearchBarProps {
     isOpen: boolean;
@@ -146,7 +134,10 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
         // For now, dynamic categories based on results are also fine.
         products.forEach(p => {
             const handlePart = p.node.handle.split('-')[0];
-            if (handlePart) cats.add(handlePart.charAt(0).toUpperCase() + handlePart.slice(1));
+            // Skip junk tokens: numbers, units (e.g. "180kg"), and very short fragments.
+            if (handlePart && handlePart.length >= 4 && !/^\d/.test(handlePart)) {
+                cats.add(handlePart.charAt(0).toUpperCase() + handlePart.slice(1));
+            }
         });
         return Array.from(cats).slice(0, 10);
     }, [products]);
@@ -318,20 +309,19 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (filteredResults.length === 0) return;
-
-        if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setActiveIndex(prev => (prev < filteredResults.length - 1 ? prev + 1 : prev));
-        } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setActiveIndex(prev => (prev > 0 ? prev - 1 : prev));
-        } else if (e.key === "Tab" && suggestion) {
+        if (e.key === "Escape") {
+            onClose();
+            return;
+        }
+        if (e.key === "Tab" && suggestion) {
             e.preventDefault();
             setSearch(suggestion);
             setSuggestion("");
-        } else if (e.key === "Enter" && activeIndex >= 0) {
-            handleSelectProduct(filteredResults[activeIndex].node.handle);
+            return;
+        }
+        // Enter on a search jumps straight to the top match.
+        if (e.key === "Enter" && search.trim() && filteredResults.length > 0) {
+            handleSelectProduct(filteredResults[0].node.handle);
         }
     };
 
@@ -345,6 +335,9 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     onKeyDown={handleKeyDown}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Search products"
                     className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-3xl flex flex-col font-inter"
                 >
                     {/* Header */}
@@ -354,8 +347,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                 <Sparkles className="w-6 h-6 text-white" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-900">Elite Ultra-Search</span>
-                                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Concierge v2.4</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-900">Search AI Bazar</span>
+                                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Find your next order</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
@@ -366,9 +359,9 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                 className={`rounded-2xl px-6 h-12 text-[10px] font-black uppercase tracking-widest transition-all ${showFilters ? 'bg-primary text-white shadow-gold' : 'bg-slate-50 border border-slate-100/50 hover:bg-slate-100'}`}
                             >
                                 <SlidersHorizontal className="w-3.5 h-3.5 mr-2" />
-                                {showFilters ? 'Hide Advanced' : 'Tailor Results'}
+                                {showFilters ? 'Hide filters' : 'Filters'}
                             </Button>
-                            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-2xl w-12 h-12 bg-slate-50 border border-slate-100">
+                            <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close search" className="rounded-2xl w-12 h-12 bg-slate-50 border border-slate-100">
                                 <X className="w-5 h-5 text-slate-900" />
                             </Button>
                         </div>
@@ -408,6 +401,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                         )}
                                         <button
                                             onClick={toggleVoice}
+                                            aria-label={isListening ? "Stop voice search" : "Search by voice"}
+                                            aria-pressed={isListening}
                                             className={`p-2 rounded-xl transition-all ${isListening ? 'text-primary' : 'text-slate-400 hover:text-primary hover:bg-slate-200/50'}`}
                                         >
                                             <Mic className="w-5 h-5" />
@@ -438,14 +433,14 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                             <div className="space-y-6">
                                                 <div className="flex items-center gap-2">
                                                     <ArrowUpDown className="w-4 h-4 text-primary" />
-                                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sort Matrix</h4>
+                                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sort by</h4>
                                                 </div>
                                                 <div className="flex flex-col gap-2">
                                                     {[
-                                                        { id: "featured", label: "Curated Masterpieces" },
-                                                        { id: "newest", label: "Fresh Arrivals" },
-                                                        { id: "price-asc", label: "Investment: Low to High" },
-                                                        { id: "price-desc", label: "Investment: High to Low" }
+                                                        { id: "featured", label: "Featured" },
+                                                        { id: "newest", label: "Newest" },
+                                                        { id: "price-asc", label: "Price: Low to High" },
+                                                        { id: "price-desc", label: "Price: High to Low" }
                                                     ].map(opt => (
                                                         <button
                                                             key={opt.id}
@@ -461,7 +456,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                             <div className="space-y-6">
                                                 <div className="flex items-center gap-2">
                                                     <CreditCard className="w-4 h-4 text-primary" />
-                                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Price Tier</h4>
+                                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Price range</h4>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     {priceRanges.map((range, i) => (
@@ -486,8 +481,8 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                     className={`w-full flex items-center justify-between p-5 rounded-[2rem] border bg-white transition-all ${inStockOnly ? 'border-primary/20 bg-primary/5 text-primary' : 'border-slate-100 text-slate-500'}`}
                                                 >
                                                     <div className="flex flex-col items-start gap-1">
-                                                        <span className="text-xs font-bold">Immediate Collection</span>
-                                                        <span className="text-[8px] opacity-70 uppercase tracking-widest">In-Stock Only</span>
+                                                        <span className="text-xs font-bold">In stock only</span>
+                                                        <span className="text-[8px] opacity-70 uppercase tracking-widest">Show available items</span>
                                                     </div>
                                                     <div className={`w-12 h-6 rounded-full relative transition-colors ${inStockOnly ? 'bg-primary' : 'bg-slate-200'}`}>
                                                         <motion.div
@@ -509,9 +504,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                         setSearch("");
                                                     }}
                                                     className="w-full h-14 rounded-2xl border-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-white hover:bg-slate-900 transition-all"
-                                                >
-                                                    Flush Parameters
-                                                </Button>
+                                                >Clear filters</Button>
                                             </div>
                                         </div>
                                     </motion.div>
@@ -564,10 +557,10 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                     <div className="flex items-end justify-between mb-8 pb-4 border-b border-slate-100">
                                         <div>
                                             <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">
-                                                {isDiscovery ? "Trending Now" : `Found ${filteredResults.length} Matches`}
+                                                {isDiscovery ? "Popular right now" : `${filteredResults.length} result${filteredResults.length === 1 ? "" : "s"}`}
                                             </h2>
                                             <p className="text-slate-400 text-sm font-medium">
-                                                {isDiscovery ? "Curated selections based on global trends" : `Showing results for "${search}"`}
+                                                {isDiscovery ? "Popular picks at AI Bazar" : `Showing results for "${search}"`}
                                             </p>
                                         </div>
                                     </div>
@@ -591,7 +584,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
                                                                     Trend #{i + 1}
                                                                 </div>
                                                                 {p.node.media?.edges?.[0] && (
-                                                                    <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                                    <img src={p.node.media.edges[0].node.previewImage?.url || p.node.media.edges[0].node.image?.url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={p.node.title} />
                                                                 )}
                                                             </div>
                                                             <h4 className="text-sm font-black text-slate-900 line-clamp-1">{p.node.title}</h4>
@@ -606,7 +599,7 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchBarProps) => {
 
                                             {/* Remaining Grid */}
                                             <div className="space-y-8">
-                                                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Fresh Arrivals</h3>
+                                                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">More to explore</h3>
                                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                                                     {filteredResults.slice(5).map((p, i) => (
                                                         <ProductCard key={p.node.id} product={fromShopifyShape(p)} index={i} />

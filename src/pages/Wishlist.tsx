@@ -43,7 +43,7 @@ const Wishlist = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
         
-        <main className="flex-1 py-8">
+        <main className="flex-1 pt-28 sm:pt-32 pb-12 sm:pb-16">
           <div className="container-custom">
             <div className="text-center py-16">
               <Heart className="w-24 h-24 mx-auto text-muted-foreground mb-6" />

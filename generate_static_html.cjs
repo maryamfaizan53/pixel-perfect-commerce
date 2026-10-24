@@ -645,81 +645,44 @@ async function main() {
 
     // 5. Generate Product Pages (with API calls)
     console.log('\n🛍️  Generating product pages...');
-    const handles = getProductHandles();
-    console.log(`   Found ${handles.length} product handles`);
+    // Product pages — sourced from the local manifest (all_products_details.json),
+    // regenerated from the live API earlier in the build. No network per product,
+    // real titles/prices, and fast enough to prerender the full catalog.
+    let products = [];
+    try {
+        products = JSON.parse(fs.readFileSync(path.join(__dirname, 'all_products_details.json'), 'utf8'));
+    } catch (err) {
+        console.error('   Could not read all_products_details.json:', err.message);
+    }
+    console.log(`   Found ${products.length} products (local manifest)`);
 
-    // Process products in batches of 5 with delay to avoid rate limiting
-    const BATCH_SIZE = 5;
-    for (let i = 0; i < handles.length; i += BATCH_SIZE) {
-        const batch = handles.slice(i, i + BATCH_SIZE);
-        const promises = batch.map(async (handle) => {
-            try {
-                const data = await shopifyFetch(PRODUCT_QUERY, { handle });
-                const product = data.data?.product;
-                if (product) {
-                    const html = generateProductHtml(baseHtml, product);
-                    writeHtmlFile(`/products/${handle}`, html);
-                    stats.products++;
-                } else {
-                    // Generate fallback with handle-derived title
-                    const fallbackProduct = {
-                        id: `fallback-${handle}`,
-                        title: handle.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-                        description: `Buy ${handle.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} online at AI Bazar Pakistan. Best price guaranteed with free shipping.`,
-                        handle,
-                        availableForSale: true,
-                        productType: 'General',
-                        vendor: 'AI Bazar',
-                        tags: [],
-                        seo: { title: null, description: null },
-                        priceRange: { minVariantPrice: { amount: '0', currencyCode: 'PKR' }, maxVariantPrice: { amount: '0', currencyCode: 'PKR' } },
-                        media: { edges: [] },
-                        variants: { edges: [] },
-                        collections: { edges: [] }
-                    };
-                    const html = generateProductHtml(baseHtml, fallbackProduct);
-                    writeHtmlFile(`/products/${handle}`, html);
-                    stats.products++;
-                    stats.productsFailed++;
-                    console.log(`   ⚠️  Product not found in Shopify: ${handle} (using fallback)`);
-                }
-            } catch (err) {
-                // Generate fallback HTML even on API error
-                const fallbackProduct = {
-                    id: `error-${handle}`,
-                    title: handle.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-                    description: `Buy ${handle.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} online at AI Bazar Pakistan.`,
-                    handle,
-                    availableForSale: true,
-                    productType: 'General',
-                    vendor: 'AI Bazar',
-                    tags: [],
-                    seo: { title: null, description: null },
-                    priceRange: { minVariantPrice: { amount: '0', currencyCode: 'PKR' }, maxVariantPrice: { amount: '0', currencyCode: 'PKR' } },
-                    media: { edges: [] },
-                    variants: { edges: [] },
-                    collections: { edges: [] }
-                };
-                const html = generateProductHtml(baseHtml, fallbackProduct);
-                writeHtmlFile(`/products/${handle}`, html);
-                stats.products++;
-                stats.productsFailed++;
-                console.log(`   ⚠️  API error for ${handle}: ${err.message} (using fallback)`);
-            }
-        });
-
-        await Promise.all(promises);
-
-        // Progress indicator
-        const processed = Math.min(i + BATCH_SIZE, handles.length);
-        if (processed % 25 === 0 || processed === handles.length) {
-            console.log(`   📦 ${processed}/${handles.length} products processed...`);
+    for (const p of products) {
+        const amount = String(p.price != null ? p.price : 0);
+        const product = {
+            id: p.slug,
+            title: p.title,
+            description: p.excerpt || p.title,
+            handle: p.slug,
+            availableForSale: p.inStock !== false,
+            productType: (p.categories && p.categories[0]) || 'General',
+            vendor: 'AI Bazar',
+            seo: { title: null, description: null },
+            priceRange: {
+                minVariantPrice: { amount, currencyCode: p.currency || 'PKR' },
+                maxVariantPrice: { amount, currencyCode: p.currency || 'PKR' },
+            },
+            media: { edges: p.image ? [{ node: { image: { url: p.image } } }] : [] },
+            variants: { edges: [] },
+            collections: { edges: [] },
+        };
+        try {
+            const html = generateProductHtml(baseHtml, product);
+            writeHtmlFile(`/products/${p.slug}`, html);
+            stats.products++;
+        } catch (err) {
+            stats.productsFailed++;
         }
-
-        // Rate limit delay between batches
-        if (i + BATCH_SIZE < handles.length) {
-            await sleep(200);
-        }
+        if (stats.products % 2000 === 0) console.log(`   📦 ${stats.products}/${products.length} products...`);
     }
 
     // 6. Summary

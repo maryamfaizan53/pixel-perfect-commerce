@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { blogIndex } from "@/data/blogIndex";
 import type { BlogPost as BlogPostType } from "@/data/blogTypes";
 import { Calendar, Clock, User, ArrowLeft, Share2, Tag, TrendingUp, Sparkles, Loader2 } from "lucide-react";
+import { getBlogImage, DEFAULT_BLOG_IMAGE } from "@/lib/blogImage";
 import { motion } from "framer-motion";
 import { lazy, Suspense, useState } from "react";
 const ReactMarkdownLazy = lazy(() => import("react-markdown"));
@@ -323,8 +324,20 @@ const BlogPost = () => {
                     />
                 </section>
 
+                {/* Hero banner image */}
+                <div className="container-custom -mt-8 relative z-20">
+                    <div className="max-w-4xl mx-auto aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl bg-muted">
+                        <img
+                            src={getBlogImage(post)}
+                            alt={post.title}
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = DEFAULT_BLOG_IMAGE; }}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                </div>
+
                 {/* Article Content */}
-                <section className="container-custom -mt-8 relative z-20 pb-24">
+                <section className="container-custom mt-8 relative z-20 pb-24">
                     <div className="max-w-4xl mx-auto">
                         <article className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16">
                             <div className="prose prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-h1:text-4xl prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-slate-700 prose-p:leading-relaxed prose-p:mb-6 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-strong:font-bold prose-ul:my-6 prose-li:my-2 prose-li:text-slate-700">

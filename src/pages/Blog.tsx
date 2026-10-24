@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { blogIndex as blogPosts, getAllBlogCategories as getAllCategories } from "@/data/blogIndex";
 import { Calendar, Clock, User, Search, Tag, TrendingUp } from "lucide-react";
+import { getBlogImage, DEFAULT_BLOG_IMAGE } from "@/lib/blogImage";
 import { motion } from "framer-motion";
 
 import { useSEO } from "@/hooks/useSEO";
@@ -223,13 +224,14 @@ const Blog = () => {
                                 className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all"
                             >
                                 <div className="grid md:grid-cols-2 gap-8">
-                                    <div className="aspect-[16/10] md:aspect-auto bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                                        <div className="text-center p-8">
-                                            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                <TrendingUp className="w-10 h-10 text-primary" />
-                                            </div>
-                                            <p className="text-sm font-bold text-primary uppercase tracking-wider">Featured Post</p>
-                                        </div>
+                                    <div className="aspect-[16/10] md:aspect-auto md:min-h-[260px] overflow-hidden bg-muted">
+                                        <img
+                                            src={getBlogImage(featuredPost)}
+                                            alt={featuredPost.title}
+                                            loading="lazy"
+                                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = DEFAULT_BLOG_IMAGE; }}
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
 
                                     <div className="p-8 md:p-10 flex flex-col justify-center">
@@ -299,12 +301,14 @@ const Blog = () => {
                                 >
                                     <Link to={`/blog/${post.slug}`}>
                                         <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all h-full flex flex-col group">
-                                            <div className="aspect-[16/10] bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                                                <div className="text-center p-6">
-                                                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-                                                        <TrendingUp className="w-8 h-8 text-primary" />
-                                                    </div>
-                                                </div>
+                                            <div className="aspect-[16/10] overflow-hidden bg-muted">
+                                                <img
+                                                    src={getBlogImage(post)}
+                                                    alt={post.title}
+                                                    loading="lazy"
+                                                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = DEFAULT_BLOG_IMAGE; }}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                />
                                             </div>
 
                                             <div className="p-6 flex-1 flex flex-col">

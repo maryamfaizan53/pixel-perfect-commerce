@@ -329,9 +329,33 @@ function writeHtmlFile(routePath, html) {
 
 // ── Product HTML Generation ─────────────────────────────────────────────────────
 
+/** Decode HTML entities left in supplier data (&amp; -> &, &#39; -> ' etc.),
+ *  looping to catch double-encoded values (&amp;amp; -> &). */
+function decodeEntities(s) {
+    let out = s || '';
+    for (let i = 0; i < 3 && /&(amp|#39|apos|quot|lt|gt|nbsp);/.test(out); i++) {
+        out = out
+            .replace(/&amp;/g, '&').replace(/&#39;|&apos;/g, "'")
+            .replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+    return out.replace(/\s+/g, ' ').trim();
+}
+
+/** Build a concise, keyword-led SEO <title> (<=~62 chars). */
+function seoTitle(t) {
+    let s = decodeEntities(t).replace(/^(0?\d+\s*(pcs?|pieces?)\b[\s,.-]*)/i, ''); // drop leading "1 Pc/Pcs"
+    s = s.split(/\s[|–—-]\s/)[0].trim();                                            // drop marketing clause after " - "/" | "
+    if (s.length > 42) s = s.slice(0, 42).replace(/\s\S*$/, '').trim();             // word-boundary cap
+    s = s.replace(/[\s,(-]+$/,'').replace(/\s+(for|and|with|the|of|in|to|a|an|&)$/i, '').trim(); // drop dangling word/punct
+    return `${s} | Price in Pakistan`;
+}
+
 function generateProductHtml(baseHtml, product) {
-    const title = (product.seo?.title) ||
-        product.title.split(/\s+/).slice(0, 3).join(' ') + ' Price Pakistan';
+    // Clean HTML entities so the title, H1, description and schema read correctly.
+    product.title = decodeEntities(product.title);
+    if (product.description) product.description = decodeEntities(product.description);
+    const title = product.seo?.title || seoTitle(product.title);
 
     const price = parseFloat(product.priceRange.minVariantPrice.amount).toLocaleString();
     const currency = product.priceRange.minVariantPrice.currencyCode || 'PKR';
@@ -465,7 +489,7 @@ function generateProductHtml(baseHtml, product) {
   `;
 
     return generatePageHtml(baseHtml, {
-        title: `${title} | Buy Online at AI Bazar Pakistan`,
+        title,
         description,
         canonical,
         ogType: 'product',

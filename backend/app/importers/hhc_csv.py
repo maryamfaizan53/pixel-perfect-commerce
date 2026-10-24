@@ -42,6 +42,16 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 CSV_PATH = REPO_ROOT / "shopify_products_export.csv"
 PORTAL = "hhc"
 
+# Flat retail markup (PKR) added to the supplier (HHC) cost of every product
+# and variant, so the catalog and the server-authoritative checkout quote both
+# reflect retail, not cost.
+MARKUP_FLAT = 500.0
+
+
+def _retail(cost: float) -> float:
+    """Supplier cost -> retail price (cost + flat markup), whole rupees."""
+    return float(round((cost or 0.0) + MARKUP_FLAT))
+
 _ID_SUFFIX = re.compile(r"-(\d{4,})$")
 _VIDEO_EXT = re.compile(r"\.(mp4|webm|mov|m4v)(\?|$)", re.I)
 _OPTION_NAME_FIX = {
@@ -173,7 +183,7 @@ def to_sanity_doc(p: dict[str, Any], seen_slugs: set[str] | None = None) -> dict
         "title": title[:200] or slug,
         "slug": {"_type": "slug", "current": slug},
         "excerpt": excerpt,
-        "price": round(base_price, 2),
+        "price": _retail(base_price),
         "inStock": True,
         "vendor": "AI Bazar",
         "imageUrls": images[:10],
@@ -214,7 +224,7 @@ def to_sanity_doc(p: dict[str, Any], seen_slugs: set[str] | None = None) -> dict
             {
                 "_key": f"v{i}",
                 "title": val,
-                "price": round(price or base_price, 2),
+                "price": _retail(price or base_price),
                 "inStock": True,
                 "selectedOptions": [{"_key": "so", "name": opt_name, "value": val}],
             }

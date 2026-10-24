@@ -26,6 +26,10 @@ dist-ssr
 # large data export (kept locally, imported via backend/app/importers/hhc_csv.py)
 shopify_products_export.csv
 
+# Sanity dashboard downloads (usage history / log exports — kept locally, never committed)
+sanity_project_history_*.csv
+*.ndjson.gz
+
 # local env — never commit (contains secrets)
 .env
 .env.local

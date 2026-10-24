@@ -107,8 +107,10 @@ async function generateSitemap() {
             // Note: Legacy "- handle" pattern removed as it causes corruption by matching bulleted content
 
             if (cleanHandle) {
-                // Double-check handle validity: no spaces, no asterisks, no special chars that don't belong in a slug
-                if (/^[a-z0-9-]+$/.test(cleanHandle) && cleanHandle !== 'handle') {
+                // Double-check handle validity: allow the chars that actually occur in
+                // our slugs (lower/upper alnum, hyphen, underscore, dot). Rejects spaces,
+                // asterisks and markup while keeping importer-generated slugs with "_"/".".
+                if (/^[a-zA-Z0-9._-]+$/.test(cleanHandle) && cleanHandle !== 'handle') {
                     const isTopSeller = TOP_SELLING_HANDLES.includes(cleanHandle);
                     urls.push({
                         loc: `${BASE_URL}/products/${cleanHandle}`, // already escaped inloc if needed, but our slugs are safe

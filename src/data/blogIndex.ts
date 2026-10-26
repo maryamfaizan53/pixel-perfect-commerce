@@ -6,6 +6,73 @@ export type BlogPostMeta = Omit<BlogPost, 'content'>;
 
 export const blogIndex: BlogPostMeta[] = [
   {
+    "id": "beauty-skincare-2026",
+    "slug": "best-beauty-skincare-products-in-pakistan-2026",
+    "title": "Best Beauty & Skincare Products in Pakistan 2026: Top Picks & Prices (COD)",
+    "excerpt": "A practical guide to the best affordable beauty and skincare products in Pakistan for 2026 — real PKR prices, what works, and how to order online with Cash on Delivery from AI Bazar.",
+    "author": "AI Bazar Team",
+    "authorRole": "Beauty Editor",
+    "publishDate": "2026-10-27",
+    "readTime": "6 min read",
+    "category": "Beauty",
+    "tags": [
+      "beauty products pakistan",
+      "skincare pakistan",
+      "makeup",
+      "serum",
+      "foundation",
+      "cash on delivery",
+      "buying guide",
+      "2026"
+    ],
+    "image": "",
+    "featured": false
+  },
+  {
+    "id": "home-organization-2026",
+    "slug": "best-home-organization-products-in-pakistan-2026",
+    "title": "Best Home Organization Products in Pakistan 2026: Declutter on a Budget (COD)",
+    "excerpt": "The best affordable home organization and storage products in Pakistan for 2026 — real PKR prices and smart picks to declutter your wardrobe, kitchen and bathroom, with Cash on Delivery from AI Bazar.",
+    "author": "AI Bazar Team",
+    "authorRole": "Home & Living Editor",
+    "publishDate": "2026-10-27",
+    "readTime": "5 min read",
+    "category": "Home & Garden",
+    "tags": [
+      "home organization pakistan",
+      "storage products",
+      "organizers",
+      "declutter",
+      "wardrobe storage",
+      "cash on delivery",
+      "buying guide",
+      "2026"
+    ],
+    "image": "",
+    "featured": false
+  },
+  {
+    "id": "cod-online-shopping-guide",
+    "slug": "is-cash-on-delivery-safe-online-shopping-pakistan",
+    "title": "Is Cash on Delivery Safe? Online Shopping Guide for Pakistan (2026)",
+    "excerpt": "Everything you need to shop online safely in Pakistan — how Cash on Delivery (COD) works, how to avoid fake products, and your rights on returns and refunds.",
+    "author": "AI Bazar Team",
+    "authorRole": "Customer Care",
+    "publishDate": "2026-10-27",
+    "readTime": "5 min read",
+    "category": "Shopping Tips",
+    "tags": [
+      "cash on delivery",
+      "online shopping pakistan",
+      "cod safe",
+      "online shopping guide",
+      "returns",
+      "2026"
+    ],
+    "image": "",
+    "featured": false
+  },
+  {
     "id": "kitchen-gadgets-2026",
     "slug": "best-kitchen-gadgets-in-pakistan-2026",
     "title": "Best Kitchen Gadgets in Pakistan 2026: Top Picks, Prices & Where to Buy (COD)",

@@ -1,8 +1,10 @@
 /**
  * Blog post images. The original blogData image URLs are dead (Shopify store
- * removed) or placeholders (/api/placeholder/...), so we map each post to a
- * real, working catalog image by its category.
+ * removed) or placeholders (/api/placeholder/...). We map each post to a real,
+ * working catalog image: first a content-matched product image (by slug, via
+ * blogImageMap), else a category image.
  */
+import { blogImageMap } from "@/data/blogImageMap";
 const CATEGORY_IMAGES: Record<string, string> = {
   electronics: "https://hhcnewapp.blr1.cdn.digitaloceanspaces.com/uploads/2025/11/05/1ea1df56d42c7c2c292e2e53b712df03.jpeg",
   fashion: "https://hhcnewapp.blr1.cdn.digitaloceanspaces.com/uploads/2024/05/WhatsApp-Image-2024-05-22-at-1.50.17-PM-1.jpeg",
@@ -18,8 +20,9 @@ const CATEGORY_IMAGES: Record<string, string> = {
 /** Default when no category matches. */
 export const DEFAULT_BLOG_IMAGE = CATEGORY_IMAGES.home;
 
-/** Pick a real image for a blog post from its category. */
-export function getBlogImage(post?: { category?: string; image?: string }): string {
+/** Pick a real image for a blog post: content-matched product image, else category. */
+export function getBlogImage(post?: { slug?: string; category?: string; image?: string }): string {
+  if (post?.slug && blogImageMap[post.slug]) return blogImageMap[post.slug];
   const c = (post?.category || "").toLowerCase();
   if (/gadget|tech|electronic|mobile/.test(c)) return CATEGORY_IMAGES.electronics;
   if (/fashion|cloth|wear|style|accessor|jewel|watch/.test(c)) return CATEGORY_IMAGES.fashion;

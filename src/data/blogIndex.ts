@@ -6,6 +6,28 @@ export type BlogPostMeta = Omit<BlogPost, 'content'>;
 
 export const blogIndex: BlogPostMeta[] = [
   {
+    "id": "kitchen-gadgets-2026",
+    "slug": "best-kitchen-gadgets-in-pakistan-2026",
+    "title": "Best Kitchen Gadgets in Pakistan 2026: Top Picks, Prices & Where to Buy (COD)",
+    "excerpt": "A practical guide to the best affordable kitchen gadgets in Pakistan for 2026 — real prices in PKR, what each one does, and how to buy online with Cash on Delivery and free shipping from AI Bazar.",
+    "author": "AI Bazar Team",
+    "authorRole": "Kitchen & Home Editor",
+    "publishDate": "2026-10-27",
+    "readTime": "6 min read",
+    "category": "Kitchen Tips",
+    "tags": [
+      "kitchen gadgets",
+      "kitchen gadgets pakistan",
+      "kitchen tools",
+      "online shopping pakistan",
+      "cash on delivery",
+      "buying guide",
+      "2026"
+    ],
+    "image": "",
+    "featured": false
+  },
+  {
     "id": "1",
     "slug": "ultimate-guide-online-shopping-pakistan-2024",
     "title": "The Ultimate Guide to Online Shopping in Pakistan 2024: Tips, Trends & Best Practices",
